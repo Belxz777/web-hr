@@ -140,7 +140,7 @@ export default function ReportPage() {
               </svg>
             </div>
             <p className="text-3xl font-semibold text-gray-300  pt-8 mb-6 text-center">
-             К сожалению, у вас нет задач. Так бывает если вы начальник департамента.
+             У вас нет задач. Так бывает если вы начальник департамента.
             </p>
           </div>}
 
