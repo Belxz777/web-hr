@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-main-color: bg-gradient-to-br from-red-600 to-gray-900; 
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --text-default: rgb(73, 73, 73);
+  --text-secondary: rgb(51, 51, 51);
+  --background-section-color: #161B22;
+  --background-button-color: #C44F4F;
+  --borderColor: #fbfbfb;
+  --loaderColor:#eef3f6;
+  --background-cards-color: rgb(45, 42, 42);
+  --error-color: rgb(172, 50, 50);
+  --text-reg:#656464;
+  
+}
+[data-theme="light"] {
+  --background-main-color:#ffffff;
+  --background:#ffffff;
+  --background-reg-color:#f6f6f6;  
+  --text-invers:#FCFCFC;  
+  --text-article: #272727;
+  --background-section-color: #fcfcfc;
+  --text-secondary: #b2b1b1;
+  --background-obj-color: #b2b1b1;
+  --background-task-color: #afafaf;  
+  --background-reg-button-color:#eeeeee;
+  --background-button-color: #C44F4F;    
+  --border:#C44F4F;  
+  --text-default: #313131;
+  --background-cards-color: #4e4a4a;
+  --background-obj-light-color: #F5F4F4;
+  --loaderColor:#01090e;
+  --text-reg:#656464;
+}
+[data-theme="dark"] {
+  --background-main-color:#272727;
+  --background: 
+  --background-reg-color:#1d1d1d; 
+  --text-invers:#1d1d1d;   
+  --background-section-color:#1d1d1d;
+  --text-secondary: #b0a8a8;     
+  --background-obj-color: #b0a8a8; 
+  --background-task-color: #B0A8A8;  
+  --background-reg-button-color:#635d5d;
+  --background-button-color: #C44F4F;
+  --border:#C44F4F;      
+  --button-bg-color:#C44F4F;  
+  --text-default: #eceeef;
+  --text-article: #b6b6b6;
+  --background-cards-color: #464545;
+  --background-obj-light-color: #787878;
+  --text-color: #FCFCFC;
+  --loaderColor:#01090e;
+  --text-invers:#272727;
+  --text-reg:#787878;
+
+}
+body{
+  background-color: var(--background);
+
+}
+

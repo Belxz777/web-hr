@@ -1,0 +1,35 @@
+import { PulseLogo } from '@/svgs/Logo'
+import Link from 'next/link'
+
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900   flex flex-col items-center justify-center p-4 rounded-lg">
+      <main className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-md w-full space-y-8">
+        <header className="flex flex-col items-center">
+          <PulseLogo className="w-24 h-24 text-red-600  animate-pulse" />
+          <h1 className="mt-4 text-4xl font-bold text-gray-100">Рабочий Пульс</h1>
+          <p className="mt-2 text-center text-gray-400">Приложение для отслеживания трудозатрат.</p>
+        </header>
+        <nav className="space-y-4">
+          <Link 
+            href="/register" 
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Регистрация
+          </Link>
+          <Link 
+            href="/login" 
+            className="w-full flex justify-center py-2 px-4 border border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Вход
+          </Link>
+        </nav>
+      </main>
+      <footer className="mt-8 text-center text-gray-400">
+        <p>&copy;  2025 Рабочий Пульс Все права защищены.</p>
+      </footer>
+    </div>
+  )
+}
+
