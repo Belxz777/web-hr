@@ -1,83 +1,3 @@
-// "use client";
-// import React from "react";
-// import { Button } from "@/components/ui/button";
-// import Navigation from "@/components/buildIn/Navigation";
-// import UserProfile from "@/components/buildIn/UserProfile";
-// import DpMembers from "@/components/buildIn/DpMembers";
-// import ProjectsCard from "@/components/buildIn/ProjectsCard";
-// import { useProjectData } from "@/hooks/useProjectData";
-// import Loading from "@/components/buildIn/Loading";
-// import UserTasks from "@/components/buildIn/UserTasks";
-// import DepTasks from "@/components/buildIn/BossRes";
-// import { FiAlignJustify } from "react-icons/fi";
-// import { Header } from "@/components/ui/header";
-// const Profile = () => {
-//     const {
-//         title,
-//         departmentMembers,
-//         userData,
-//         status,
-//         errorState,
-//         getUserProjectsClient,
-//         projects,
-//         isMounted,
-//         loading,
-//     } = useProjectData();
-//     // todo добавить информацию о количестве рабочих часов сотрудника вобщем его данные загруженности
-//     //и его сделанные таски
-//     return (
-//         <>
-//             <Header/>
-//             {!isMounted && <Loading />}
-//             <main className="bg-main-base min-h-screen text-basic-default">
-//                 <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row">
-//                     {userData ? (
-//                         <>
-//                             <UserProfile userData={userData} title={title} />
-                           
-//                             <section className="flex flex-col flex-grow p-8 space-y-6">
-//                                 {departmentMembers && (
-//                                     <DpMembers
-//                                         departmentMembers={departmentMembers}
-//                                     />
-//                                 )}
-//                                 {projects ? (
-//                                     <ProjectsCard
-//                                         projects={projects}
-//                                         id={userData.id}
-//                                     />
-//                                 ) : (
-//                                     <>
-//                                     {/* Здесь тоже скелетон подошел бы лучше, чем loading */}
-//                                         <p> У тебя нет проектов</p>
-//                                         <Loading stylesHeight="h-auto"/>
-//                                         <Button
-//                                             onClick={() =>
-//                                                 getUserProjectsClient(
-//                                                     userData.id
-//                                                 )
-//                                             }
-//                                             className="flex justify-center"
-//                                         >
-//                                             Обновить
-//                                         </Button>
-//                                     </>
-//                                 )}
-//                                 {!departmentMembers ? (
-//                                     <UserTasks />
-//                                 ) : (
-//                                     <DepTasks />
-//                                 )}
-//                             </section>
-//                         </>
-//                     ) : null}
-//                 </div>
-//             </main>
-//         </>
-//     );
-// };
-
-// export default Profile;
 'use client'
 
 import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react'
@@ -88,33 +8,13 @@ import { logout } from '@/components/server/logout'
 import { PulseLogo } from '@/svgs/Logo'
 import { useTasks } from '@/hooks/useTasks'
 import { task } from '@/types'
-// Пример данных сотрудника
-const employeeData = {
-  tasks: {
-    completed: [
-      { id: 1, title: 'Разработка новой функции' },
-      { id: 2, title: 'Исправление бага в модуле авторизации' },
-    ],
-    inProgress: [
-      { id: 3, title: 'Оптимизация производительности' },
-      { id: 4, title: 'Написание технической документации' },
-    ],
-    overdue: [
-      { id: 5, title: 'Обновление зависимостей проекта' },
-    ],
-  },
-}
-
 export default function ProfilePage() {
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const { employeeData,title} = useEmployeeData()
 
-    const { tasks, tasksByStage, isMounted, getTasks, error, loading }= useTasks()
-    if(tasks){
-      console.log(tasks)
-    }
+    const { tasks,  isMounted, getTasks, error, loading }= useTasks()
 
 
   return (

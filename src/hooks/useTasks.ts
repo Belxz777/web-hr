@@ -35,9 +35,8 @@ export const useTasks = () => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    const tasksByStage: { [stage: string]: task[] } = {};
 
-    return { tasks, tasksByStage, isMounted, getTasks, error, loading };
+    return { tasks, isMounted, getTasks, error, loading };
 };
 export const useIsMounted = () => {
     const [isMounted, setIsMounted] = useState(false);

@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { PulseLogo } from '@/svgs/Logo'
+import { useTasks } from '@/hooks/useTasks'
+import { task } from '@/types'
+import { useReport } from '@/hooks/useReport'
 
 // Пример данных задач
 const tasks = [
@@ -14,6 +17,10 @@ const tasks = [
 ]
 
 export default function ReportPage() {
+  const {tasks} = useReport()
+  if(tasks){
+    console.log(tasks)
+  }
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [formData, setFormData] = useState({
     taskId: '',
@@ -60,29 +67,28 @@ export default function ReportPage() {
       </header>
 
       <main className="container mx-auto p-4">
-        <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto">
-          <div className="mb-4">
-            <h1 className='text-center text-gray-300 text-2xl font-bold '>Заполнение отчета</h1>
+            {tasks[0] ? tasks.map((task:task,index:number) => (
+              <>  
+                          <h1 className='text-center text-gray-300 text-2xl font-bold '>Заполнение отчета</h1>
 
-            <label htmlFor="taskId" className="block text-sm font-medium text-gray-300 mb-2">
-              Выберите задачу
-            </label>
-            <select
-              id="taskId"
-              name="taskId"
-              value={formData.taskId}
-              onChange={handleChange}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-              required
-            >
-              <option value="">Выберите задачу</option>
-              {tasks.map(task => (
-                <option key={task.id} value={task.id}>{task.title}</option>
-              ))}
-            </select>
-          </div>
-
+                <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto">
           <div className="mb-4">
+                <label htmlFor="taskId" className="block text-sm font-medium text-gray-300 mb-2">
+                Выберите задачу
+              </label>
+              <select
+                id="taskId"
+                name="taskId"
+                value={formData.taskId}
+                onChange={handleChange}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                required
+              >
+                
+                <option key={index}>{task.taskName}</option>
+              </select>
+              </div>
+              <div className="mb-4">
             <label htmlFor="workingHours" className="block text-sm font-medium text-gray-300 mb-2">
               Количество рабочих часов
             </label>
@@ -121,6 +127,24 @@ export default function ReportPage() {
             Отправить отчет
           </button>
         </form>
+              </>
+              ))
+            :
+            <div className="flex flex-col items-center justify-center h-64  rounded-lg">
+            <div className={`transition-transform duration-1000  animate-bounce`}>
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" fill="none" stroke="#d1d5db" strokeWidth="4"/>
+                <circle cx="26" cy="36" r="6" fill="#FFFFFF"/>
+                <circle cx="54" cy="36" r="6" fill="#FFFFFF"/>
+                <path d="M26 60C26 60 33 52 40 52C47 52 54 60 54 60" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <p className="text-3xl font-semibold text-gray-300  pt-8 mb-6 text-center">
+             К сожалению, у вас нет задач. Так бывает если вы начальник департамента.
+            </p>
+          </div>}
+
+          
       </main>
     </div>
   )
