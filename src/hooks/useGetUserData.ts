@@ -7,9 +7,8 @@ import { useState, useEffect } from 'react';
 const useEmployeeData = () => {
   const [employeeData, setData] = useState<employee | null >(null);
   const [title, setTitle] = useState<string>('');
-  const [loading, setLoading] = useState(true);
+  const [loadingEmp, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
-
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
@@ -28,15 +27,11 @@ const useEmployeeData = () => {
         }
       } finally {
         setLoading(false);
-        localStorage.setItem('employeeFName', employeeData?.firstName || '');
-        localStorage.setItem('employeeLName', employeeData?.lastName || '');
-        localStorage.setItem('jobTitle', title);
-        localStorage.setItem('departmentId', employeeData?.departmentid?.toString() || '');
-      }
+    }
     };
     fetchEmployeeData();
   }, []);
 
-  return { employeeData, title, loading, error };
+  return { employeeData, title, loadingEmp, error };
 };
 export default useEmployeeData;

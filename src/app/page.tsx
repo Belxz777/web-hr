@@ -14,11 +14,13 @@ export default function HomePage() {
         <nav className="space-y-4">
           <Link 
             href="/register" 
+            prefetch={false}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >
             Регистрация
           </Link>
           <Link 
+          prefetch={false}
             href="/login" 
             className="w-full flex justify-center py-2 px-4 border border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >

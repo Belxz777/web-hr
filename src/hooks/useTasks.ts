@@ -4,7 +4,7 @@ import { userTasks } from "@/components/server/userdata";
 
 export const useTasks = () => {
     const [tasks, setTasks] = useState<any>([]);
-    const [loading, setLoading] = useState<Boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState({
         status: false,
         text: "",

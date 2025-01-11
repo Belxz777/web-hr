@@ -90,7 +90,6 @@ export default function Home() {
         
     try{
         const resultData = await sendUserLoginData(data);
-
             if (!resultData) {
                 setLoading(false);
                 setError({
@@ -100,6 +99,11 @@ export default function Home() {
                 return;
             }
             
+            
+            localStorage.setItem("lc-pos-x", resultData.isBoss);
+            if(resultData.isBoss){
+              localStorage.setItem("lc-dep-x", resultData.departmentId);
+            }
             router.push("/profile");
         } 
          catch (err) {

@@ -4,7 +4,7 @@ import { cookies} from 'next/headers';
 
  interface LoginData {
     login: string
-    password: string
+    password: string,
 }
    async function sendUserLoginData(data: LoginData){
     const res = await fetch(`${host}users/login`, {
@@ -22,11 +22,23 @@ import { cookies} from 'next/headers';
     const receiveddata = await res.json();
     const cookiesApi = cookies()
 
-    cookiesApi.set('jwt', receiveddata.token,{
+
+    cookiesApi.set('cf-auth-id', receiveddata.token,{
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
         httpOnly: true,
         secure: true,
     })
+    cookiesApi.set('cf-pos-x',receiveddata.isBoss,{
+        secure: true,
+        httpOnly: true,
+    })
+    if(receiveddata.isBoss){
+        cookiesApi.set('cf-dep-x',receiveddata.departmentId,{
+            secure: true,
+            httpOnly: true,
+        })
+    }
+
     return receiveddata
 }
 

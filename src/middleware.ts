@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request: { cookies: { get: (arg0: string) => any; }; nextUrl: { pathname: any; }; url: string | URL | undefined; }) {
-  const token = request.cookies.get('jwt'); // Получаем токен из cookies
+  const token = request.cookies.get('cf-auth-id'); // Получаем токен из cookies
 
   // Проверяем, на какую страницу пытается зайти пользователь
   const { pathname } = request.nextUrl;

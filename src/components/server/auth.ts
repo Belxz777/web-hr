@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { host } from '@/types';
 async function authUser(): Promise<any> {
     const cookieStore = cookies();
-    const jwt = cookieStore.get('jwt')?.value;
+    const jwt = cookieStore.get('cf-auth-id')?.value;
     if (!jwt) {
         throw new Error('No token provided');
     }

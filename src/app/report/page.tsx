@@ -130,8 +130,8 @@ export default function ReportPage() {
               </>
               ))
             :
-            <div className="flex flex-col items-center justify-center h-64  rounded-lg">
-            <div className={`transition-transform duration-1000  animate-bounce`}>
+            <div className="flex flex-col bg-gray-800 items-center justify-center h-64  rounded-xl ">
+            <div className={`transition-transform duration-1000  `}>
               <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="40" cy="40" r="38" fill="none" stroke="#d1d5db" strokeWidth="4"/>
                 <circle cx="26" cy="36" r="6" fill="#FFFFFF"/>
@@ -139,8 +139,8 @@ export default function ReportPage() {
                 <path d="M26 60C26 60 33 52 40 52C47 52 54 60 54 60" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round"/>
               </svg>
             </div>
-            <p className="text-3xl font-semibold text-gray-300  pt-8 mb-6 text-center">
-             У вас нет задач. Так бывает если вы начальник департамента.
+            <p className="text-2xl  select-none font-semibold text-gray-300  pt-8 mb-6 text-center">
+             У вас нет задач для отчета.
             </p>
           </div>}
 
