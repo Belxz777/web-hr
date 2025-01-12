@@ -11,6 +11,7 @@ import { TaskList } from '@/components/buildIn/TaskList'
 import { ReportDownload } from '@/components/buildIn/ReportDownload'
 import { ReportUpload } from '@/components/buildIn/ReportUpload'
 import { useState } from 'react'
+import UniversalFooter from '@/components/buildIn/UniversalFooter'
 export default function ProfilePage() {
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -24,9 +25,10 @@ const { tasks, isMounted, getTasks, error, loading } = useTasks(isPosX)
     
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
       <header className="bg-gray-800 p-4 flex justify-between items-center">
-        <div className=' inline-flex items-center'>
-        <PulseLogo className="w-16 h-16 text-red-600 hover:text-gray-300 hover:animate-pulse"  />
-        </div>
+        <div className=' inline-flex items-center '> 
+          <PulseLogo className="w-16 h-16 text-red-600 animate-pulse" />
+          <h1 className="text-2xl  pl-4 font-bold">Личный кабинет</h1>  
+          </div>
         <div className="relative">
             
           <button 
@@ -102,17 +104,19 @@ const { tasks, isMounted, getTasks, error, loading } = useTasks(isPosX)
    }
    loading={loading ?? false}
    tasks={tasks?.all?.completed}
+
  />
 
  <TaskSection
-   title="Задачи в процессе"
+   title="Задачи в процессе и неначатые"
    icon={
      <svg className="w-6 h-6 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
      </svg>
    }
    loading={loading}
-   tasks={tasks?.all?.in_progress}
+  //  tasks={tasks?.all?.in_progress}
+   tasks={[...(tasks?.all?.in_progress || []), ...(tasks?.all?.not_started || [])]}  
  />
 
  <TaskSection
@@ -133,13 +137,10 @@ const { tasks, isMounted, getTasks, error, loading } = useTasks(isPosX)
 </section>
 }
       </main>
-      <footer className="mt-8 text-center text-gray-400 pb-4">
-        <p>©  2025 Рабочий Пульс Все права защищены.</p>
-        <Link href='/help' className=' no-underline hover:underline' prefetch={false}>Возникли проблемы с приложением? </Link>
-      </footer>
+     <UniversalFooter/>
     </div>
   )
-}function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {
+}function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[]}) {
   return (
     <section className="bg-gray-800 rounded-xl p-6">
       <h3 className="text-xl font-bold mb-4 flex items-center">

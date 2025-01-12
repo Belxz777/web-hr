@@ -1,6 +1,6 @@
 import { task } from "@/types"
 
-export function TaskList({ tasks }: { tasks: task[] | undefined }) {
+export function TaskList({ tasks,isComp }: { tasks: task[] | undefined,isComp?:boolean }) {
   if (!tasks || tasks.length === 0) {
     return <EmptyTasksAnimation/>   
   }
@@ -11,10 +11,25 @@ export function TaskList({ tasks }: { tasks: task[] | undefined }) {
         <li key={index} className="bg-gray-700 rounded-xl p-4 shadow-md">
           <h4 className="text-lg font-semibold">{task.taskName}</h4>
           <p className="text-gray-300">{task.taskDescription}</p>
-          <p className="text-gray-400">Часов до завершения: {task.hourstodo}</p>
+          
+          {
+            !task.isExpired && task.hourstodo > 0 && (
+              <p className="text-gray-400">
+                Часов до завершения: {task.hourstodo}
+              </p>
+            )
+          }
+    
           <p className="text-gray-400">
             Дата закрытия: {task.closeDate ? new Date(task.closeDate).toLocaleString('ru-RU') : 'Не указана'}
           </p>
+          {
+            task.hourstodo === 0 && task.isExpired && (
+              <p className="text-gray-200 font-bold underline decoration-red-500 underline-offset-4">
+                Завершено, но с опозданием
+              </p>
+            )
+          }     
         </li>
       ))}
     </ul>

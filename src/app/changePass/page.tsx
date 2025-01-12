@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { changePass } from '@/types'
 import { PulseLogo } from '@/svgs/Logo'
 import Link from 'next/link'
+import UniversalFooter from '@/components/buildIn/UniversalFooter'
 
 export default function ChangePassword() {
   const [showWarning, setShowWarning] = useState(false)
@@ -153,10 +154,7 @@ catch(error){
       </div>
     </div>
   )}
-   <footer className=" text-center text-gray-400 pb-4">
-        <p>&copy;  2025 Рабочий Пульс Все права защищены.</p>
-        <Link href='/help' className=' no-underline hover:underline' prefetch={false}>Возникли проблемы с приложением? </Link>
-      </footer>
+<UniversalFooter/>
   </div>
   )
 }
