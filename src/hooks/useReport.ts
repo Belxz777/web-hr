@@ -4,7 +4,7 @@ import { useIsMounted } from "./useTasks";
 
 export const useReport = () => {
     const [tasks, setTasks] = useState<any>([]);
-    const [loading, setLoading] = useState<Boolean>(false);
+    const [loadingRep, setLoading] = useState<boolean>(false);
     const [error, setError] = useState({
         status: false,
         text: "",
@@ -36,5 +36,5 @@ export const useReport = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { tasks, isMounted, getTasks, error, loading };
+    return { tasks, isMounted, getTasks, error, loadingRep };
 };

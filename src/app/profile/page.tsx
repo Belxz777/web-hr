@@ -17,9 +17,8 @@ export default function ProfilePage() {
 
   const { employeeData,title,loadingEmp} = useEmployeeData()
 
-  const { tasks,  isMounted, getTasks, error, loading }= useTasks()
-
-
+const isPosX = localStorage.getItem('lc-pos-x') === 'true'
+const { tasks, isMounted, getTasks, error, loading } = useTasks(isPosX)
 
   return (
     
@@ -92,7 +91,7 @@ export default function ProfilePage() {
           </div>
         </section>
 {
-  !localStorage.getItem('lc-dep-x') ?
+!localStorage.getItem('lc-dep-x') ?
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
  <TaskSection
    title="Завершенные задачи"
@@ -135,13 +134,12 @@ export default function ProfilePage() {
 }
       </main>
       <footer className="mt-8 text-center text-gray-400 pb-4">
-        <p>&copy;  2025 Рабочий Пульс Все права защищены.</p>
+        <p>©  2025 Рабочий Пульс Все права защищены.</p>
         <Link href='/help' className=' no-underline hover:underline' prefetch={false}>Возникли проблемы с приложением? </Link>
       </footer>
     </div>
   )
-}
-function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {
+}function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {
   return (
     <section className="bg-gray-800 rounded-xl p-6">
       <h3 className="text-xl font-bold mb-4 flex items-center">

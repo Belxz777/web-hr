@@ -4,7 +4,12 @@ interface department {
     name:string,
     head:number
   }
+interface report {
+  taskId: number,
+  workingHours: number,  
+  comment: string,
 
+}
   interface createUser {
     job_title_id: number,
     age: number,
@@ -20,6 +25,7 @@ interface jobTitle {
     name:string
 }
 interface task {
+  taskId: number,
       taskName: string,
       taskDescription: string,
       status: string,
@@ -62,5 +68,5 @@ type employee = {
   }
   
   export { host }
-  export type { department, createUser, jobTitle, task, changePass, statusType,employee }
+  export type { department, createUser,report, jobTitle, task, changePass, statusType,employee }
   

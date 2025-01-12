@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { task } from "@/types";
 import { userTasks } from "@/components/server/userdata";
 
-export const useTasks = () => {
+export const useTasks = (isBoss:boolean) => {
     const [tasks, setTasks] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState({
@@ -32,11 +32,14 @@ export const useTasks = () => {
                 setError({ status: true, text: `Ошибка сервера` });
             }
         };
-        fetchData();
+    if(!isBoss){
+fetchData()        
+}
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { tasks, isMounted, getTasks, error, loading };
+    return { tasks, isMounted, getTasks, error, loading,isBoss };
 };
 export const useIsMounted = () => {
     const [isMounted, setIsMounted] = useState(false);
