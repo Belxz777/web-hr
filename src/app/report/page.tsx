@@ -9,6 +9,7 @@ import { useReport } from '@/hooks/useReport'
 import sendReport from '@/components/server/report'
 import { useRouter } from 'next/navigation'
 import { set } from 'zod'
+import UniversalFooter from '@/components/buildIn/UniversalFooter'
 
 // Пример данных задач
 
@@ -190,8 +191,10 @@ null
 
           
       </main>
+
       </>
 }
+<UniversalFooter/>
     </div>
   )
 }

@@ -1,39 +1,34 @@
 'use client'
-
 import { useState } from 'react'
+import { downloadReport } from '../server/download'
 
 export function ReportDownload() {
-  const [downloading, setDownloading] = useState(false)
-  const [downloadStatus, setDownloadStatus] = useState<'idle' | 'success' | 'error'>('idle')
+     const [downloading, setDownloading] = useState(false)
+     const [downloadStatus, setDownloadStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
-  const handleDownload = async () => {
-    setDownloading(true)
-    setDownloadStatus('idle')
+     const handleDownload = async () => {
+       setDownloading(true)
+       setDownloadStatus('idle')
 
-    try {
-      const response = await fetch('/api/download-report')
-      
-      if (response.ok) {
-        const blob = await response.blob()
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.style.display = 'none'
-        a.href = url
-        a.download = 'report.xlsx'
-        document.body.appendChild(a)
-        a.click()
-        window.URL.revokeObjectURL(url)
-        setDownloadStatus('success')
-      } else {
-        setDownloadStatus('error')
-      }
-    } catch (error) {
-      console.error('Download error:', error)
-      setDownloadStatus('error')
-    } finally {
-      setDownloading(false)
-    }
-  }
+       try {
+         const blob = await downloadReport()
+         const url = window.URL.createObjectURL(blob)
+         const a = document.createElement('a')
+         a.style.display = 'none'
+         a.href = url
+         a.download = 'report.xlsx'
+         document.body.appendChild(a)
+         a.click()
+         window.URL.revokeObjectURL(url)
+         setDownloadStatus('success')
+       } catch (error) {
+         setDownloadStatus('error')
+       } finally {
+         setDownloading(false)
+       }
+     }
+    
+  
 
   return (
     <div className="bg-gray-800 rounded-xl p-6">
@@ -55,5 +50,6 @@ export function ReportDownload() {
       </div>
     </div>
   )
-}
 
+
+}
