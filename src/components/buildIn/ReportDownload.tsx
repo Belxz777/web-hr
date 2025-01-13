@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { downloadReport } from '../server/download'
+import { cookieget } from '../server/cookie'
+import { host } from '@/types'
 
 export function ReportDownload() {
      const [downloading, setDownloading] = useState(false)
@@ -11,7 +13,21 @@ export function ReportDownload() {
        setDownloadStatus('idle')
 
        try {
-         const blob = await downloadReport()
+        const cookie = cookieget()
+        if(!cookie){
+console.log(cookie)
+        }
+        const response = await fetch(`${host}report/department/xlsx/`, {
+           method: 'GET',
+           credentials: 'include',
+           headers: {
+            Cookie:`jwt=${cookie}`,
+            'Content-Type': 'application/json',
+           }
+         })
+         console.log(response)
+
+         const blob = await response.blob()
          const url = window.URL.createObjectURL(blob)
          const a = document.createElement('a')
          a.style.display = 'none'
@@ -22,12 +38,12 @@ export function ReportDownload() {
          window.URL.revokeObjectURL(url)
          setDownloadStatus('success')
        } catch (error) {
+        console.error('Download error:', error)
          setDownloadStatus('error')
        } finally {
          setDownloading(false)
        }
-     }
-    
+     }    
   
 
   return (

@@ -20,5 +20,5 @@ export async function downloadReport() {
         console.log(res.status)
       throw new Error('Failed to download report')
     }
-    return res.blob()
+    return res
 }
