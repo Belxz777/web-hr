@@ -82,7 +82,7 @@ export default function SettingsPage() {
         <section className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>
           <h2 className="text-2xl font-bold mb-4">Будущие настройки</h2>
           <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>
-            Здесь будут размещены дополнительные настройки приложения. Следите за обновлениями!
+          UNUSED PLACE FOR FUTURE SETTINGS
           </p>
         </section>
       </main>

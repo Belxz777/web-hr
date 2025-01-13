@@ -2,7 +2,9 @@
 import { SVGProps, useEffect, useRef } from 'react'
 
 export function PulseLogo(props: SVGProps<SVGSVGElement>) {
+  
   return (
+  
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"

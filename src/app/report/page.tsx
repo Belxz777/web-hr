@@ -8,13 +8,17 @@ import { report, task } from '@/types'
 import { useReport } from '@/hooks/useReport'
 import sendReport from '@/components/server/report'
 import { useRouter } from 'next/navigation'
+import { set } from 'zod'
 
 // Пример данных задач
 
 
 export default function ReportPage() {
+
   const {tasks,loadingRep} = useReport()
+
   const router  = useRouter()
+
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [loading,setLoading] = useState(false)
   const [formData, setFormData] = useState<report>({
@@ -61,17 +65,23 @@ console.log(formData,tasks[0])
 {
   tasks.length === 0 ? (
     <div className="flex flex-col items-center justify-center h-screen">
-      <PulseLogo className="w-24 h-24 text-gray-300 animate-pulse" />
-      <h1 className="text-2xl font-bold text-gray-300 mt-4">Задачи для отчета   не найдены</h1>
-      <button
-        className="inline-flex font-bold mt-4 items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors duration-300"
-      onClick={() => router.push("/profile")}
-      >
-        Вернуться на главную
-      </button>
+               <PulseLogo className="w-24 h-24 text-gray-300 animate-pulse" />
+      <h1 className="text-2xl font-bold text-gray-300 mt-4">Загрузка . . . </h1>
+      {
+       ! loadingRep ? (
+null
+        ) : (
+          <button
+          className="inline-flex font-bold mt-4 items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors duration-300"
+          onClick={() => router.push("/profile")}
+        >
+          Вернуться на главную
+        </button>
+        )
+      }
+
     </div>
-  ) :
-   <>
+  ) :   <>
   <header className="bg-gray-800 p-4 flex justify-between items-center">
   <PulseLogo className="w-16 h-16 text-red-600 hover:text-gray-300 hover:animate-pulse" />
   <div className="relative">
@@ -86,10 +96,10 @@ console.log(formData,tasks[0])
     </button>
     {isMenuOpen && (
       <div className="absolute right-0 mt-2 w-56 bg-gray-800 rounded-xl shadow-lg py-1">
-        <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Дашборд</Link>
         <Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Профиль</Link>
-        <Link href="/tasks" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Задачи</Link>
-      </div>
+        <Link href="/settings" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Настройки</Link>         
+        <p className="block px-4 py-2 text-sm text-gray-300 hover:bg-red-600 select-none">{new Date().toLocaleTimeString()}</p>
+        </div>
     )}
   </div>
 </header>
