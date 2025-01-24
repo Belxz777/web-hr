@@ -64,28 +64,7 @@ console.log(formData,tasks[0])
 
   return (
     <div className="min-h-screen bg-gradient-to-br  from-red-600 to-gray-900 text-gray-100">
-    
-{
-  tasks.length === 0 ? (
-    <div className="flex flex-col items-center justify-center h-screen">
-               <PulseLogo className="w-24 h-24 text-gray-300 animate-pulse" />
-      <h1 className="text-2xl font-bold text-gray-300 mt-4">Загрузка . . . </h1>
-      {
-       !loadingRep ? (
-null
-        ) : (
-          <button
-          className="inline-flex font-bold mt-4 items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors duration-300"
-          onClick={() => router.push("/profile")}
-        >
-          Вернуться на главную
-        </button>
-        )
-      }
-
-    </div>
-  ) :   <>
-  <header className="bg-gray-800 p-4 flex justify-between items-center">
+     <header className="bg-gray-800 p-4 flex justify-between items-center">
   <PulseLogo className="w-16 h-16 text-red-600 hover:text-gray-300 hover:animate-pulse" />
   <div className="relative">
     <button 
@@ -106,6 +85,15 @@ null
     )}
   </div>
 </header>
+{
+  tasks.length === 0 ? (
+    <div className="flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto mt-4">
+               <PulseLogo className="w-24 h-24 text-gray-300 animate-pulse" />
+      <h1 className="text-2xl font-bold text-gray-300 mt-4">Загрузка <span className=' animate-ping'>. . . </span></h1>
+
+    </div>
+  ) :   <>
+ 
       <main className="container mx-auto p-4">
               <>  
                 <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto">
