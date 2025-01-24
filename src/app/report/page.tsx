@@ -58,6 +58,8 @@ export default function ReportPage() {
 console.log(formData,tasks[0])
     if (req) {
       setLoading(false)
+      alert("Успешно")
+      router.push('/profile')
       return
     }
 
@@ -76,7 +78,7 @@ console.log(formData,tasks[0])
                <PulseLogo className="w-24 h-24 text-gray-300 animate-pulse" />
       <h1 className="text-2xl font-bold text-gray-300 mt-4">Загрузка . . . </h1>
       {
-       ! loadingRep ? (
+       !loadingRep ? (
 null
         ) : (
           <button
