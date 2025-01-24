@@ -123,14 +123,15 @@ const { tasks, isMounted, getTasks, error, loading } = useTasks(isPosX)
           <div className="h-8 bg-gray-700 rounded w-4/6 mb-4"></div>
           <div className="h-4 bg-gray-700 rounded w-1/4 mb-2"></div>
           <div className="h-4 bg-gray-700 rounded w-2/5 "></div>
-        </div>
+        </div>  
       ) : employeeData ? (
         <div className="mb-4 md:mb-0">
           <h2 className="text-2xl font-bold mb-2 select-none">
             {employeeData.firstName} {employeeData.lastName}
           </h2>
           <p className="text-gray-400 select-none">{title}</p>
-          <p className="text-gray-400 select-none">Номер отдела: {employeeData.departmentid}</p>
+          <p className="text-gray-400 select-none">Отдел № {employeeData.departmentid}</p>
+
         </div>
       ) : (
         <h1>Нет данных</h1>

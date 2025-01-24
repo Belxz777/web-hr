@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { downloadReport } from '../server/download'
 import { cookieget } from '../server/cookie'
 import { host } from '@/types'
+import Link from 'next/link'
 
 export function ReportDownload() {
      const [downloading, setDownloading] = useState(false)
