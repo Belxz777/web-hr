@@ -16,6 +16,7 @@ export function middleware(request: { cookies: { get: (arg0: string) => any; }; 
     if (pathname === '/') {
         return NextResponse.redirect(new URL('/profile', request.url)); // Перенаправляем на страницу профиля
       }
+      
   } else {
     // Логика для неаутентифицированных пользователей
     // Если пользователь не аутентифицирован и пытается зайти на защищенные страницы
