@@ -42,9 +42,27 @@ export default function SettingsPage() {
             </svg>
           </button>
           {isMenuOpen && (
-            <ul className={`absolute right-0 mt-2 w-56 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-lg py-1`}>
-              <li><Link href="/profile" className={`block px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`}>Профиль</Link></li>
-     </ul>
+            <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
+              <li>
+                <Link href="/profile" className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                  <svg
+                    className="w-5 h-5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  Профиль
+                </Link>
+              </li>
+</ul>
           )}
         </nav>
       </header>

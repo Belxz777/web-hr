@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { downloadReport } from '../server/download'
 import { cookieget } from '../server/cookie'
 import { host } from '@/types'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export function ReportDownload() {
      const [downloading, setDownloading] = useState(false)
@@ -49,14 +49,14 @@ console.log(cookie)
 
   return (
     <div className="bg-gray-800 rounded-xl p-6">
-      <h2 className="text-xl font-bold mb-4">Скачать отчет о всем департаменте</h2>
+      <h2 className="text-xl font-bold mb-4">Скачивание отчета</h2>
       <div className="space-y-4">
         <button 
           onClick={handleDownload} 
           disabled={downloading}
-          className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+          className=" bg-red-600 hover:bg-red-700 w-2/3 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
         >
-          {downloading ? 'Скачивание...' : 'Скачать отчет'}
+          {downloading ? 'Скачивание...' : 'Скачать общий отчет'}
         </button>
         {downloadStatus === 'success' && (
           <p className="text-green-500">Отчет успешно скачан!</p>
@@ -65,15 +65,11 @@ console.log(cookie)
           <p className="text-red-500">Ошибка при скачивании отчета. Попробуйте еще раз.</p>
         )}
       </div>
-      <button 
-      onClick={()=>{
-        router.push(
-        `department`
-        )
-      }}
-                className=" bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50 mt-4"
->Подробнее</button>
-    </div>
+          <Link href={`/department/report/download/`}>
+            <button className=" w-1/2 mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+              Подробные отчеты
+            </button>
+          </Link>    </div>
   )
 
 

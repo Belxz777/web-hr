@@ -30,6 +30,13 @@ export default function ReportPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
+    if(tasks.length===1){
+      setFormData(prev=>({
+        ...prev,
+        taskId:tasks[0]?.taskId
+      }))
+      console.log(tasks)
+    }
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -107,7 +114,7 @@ console.log(formData,tasks[0])
              <select
              id="taskId"
              name="taskId"
-             value={tasks.length === 1 ? tasks[0].taskId : formData.taskId}
+            value={tasks.length === 1 ? tasks[0].taskId : formData.taskId}
              onChange={handleChange}
              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
              required
