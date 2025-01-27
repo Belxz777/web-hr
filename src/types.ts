@@ -54,6 +54,7 @@ type employee = {
     jobid: number;
     lastName: string;
     patronymic: string;
+    position:number;
     tasksCount: null;
 };
 

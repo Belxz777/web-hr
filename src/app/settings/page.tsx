@@ -102,6 +102,9 @@ export default function SettingsPage() {
           <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>
           UNUSED PLACE FOR FUTURE SETTINGS
           </p>
+          <Link href="/settings/docs" className="text-blue-500 hover:underline">
+Документация 
+          </Link>
         </section>
       </main>
     </div>

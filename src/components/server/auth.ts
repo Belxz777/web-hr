@@ -10,6 +10,10 @@ async function authUser(): Promise<any> {
     
     const res = await fetch(`${host}users/get_user`, {
         credentials: 'include',
+        headers: {
+            Cookie: `jwt=${jwt}`,
+            'Content-Type': 'application/json'
+        }
     });
 
     if (!res.ok) {

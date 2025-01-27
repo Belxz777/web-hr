@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { task } from "@/types";
 import { userTasks } from "@/components/server/userdata";
-
+const isBoss = false;
 export const useTasks = (isBoss:boolean) => {
     const [tasks, setTasks] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(false);
