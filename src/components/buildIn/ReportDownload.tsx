@@ -5,47 +5,63 @@ import { cookieget } from '../server/cookie'
 import { host } from '@/types'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { set } from 'zod'
 
 export function ReportDownload() {
      const [downloading, setDownloading] = useState(false)
+     const [cookie, setCookie] = useState<string | null >(null)
      const [downloadStatus, setDownloadStatus] = useState<'idle' | 'success' | 'error'>('idle')
 const router  = useRouter()
-     const handleDownload = async () => {
-       setDownloading(true)
-       setDownloadStatus('idle')
+const handleDownload = async () => {
+  setDownloading(true);
+  setDownloadStatus('idle');
 
-       try {
-        const cookie = cookieget()
-        if(!cookie){
-console.log(cookie)
-        }
-        const response = await fetch(`${host}report/department/xlsx/`, {
-           method: 'GET',
-           credentials: 'include',
-           headers: {
-            Cookie:`jwt=${cookie}`,
-            'Content-Type': 'application/json',
-           }
-         })
-         console.log(response)
+  try {
+    const cookie = cookieget(); // Получаем куки
+    if (!cookie) {
+      console.error('No cookie found');
+      setDownloadStatus('error');
+      return;
+    }
+    cookie.then(res => res !== undefined ? setCookie(res) : null)
+    const response = await fetch(`${host}report/department/xlsx/`, {
+      method: 'GET',
+      mode:'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cookie': `jwt=${cookie}`,
+      },
+    });
 
-         const blob = await response.blob()
-         const url = window.URL.createObjectURL(blob)
-         const a = document.createElement('a')
-         a.style.display = 'none'
-         a.href = url
-         a.download = 'report.xlsx'
-         document.body.appendChild(a)
-         a.click()
-         window.URL.revokeObjectURL(url)
-         setDownloadStatus('success')
-       } catch (error) {
-        console.error('Download error:', error)
-         setDownloadStatus('error')
-       } finally {
-         setDownloading(false)
-       }
-     }    
+    // Проверяем статус ответа
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Получаем Blob из ответа
+    const blob = await response.blob();
+
+    // Создаем ссылку для скачивания
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'report.xlsx';
+    document.body.appendChild(a);
+    a.click();
+
+    // Очищаем URL
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+
+    setDownloadStatus('success');
+  } catch (error) {
+    console.error('Download error:', error);
+    setDownloadStatus('error');
+  } finally {
+    setDownloading(false);
+  }
+};
   
 
   return (

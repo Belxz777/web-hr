@@ -1,17 +1,18 @@
-import { SVGProps } from 'react'
-export function CurvedArrow(props: SVGProps<SVGSVGElement>) {
+"use client"
+
+import { useRouter } from "next/navigation"
+
+export function BackButton(text:string, className:string ) {
+  const router = useRouter()
+
   return (
-    <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
+    <button
+      onClick={() => router.back()}
+      aria-label="Вернуться назад" 
+      className={`flex items-center text-gray-600 hover:text-red-600 transition duration-300 bg-center text-center ${className}`}
     >
-      <path d="M199.3 64.9c-1.7.5-5 1.9-7.1 3.2-2.2 1.3-28.4 24.4-58.2 51.3-38.1 34.4-54.7 50.1-56.2 52.9-5.5 10.9-2.3 24 8 32.2 2.1 1.6 25.9 23.4 52.8 48.4 33.5 31.2 50.3 46 53.3 47.4 5.2 2.3 14.2 2.5 19.2.4 4.9-2 10.6-7.3 13.2-12.1 3-5.7 2.9-16.4-.1-22.2-1.4-2.8-11.6-13-30.5-30.5l-28.4-26.4 73.6-.3c81.2-.3 81.9-.2 96.8 6 18.2 7.5 33.9 22.1 42.7 39.5 1.4 2.8 3.8 9.1 5.2 14 2.4 7.7 2.7 10.5 2.7 22.3 0 15.6-1.8 24.1-7.8 36.1-10.9 21.8-30.1 37.5-54 44.1-8 2.2-8.2 2.2-120 2.8-83.1.4-112.7.8-114.6 1.7-4.2 1.9-9.8 7.3-12.2 11.7-3 5.7-3 16.5 0 22.2 2.8 5.2 9 10.8 13.9 12.5 3.2 1.2 23.4 1.4 114.9 1.4 123.9 0 118.4.3 140.5-7.1 31.5-10.5 58.5-33.6 74.5-63.6 10.5-19.9 14.8-37.4 14.9-61.3.1-17.3-1.3-26.2-6.1-41-13-39.9-44.5-71.6-84.4-84.9-18.4-6.1-15.4-5.9-101.4-6.5l-79.1-.6 29.4-26.5c33-29.7 34.5-31.6 34.5-42.5 0-6.9-1.8-11.7-6.2-16.8-5.5-6.2-16.1-9.7-23.8-7.8z" />
-    </svg>
+      {text}
+    </button>
   )
 }
+

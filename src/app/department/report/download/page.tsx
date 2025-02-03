@@ -42,12 +42,11 @@ export default function DownloadReportPage() {
   const [searchQuery, setSearchQuery] = useState("")
 
   const filteredEmployees = useMemo(() => {
-    return employees.filter((employee) => 
+    return employees?.filter((employee) => 
       !selectedEmployees.includes(employee.employeeId) &&
       `${employee.firstName} ${employee.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    ) || []
   }, [searchQuery, employees, selectedEmployees])
-
   const handleEmployeeToggle = (employeeId: number) => {
     setSelectedEmployees((prev) =>
       prev.includes(employeeId) ? prev.filter((id) => id !== employeeId) : [...prev, employeeId],
@@ -124,7 +123,7 @@ const handleRemoveSelected = (id:number) => {
       <header className="bg-gray-800 p-4 flex justify-between items-center">
         <div className=' inline-flex items-center '> 
           <PulseLogo className="w-16 h-16 text-red-600 animate-pulse" />
-          <h1 className="text-2xl  pl-4 font-bold">Cкачивание отчета по сотрудникам</h1>  
+          <h1 className="text-2xl  pl-4 font-bold">Cкачивание точного отчета </h1>  
         </div>
         <nav className="relative">
           <button
