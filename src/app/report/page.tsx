@@ -17,7 +17,9 @@ import UniversalFooter from '@/components/buildIn/UniversalFooter'
 export default function ReportPage() {
 
   const {tasks,loadingRep} = useReport()
-
+  if(tasks){
+    console.log(tasks)
+  }
   const router  = useRouter()
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -54,8 +56,8 @@ export default function ReportPage() {
       }))
     }
 
-  const req = await sendReport(formData)
-console.log(formData,tasks[0])
+    const req = await sendReport(formData)
+    console.log(formData,tasks[0])
     if (req) {
       setLoading(false)
       alert("Успешно")
@@ -92,17 +94,22 @@ console.log(formData,tasks[0])
     )}
   </div>
 </header>
+      <main className="container mx-auto p-4">
 {
   tasks.length === 0 ? (
+    loadingRep ? 
     <div className="flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto mt-4">
-               <PulseLogo className="w-24 h-24 text-gray-300 animate-pulse" />
-      <h1 className="text-2xl font-bold text-gray-300 mt-4">Загрузка <span className=' animate-ping'>. . . </span></h1>
-
-    </div>
-  ) :   <>
- 
-      <main className="container mx-auto p-4">
-              <>  
+    <h1 className="text-2xl font-bold text-gray-300 mt-4 hover:text-red-600 cursor-pointer">Загрузка  
+    </h1>
+  </div>
+    : (
+      <div className="flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto mt-4">
+        <h1 className="text-2xl font-bold text-gray-300 mt-4 hover:text-red-600 cursor-pointer">Задач для отчета нет 
+        </h1>
+      </div>  
+    )
+  ) : (
+           <>  
                 <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto">
                 <h1 className='text-center text-gray-300 text-2xl font-bold '>Заполнение отчета</h1>
           <div className="mb-4">
@@ -183,15 +190,13 @@ console.log(formData,tasks[0])
         
           </button>
         </form>
-              </>
-            
+            </>
+  )
 
-          
+}   
       </main>
-
-      </>
-}
 <UniversalFooter/>
     </div>
+
   )
 }

@@ -194,7 +194,7 @@ const state  = false
           <div className="h-4 bg-gray-700 rounded w-2/5 "></div>
         </div>  
       ) : employeeData ? (
-        <div className="mb-4 md:mb-0">
+        <div className="mb-4 md:mb-0    cursor-pointer">
           <h2 className="text-2xl font-bold mb-2 select-none">
             {employeeData.firstName} {employeeData.lastName}
           </h2>

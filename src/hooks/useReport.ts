@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {  userTaskstoReport } from "@/components/server/userdata";
+import { userTaskstoReport } from "@/components/server/userdata";
 import { useIsMounted } from "./useTasks";
 
 export const useReport = () => {
@@ -14,27 +14,21 @@ export const useReport = () => {
             setLoading(true);
             const response = await userTaskstoReport();
             setTasks(response);
-            setLoading(false);
         } catch (error) {
-            setLoading(false);
             setError({ status: true, text: `Ошибка сервера` });
+        } finally {
+            setLoading(false);
         }
     }
     
     const isMounted = useIsMounted();
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                setLoading(true);
-                getTasks();
-            } catch (error) {
-                setLoading(false);
-                setError({ status: true, text: `Ошибка сервера` });
-            }
+            await getTasks();
         };
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { tasks, isMounted, getTasks, error, loadingRep };
-};
+    return { tasks, isMounted, getTasks, error, loadingRep }
+}
