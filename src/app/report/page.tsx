@@ -218,7 +218,7 @@ className="w-full  font-bold py-2 px-4  focus:outline-none focus:shadow-outline 
 </>
   ) : (
      
-               loadingRep || ? 
+               loadingRep  ? 
                <div className="flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto mt-4">
                <h1 className="text-2xl font-bold text-gray-300 mt-4 hover:text-red-600 cursor-pointer">Загрузка  
                </h1>
