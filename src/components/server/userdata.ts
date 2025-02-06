@@ -20,7 +20,7 @@ async function userTasks():Promise<Array<task> | task> {
     const data = await res.json();
     return data
 }
-async function userTaskstoReport():Promise<Array<task> | task> {
+async function userTaskstoReport():Promise<Array<task> | task | []> {
     const cookieStore = cookies();
     const jwt = cookieStore.get('cf-auth-id')?.value
     if(!jwt){
@@ -28,12 +28,14 @@ async function userTaskstoReport():Promise<Array<task> | task> {
     }//http://127.0.0.1:8000/api/v1/fill/progress/
     const res = await (await fetch(`${host}entities/user/tasks/reported/`, {
         credentials: 'include',
+        method:'GET',
         headers: {
             Cookie: `jwt=${jwt}`
         }
     }))
     if(!res.ok) {
         console.log(res.status)
+        throw new Error('No token provided')
     }
     const data = await res.json();
     return data

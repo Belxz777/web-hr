@@ -17,7 +17,8 @@ import { cookies} from 'next/headers';
     })
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
-        throw new Error(`Ошибка при входе попробуйте еще раз , статус ${res.statusText} `,); 
+        throw new Error(`Ошибка при входе попробуйте еще раз , статус ${res.statusText} |
+            попытка входа под логином ${data.login} `,); 
     }
     const receiveddata = await res.json();
     const cookiesApi = cookies()

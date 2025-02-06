@@ -54,6 +54,7 @@ type employee = {
     jobid: number;
     lastName: string;
     patronymic: string;
+    position:number;
     tasksCount: null;
 };
 
@@ -61,7 +62,7 @@ type employee = {
     old_password:string,
     new_password:string
   }
-  const host ="https://wv206757-8000.euw.devtunnels.ms/api/v1/"
+  const host ="http://127.0.0.1:8000/api/v1/"
   interface statusType {
       code:string | number,
   text:string

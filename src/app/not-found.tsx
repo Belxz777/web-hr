@@ -14,9 +14,9 @@ export default function Custom404() {
       </div>
       <button
         className="inline-flex items-center justify-center px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-colors duration-300"
-      onClick={() => router.push("/")}
+      onClick={() => router.back()}
       >
-        Вернуться на главную
+        Вернуться обратно
       </button>
     </main>
     )
