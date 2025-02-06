@@ -1,4 +1,4 @@
-import { OpacityIcon } from "@radix-ui/react-icons"
+
 import type { Config } from "tailwindcss"
 import { object } from "zod"
 

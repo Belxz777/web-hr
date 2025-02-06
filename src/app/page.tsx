@@ -1,8 +1,12 @@
+'use client';
+
 import { PulseLogo } from '@/svgs/Logo'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 
 export default function HomePage() {
+  const router  = useRouter()
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900   flex flex-col items-center justify-center p-4 rounded-lg">
       <main className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-md w-full space-y-8">
@@ -19,12 +23,14 @@ export default function HomePage() {
           >
             Регистрация
           </Link>
-          <Link 
-            href="/login" 
-            className="w-full flex justify-center py-2 px-4 border border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Вход
-          </Link>
+          {/* Решить шнягу с входом */}
+          <button className="w-full flex justify-center py-2 px-4 border border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          
+          onClick={()=>{
+            router.push("/login")
+          }}>
+              Вход
+            </button>
         </nav>
       </main>
       <footer className="mt-8 text-center text-gray-400">

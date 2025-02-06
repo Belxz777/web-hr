@@ -3,8 +3,10 @@ import { useState } from 'react'
 import { downloadReport } from '../server/download'
 import { cookieget } from '../server/cookie'
 import { host } from '@/types'
+import { useRouter } from 'next/navigation'
 
 export function ReportDownload() {
+     const router = useRouter()
      const [downloading, setDownloading] = useState(false)
      const [downloadStatus, setDownloadStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
@@ -48,7 +50,15 @@ console.log(cookie)
 
   return (
     <div className="bg-gray-800 rounded-xl p-6">
+
+    <div className='grid grid-cols-[1fr_3fr] '>
       <h2 className="text-xl font-bold mb-4">Скачать отчет</h2>
+      <button className="bg-gray-600 hover:bg-gray-700 w-[300px] text-white font-bold py-2 px-6 rounded mr-2" onClick={()=>{
+              router.push('/changePass')
+            }}>
+              Отчет по сотрудникам
+            </button>
+      </div>
       <div className="space-y-4">
         <button 
           onClick={handleDownload} 
