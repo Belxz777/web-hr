@@ -11,11 +11,9 @@ export default async function sendReport(reportData:report) {
         // Convert taskId and workingHours from string to number
         const parsedReportData = {
             ...reportData,
-            taskId: Number(reportData.taskId),
-            workingHours: Number(reportData.workingHours)
         };
     console.log(parsedReportData)
-        const res = await (await fetch(`${host}fill/progress/`, {
+        const res = await (await fetch(`${host}fill/progress/?task_id=${Number(parsedReportData.taskId)}`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -27,7 +25,7 @@ export default async function sendReport(reportData:report) {
             )
         }))
         if(!res.ok) {
-            console.log(res.status)
+            console.log(res)
             return false
         }
         return true

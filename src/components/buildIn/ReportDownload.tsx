@@ -4,9 +4,9 @@ import { downloadReport } from '../server/download'
 import { cookieget } from '../server/cookie'
 import { host } from '@/types'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export function ReportDownload() {
-     const router = useRouter()
      const [downloading, setDownloading] = useState(false)
      const [cookie, setCookie] = useState<string | null >(null)
      const [downloadStatus, setDownloadStatus] = useState<'idle' | 'success' | 'error'>('idle')

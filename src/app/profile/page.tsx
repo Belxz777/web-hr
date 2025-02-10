@@ -222,9 +222,12 @@ const state  = false
             </button>
           </div>
         </section>
-<div className='w-full h-auto m-4'>
+<div className='w-full h-auto m-4 flex gap-5'>
   <button className='bg-gray-800 rounded-xl p-6 text-white font-bold py-4 px-5 hover:scale-105 transition-transform duration-300' onClick={() => router.push('/createTask')}>
     Создать задачу
+  </button>
+  <button className='bg-gray-800 rounded-xl p-6 text-white font-bold py-4 px-5 hover:scale-105 transition-transform duration-300' onClick={() => router.push('/dashboard')}>
+  Анализ отдела
   </button>
   </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

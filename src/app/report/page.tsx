@@ -38,7 +38,6 @@ export default function ReportPage() {
         ...prev,
         taskId:tasks[0]?.taskId
       }))
-      console.log(tasks)
     }
     setFormData(prev => ({
       ...prev,

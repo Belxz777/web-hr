@@ -6,6 +6,7 @@ import { PulseLogo } from "@/svgs/Logo";
 import useEmployeeData from "@/hooks/useGetUserData";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { useRouter } from "next/navigation";
+import createTaskData from "@/components/server/create";
 export default function CreateTaskPage() {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
@@ -22,20 +23,36 @@ export default function CreateTaskPage() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Задача:", {
-      taskName,
-      taskDescription,
-      taskDuration,
-    });
+    const data = {
+      forEmployeeId: 2,
+      hourstodo: 2,
+      taskName: taskName,
+    }
 
-    alert("Задача успешно создана!");
-    router.push("/profile");
-    setTaskName("");
-    setTaskDescription("");
-    setTaskDuration(10);
-  };
+    try {
+      const resultData = await createTaskData(data);
+      if (!resultData) {
+        alert("err")
+      }
+
+
+      alert("Задача успешно создана!");
+      router.push("/profile");
+      setTaskName("");
+      setTaskDescription("");
+      setTaskDuration(10);
+    }
+    catch (err) {
+
+    } finally {
+      console.log("dece");
+
+    }
+  }
+
+
 
   const autoFill = () => {
     const tasks = [
