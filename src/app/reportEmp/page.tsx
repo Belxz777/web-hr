@@ -1,13 +1,15 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { PulseLogo } from '@/svgs/Logo'
-import { useTasks } from '@/hooks/useTasks'
-import { useState } from 'react'
-import React from 'react'
-import FormEmpl from '@/components/buildIn/form_empl'
-import ReportEmpl from '@/components/buildIn/ReportEmpl'
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { PulseLogo } from "@/svgs/Logo";
+import { useTasks } from "@/hooks/useTasks";
+import { useState } from "react";
+import React from "react";
+import FormEmpl from "@/components/buildIn/form_empl";
+import ReportEmpl from "@/components/buildIn/ReportEmpl";
+import { Header } from "@/components/ui/header";
+import useEmployeeData from "@/hooks/useGetUserData";
 const frameworks = [
   {
     value: "next.js",
@@ -29,65 +31,64 @@ const frameworks = [
     value: "astro",
     label: "Astro",
   },
-]
+];
 
 export function ComboboxDemo() {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
-
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
 
   return (
-    <main className='inline-grid grid-cols-[12fr_1fr]'>
-    <div className="grid grid-cols-3 gap-4 w-[70%]">
-                <div className=''> 
-                <p className='flex justify-center h-[40px] text-xl py-2 px-4 font-medium text-gray-200'
-                 >Выберите сотрудника</p>
-             <FormEmpl/>
-                </div>
+    <main className="inline-grid grid-cols-[12fr_1fr]">
+      <div className="grid grid-cols-3 gap-4 w-[70%]">
+        <div className="">
+          <p className="flex justify-center h-[40px] text-xl py-2 px-4 font-medium text-gray-200">
+            Выберите сотрудника
+          </p>
+          <FormEmpl />
+        </div>
 
-                <div className=''>
-                <p className='flex justify-center h-[40px]   text-xl py-2 px-4 font-medium text-gray-200'
-                 >Выберите начало дат</p>
-                <input type='date'  id="StartDate"  className='flex justify-center h-[45px]  w-[280px]  text-lg py-2 px-4 border border-gray-600 rounded-xl shadow-sm  font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-                 >
-                </input>
-                
-                </div>
+        <div className="">
+          <p className="flex justify-center h-[40px]   text-xl py-2 px-4 font-medium text-gray-200">
+            Выберите начало дат
+          </p>
+          <input
+            type="date"
+            id="StartDate"
+            className="flex justify-center h-[45px]  w-[280px]  text-lg py-2 px-4 border border-gray-600 rounded-xl shadow-sm  font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          ></input>
+        </div>
 
-                <div className=''>
-                <p className='flex justify-center h-[40px] text-xl py-2 px-4 font-medium text-gray-200'
-                 >Выберите конец дат</p>
-                <input type='date'  id="endDate" className='flex justify-center h-[45px]  w-[280px]  text-lg py-2 px-4 border border-gray-600 rounded-xl shadow-sm  font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-                 >
-                </input>
-                
-                </div>
-
-    </div>
-    <div className='flex justify-end mr-[30px]'>
-
-                <div className='inline-grid my-[30px]'>
-
-                <button className=' flex justify-center h-[45px] w-[200px] text-lg py-2 px-4 border border-gray-600 rounded-xl shadow-sm  font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-                 > <h1 className='m-auto'>Применить</h1>
-                </button>
-                </div>
-              
-
-    </div>
+        <div className="">
+          <p className="flex justify-center h-[40px] text-xl py-2 px-4 font-medium text-gray-200">
+            Выберите конец дат
+          </p>
+          <input
+            type="date"
+            id="endDate"
+            className="flex justify-center h-[45px]  w-[280px]  text-lg py-2 px-4 border border-gray-600 rounded-xl shadow-sm  font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          ></input>
+        </div>
+      </div>
+      <div className="flex justify-end mr-[30px]">
+        <div className="inline-grid my-[30px]">
+          <button className=" flex justify-center h-[45px] w-[200px] text-lg py-2 px-4 border border-gray-600 rounded-xl shadow-sm  font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            {" "}
+            <h1 className="m-auto">Применить</h1>
+          </button>
+        </div>
+      </div>
     </main>
   );
 }
 
 export default function ProfilePage() {
-  const router = useRouter()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-
-const isPosX = localStorage.getItem('lc-pos-x') === 'true'
+  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { employeeData } = useEmployeeData();
+  const isPosX = localStorage.getItem("lc-pos-x") === "true";
   return (
-    
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <header className="bg-gray-800 p-4 flex justify-between items-center">
+      {/* <header className="bg-gray-800 p-4 flex justify-between items-center">
         <div className=' inline-flex items-center '> 
           <PulseLogo className="w-16 h-16 text-red-600 animate-pulse" />
           <h1 className="text-2xl  pl-4 font-bold">Отчёты</h1>  
@@ -117,24 +118,32 @@ const isPosX = localStorage.getItem('lc-pos-x') === 'true'
             </div>
           )}
         </div>
-      </header>
+      </header> */}
+      <Header employeeData={employeeData} title="Отчёты" />
       <section className="h-[60px] mt-2 ml-5">
-        <ComboboxDemo/>
-{/* Разобраться с ReportEmpl */}
-      <div className="mt-[20px] grid grid-cols-[40%_30%_10%_20%] h-[40px] w-[98%]  text-lg py-2 px-4 border border-gray-600 rounded-xl shadow-sm  font-medium text-gray-300 bg-gray-700"> 
-        <p className='text-lg font-medium text-gray-200'> Сотрудник 1</p> {/* Сделать UseState с сотрудниками */}
-        <p className=' text-lg pl-[20px] border-l-[1px] border-[#fff] font-medium text-gray-200'> Принести чай</p> {/* Сделать UseState с задачами */}
-        <p className=' text-lg  pl-[20px] border-l-[1px] border-[#fff]  font-medium text-gray-200'> 20.01.2025</p> {/* Сделать UseState с датами */}
-        <button className='text-lg  pl-[20px] border-l-[1px] border-[#fff] font-medium text-gray-200'> <img className='inline-grid' src='install.svg'/> <h1 className='inline-grid'>скачать</h1> </button> {/* Сделать UseState с датами */}
+        <ComboboxDemo />
+        {/* Разобраться с ReportEmpl */}
+        <div className="mt-[20px] grid grid-cols-[40%_30%_10%_20%] h-[40px] w-[98%]  text-lg py-2 px-4 border border-gray-600 rounded-xl shadow-sm  font-medium text-gray-300 bg-gray-700">
+          <p className="text-lg font-medium text-gray-200"> Сотрудник 1</p>{" "}
+          {/* Сделать UseState с сотрудниками */}
+          <p className=" text-lg pl-[20px] border-l-[1px] border-[#fff] font-medium text-gray-200">
+            {" "}
+            Принести чай
+          </p>{" "}
+          {/* Сделать UseState с задачами */}
+          <p className=" text-lg  pl-[20px] border-l-[1px] border-[#fff]  font-medium text-gray-200">
+            {" "}
+            20.01.2025
+          </p>{" "}
+          {/* Сделать UseState с датами */}
+          <button className="text-lg  pl-[20px] border-l-[1px] border-[#fff] font-medium text-gray-200">
+            {" "}
+            <img className="inline-grid" src="install.svg" />{" "}
+            <h1 className="inline-grid">скачать</h1>{" "}
+          </button>{" "}
+          {/* Сделать UseState с датами */}
         </div>
-        
-
       </section>
-
-
     </div>
   );
 }
-
-
-

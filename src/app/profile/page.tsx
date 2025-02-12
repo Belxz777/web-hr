@@ -13,177 +13,15 @@ import { ReportUpload } from '@/components/buildIn/ReportUpload'
 import { useState } from 'react'
 import UniversalFooter from '@/components/buildIn/UniversalFooter'
 import { time } from 'console'
+import { Header } from '@/components/ui/header'
 export default function ProfilePage() {
   const router = useRouter()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-
   const { employeeData,title,loadingEmp} = useEmployeeData()
-const { tasks, isMounted, getTasks, error, loading } = useTasks(false)
-const state  = false
+  const { tasks, isMounted, getTasks, error, loading } = useTasks(false)
   return (
     
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <header className="bg-gray-800 p-4 flex justify-between items-center">
-        <div className=' inline-flex items-center '> 
-          <PulseLogo className="w-16 h-16 text-red-600 animate-pulse" />
-          <h1 className="text-2xl  pl-4 font-bold">Личный кабинет</h1>  
-          </div>
-        <div className="relative">
-            
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-gray-300 hover:text-white focus:outline-none"
-          >
-            <span className="sr-only">Открыть меню</span>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
-          {isMenuOpen && (
-
-<ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
-
-{
-  employeeData?.position !== 1 ? (
-    <>
-    {
-      employeeData?.position !== 5 &&
-      <li>
-      <Link
-        href="/report"
-        className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-      >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-5 h-5 mr-3"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 20h9" />
-      <path d="M15.5 4l4.5 4.5-1.5 1.5-4.5-4.5z" />
-      <path d="M2 22l2-2 4-4-4-4-2 2z" />
-    </svg>
-        Заполнение отчета
-      </Link>
-    </li>
-    }              
-<li>
-  <Link
-    href="/department/report/download"
-    className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-  >
-    <svg
-      className="w-5 h-5 mr-3"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-      />
-    </svg>
-    Скачивание подробного отчета
-  </Link>
-</li>
-<li>
-  <Link href="/settings" className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-    <svg
-      className="w-5 h-5 mr-3"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-      />
-    </svg>
-    Настройки
-  </Link>
-</li>
-<li>
-  <div className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-red-600 select-none">
-    <span className="mr-3">{new Date().toLocaleTimeString()}</span>
-  </div>
-</li>
-    </>
-  ) : 
- ( <>
-                  <li>
-                    <Link
-                      href="/report"
-                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-                    >
-                          <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 20h9" />
-      <path d="M15.5 4l4.5 4.5-1.5 1.5-4.5-4.5z" />
-      <path d="M2 22l2-2 4-4-4-4-2 2z" />
-    </svg>
-                      Заполнение отчета
-                    </Link>
-                  </li>
-                  <li>
-                      <Link href="/settings" className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                        <svg
-                          className="w-5 h-5 mr-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        Настройки
-                      </Link>
-                    </li>
-                    <li>
-                      <div className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-red-600 select-none">
-                        <span className="mr-3">{new Date().toLocaleTimeString()}</span>
-                      </div>
-                    </li>
-                  </>
-          )
-}
-</ul>
-          )}
-        </div>
-      </header>
+     <Header employeeData={employeeData} title="Личный кабинет"/>
 
       <main className="container mx-auto p-4">
         <section className="mb-8 bg-gray-800 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -222,14 +60,6 @@ const state  = false
             </button>
           </div>
         </section>
-<div className='w-full h-auto m-4 flex gap-5'>
-  <button className='bg-gray-800 rounded-xl p-6 text-white font-bold py-4 px-5 hover:scale-105 transition-transform duration-300' onClick={() => router.push('/createTask')}>
-    Создать задачу
-  </button>
-  <button className='bg-gray-800 rounded-xl p-6 text-white font-bold py-4 px-5 hover:scale-105 transition-transform duration-300' onClick={() => router.push('/dashboard')}>
-  Анализ отдела
-  </button>
-  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
  <TaskSection
    title="Завершенные задачи"

@@ -18,8 +18,7 @@ async function createTaskData(data: TaskData) {
     })
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
-        throw new Error(`Ошибка при входе попробуйте еще раз , статус ${res.statusText} |
-            попытка входа под логином `,);
+        throw new Error(`Ошибка при создании задачи, попробуйте еще раз , статус ${res.statusText}`,);
     }
     const receiveddata = await res.json();
 

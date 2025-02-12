@@ -7,6 +7,7 @@ import useEmployeeData from "@/hooks/useGetUserData";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { useRouter } from "next/navigation";
 import createTaskData from "@/components/server/create";
+import { Header } from "@/components/ui/header";
 export default function CreateTaskPage() {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
@@ -15,6 +16,7 @@ export default function CreateTaskPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const { employeeData } = useEmployeeData();
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -25,34 +27,31 @@ export default function CreateTaskPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = {
-      forEmployeeId: 2,
-      hourstodo: 2,
-      taskName: taskName,
+    if (!employeeData) {
+      throw new Error("Недоступны данные пользователя");
     }
+
+    const data = {
+      forEmployeeId: employeeData.employeeId,
+      hourstodo: Number((taskDuration / 60).toFixed(1)),
+      taskName: taskName,
+    };
 
     try {
       const resultData = await createTaskData(data);
       if (!resultData) {
-        alert("err")
+        alert("Произошла ошибка при создании задачи");
       }
-
 
       alert("Задача успешно создана!");
       router.push("/profile");
       setTaskName("");
       setTaskDescription("");
       setTaskDuration(10);
+    } catch (err) {
+      console.log(err);
     }
-    catch (err) {
-
-    } finally {
-      console.log("dece");
-
-    }
-  }
-
-
+  };
 
   const autoFill = () => {
     const tasks = [
@@ -79,186 +78,7 @@ export default function CreateTaskPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <header className="bg-gray-800 p-4 flex justify-between items-center">
-        <div className=" inline-flex items-center ">
-          <Link href="/profile" prefetch={false}>
-            <PulseLogo className="w-16 h-16 text-red-600 animate-pulse" />
-          </Link>
-          <h1 className="text-2xl  pl-4 font-bold">Создание новой задачи</h1>
-        </div>
-        <div className="relative">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-gray-300 hover:text-white focus:outline-none"
-          >
-            <span className="sr-only">Открыть меню</span>
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
-          </button>
-          {isMenuOpen && (
-            <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
-              {employeeData?.position !== 1 ? (
-                <>
-                  {employeeData?.position !== 5 && (
-                    <li>
-                      <Link
-                        href="/report"
-                        className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-5 h-5 mr-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M12 20h9" />
-                          <path d="M15.5 4l4.5 4.5-1.5 1.5-4.5-4.5z" />
-                          <path d="M2 22l2-2 4-4-4-4-2 2z" />
-                        </svg>
-                        Заполнение отчета
-                      </Link>
-                    </li>
-                  )}
-                  <li>
-                    <Link
-                      href="/department/report/download"
-                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-                    >
-                      <svg
-                        className="w-5 h-5 mr-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                        />
-                      </svg>
-                      Скачивание подробного отчета
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-                    >
-                      <svg
-                        className="w-5 h-5 mr-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      Настройки
-                    </Link>
-                  </li>
-                  <li>
-                    <div className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-red-600 select-none">
-                      <span className="mr-3">
-                        {new Date().toLocaleTimeString()}
-                      </span>
-                    </div>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li>
-                    <Link
-                      href="/report"
-                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M12 20h9" />
-                        <path d="M15.5 4l4.5 4.5-1.5 1.5-4.5-4.5z" />
-                        <path d="M2 22l2-2 4-4-4-4-2 2z" />
-                      </svg>
-                      Заполнение отчета
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
-                    >
-                      <svg
-                        className="w-5 h-5 mr-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      Настройки
-                    </Link>
-                  </li>
-                  <li>
-                    <div className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-red-600 select-none">
-                      <span className="mr-3">
-                        {new Date().toLocaleTimeString()}
-                      </span>
-                    </div>
-                  </li>
-                </>
-              )}
-            </ul>
-          )}
-        </div>
-      </header>
+      <Header employeeData={employeeData} title="Создание новой задачи" />
       <main className="container mx-auto p-4">
         <form
           onSubmit={handleSubmit}

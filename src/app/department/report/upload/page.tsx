@@ -3,11 +3,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { PulseLogo } from '@/svgs/Logo'
+import useEmployeeData from '@/hooks/useGetUserData'
+import { Header } from '@/components/ui/header'
 
 export default function UploadTasksPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-
+  const { employeeData,title,loadingEmp} = useEmployeeData()
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setSelectedFile(e.target.files[0])
@@ -26,28 +28,7 @@ export default function UploadTasksPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <header className="bg-gray-800 p-4 flex justify-between items-center">
-      <PulseLogo className="w-16 h-16 text-red-600 hover:text-gray-300 hover:animate-pulse"  />
-      <nav className="relative">
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-gray-300 hover:text-white focus:outline-none"
-            aria-label="Открыть меню"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
-          {isMenuOpen && (
-            <ul className="absolute right-0 mt-2 w-56 bg-gray-800 rounded-md shadow-lg py-1">
-              <li><Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Дашборд</Link></li>
-              <li><Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Профиль</Link></li>
-              <li><Link href="/tasks/download" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Скачивание задач</Link></li>
-              <li><Link href="/contacts" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Контакты</Link></li>
-            </ul>
-          )}
-        </nav>
-      </header>
+    <Header employeeData={employeeData} title="Загрузка задач"/>
 
       <main className="container mx-auto p-4">
         <section className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto">
