@@ -20,18 +20,21 @@ import useEmployeeData from '@/hooks/useGetUserData'
 export default function ReportPage() {
   const { employeeData} = useEmployeeData()
   const {tasks,loadingRep} = useReport()
-  if(tasks){
-    console.log(tasks)
+  if (!tasks) {
+    return null;
   }
   const router  = useRouter()
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [loading,setLoading] = useState(false)
   const [formData, setFormData] = useState<report>({
-    taskId: 0,
+    taskId: tasks[0]?.taskId,
     workingHours: 0,
     comment: ''
   })
+
+  console.log(formData, tasks);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -59,7 +62,6 @@ export default function ReportPage() {
     }
 
     const req = await sendReport(formData)
-    console.log(formData,tasks[0])
     if (req) {
       setLoading(false)
       alert("Успешно")

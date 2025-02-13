@@ -1,10 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Header } from "@/components/ui/header";
-import useEmployeeData from "@/hooks/useGetUserData";
-import getPerformanceData from "@/components/server/performance";
 
 const BarChart = ({
   data,
@@ -119,43 +115,36 @@ const PieChart = ({ percentage }: { percentage: number }) => {
 
 export default function DashboardPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const { employeeData, loadingEmp } = useEmployeeData();
 
-  if (loadingEmp) {
-    return <div>
-      Loading
-    </div>
-  }
-  
+
   
 
-  const [employeesData, setEmployeesData] = useState({});
-  console.log(employeesData);
+  // const {employeeData} = usestats(1)
+  // console.log(employeeData);
 
-  useEffect(() => {
-    const getPerformance = async () => {
-      console.log("1");
-      if (!employeeData) return;
-      console.log("2");
+  // useEffect(() => {
+  //   const getPerformance = async () => {
+  //     console.log("1");
+  //     if (!employeeData) return;
+  //     console.log("2");
       
-      try {
-        const data = await getPerformanceData(employeeData.employeeId);
-        console.log(data);
-        setEmployeesData(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  //     try {
+  //       const data = await getPerformanceData(employeeData.employeeId);
+  //       console.log(data);
+  //       setEmployeesData(data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
     
-    console.log("3");
-    getPerformance();
-  }, [employeeData]);
+  //   console.log("3");
+  //   getPerformance();
+  // }, [employeeData]);
 
-  const handleEmployeeClick = (employee: (typeof employeesData)[0]) => {
-    setSelectedEmployee(employee);
-  };
+  // const handleEmployeeClick = (employee: (typeof employeesData)[0]) => {
+  //   setSelectedEmployee(employee);
+  // };
 
   const handleDateClick = (date: string) => {
     setSelectedDate(date);
@@ -163,7 +152,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header employeeData={employeeData} title="Дашборд начальника отдела" />
+      {/* <Header employeeData={employeeData} title="Дашборд начальника отдела" /> */}
 
       <main className="container mx-auto p-4">
         <section className="mb-8">
@@ -199,7 +188,7 @@ export default function DashboardPage() {
             его занятости.
           </p>
         </section>
-
+{/* 
         {selectedEmployee && (
           <section className="mt-8 bg-gray-800 rounded-lg p-4">
             <h2 className="text-xl font-bold mb-4">
@@ -246,7 +235,7 @@ export default function DashboardPage() {
               Закрыть
             </button>
           </section>
-        )}
+        )} */}
       </main>
     </div>
   );

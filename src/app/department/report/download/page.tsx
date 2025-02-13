@@ -69,17 +69,21 @@ export default function DownloadReportPage() {
       from_date: startDate,
       end_date: endDate,
     };
-
+console.log(body)
     try {
-      const response = await fetch(`${host}download/department/xlsx/persice`, {
-        method: "POST",
+      const response = await fetch(`${host}download/department/xlsx/`, {
+        method: "GET",
         mode: "no-cors",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+        headers: { 
+          "Content-Type": "application/json",
+          Cookie:"jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoyLCJleHAiOjE3NDAzMjQ0ODYsImlhdCI6MTczOTQ2MDQ4Nn0.X4PJ9KisQlLAFb_-JjspcMTPseG13_-bhdXTivbr5Ko"
+        },
+        // body: JSON.stringify(body),
+      })
+      console.log(response) 
       // Доделать, почему-то не выдает 500 код
-      if (!response.ok) {
+      if (response.status==403) {
         throw new Error(`Ошибка загрузки: ${response.statusText}`);
       }
 
