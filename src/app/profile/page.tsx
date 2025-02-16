@@ -96,7 +96,7 @@ export default function ProfilePage() {
  /> 
 </div>
 {
-  employeeData?.position !== 1 ? (
+  employeeData?.position  !== 1 && employeeData ? (
     <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
     <ReportUpload />
     <ReportDownload />

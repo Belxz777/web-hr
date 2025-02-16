@@ -9,7 +9,7 @@ interface PerformanceData {
     total_hours: number;
   }>;
 }
-async function getPerformanceData(employeeId: number): Promise<PerformanceData> {
+async function getPerformanceData(employeeId: number): Promise<any> {
   const url = `${host}users/compliancy/?emp_id=${employeeId}`;
   const response = await fetch(url, {
     method: "GET",
@@ -22,7 +22,8 @@ async function getPerformanceData(employeeId: number): Promise<PerformanceData> 
     throw new Error(`Error fetching performance data: ${response.statusText}`);
   }
 
-  const data = (await response.json()) as PerformanceData;
+  const data = await response.json();
+  console.log(data)
   return data;
 }
 

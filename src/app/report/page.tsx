@@ -20,7 +20,7 @@ export default function ReportPage() {
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<report>({
-    taskId: 0,
+    taskId: tasks[0]?.taskId,
     workingHours: 0,
     comment: "",
   });

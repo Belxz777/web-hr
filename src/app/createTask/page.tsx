@@ -35,6 +35,7 @@ export default function CreateTaskPage() {
       forEmployeeId: employeeData.employeeId,
       hourstodo: Number((taskDuration / 60).toFixed(1)),
       taskName: taskName,
+      taskDescription:taskDescription
     };
 
     try {
