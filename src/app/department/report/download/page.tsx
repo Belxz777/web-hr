@@ -69,16 +69,18 @@ export default function DownloadReportPage() {
       from_date: startDate,
       end_date: endDate,
     };
+    console.log(body);
 
     try {
-      const response = await fetch(`${host}download/department/xlsx/persice`, {
+      const response = await fetch(`${host}download/department/xlsx/persice/`, {
         method: "POST",
-        mode: "no-cors",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       });
-      // Доделать, почему-то не выдает 500 код
+
       if (!response.ok) {
         throw new Error(`Ошибка загрузки: ${response.statusText}`);
       }
@@ -96,8 +98,7 @@ export default function DownloadReportPage() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Ошибка загрузки файла:", error);
-    }
-  };
+    }}
 
   const handleDownload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
