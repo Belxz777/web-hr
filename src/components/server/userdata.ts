@@ -27,8 +27,7 @@ async function userTaskstoReport():Promise<Array<task> | task | []> {
         throw new Error('No token provided')
     }//http://127.0.0.1:8000/api/v1/fill/progress/
     const res = await (await fetch(`${host}entities/user/tasks/reported/`, {
-        credentials: 'include',
-        method:'GET',
+        credentials: 'include',  
         headers: {
             Cookie: `jwt=${jwt}`
         }

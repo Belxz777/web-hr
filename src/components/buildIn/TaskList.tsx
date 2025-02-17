@@ -13,7 +13,7 @@ export function TaskList({ tasks,isComp }: { tasks: task[] | undefined,isComp?:b
           <p className="text-gray-300">{task.taskDescription}</p>
           
           {
-            !task.isExpired && task.hourstodo > 0 && (
+             task.hourstodo > 0 && (
               <p className="text-gray-400">
                 Часов до завершения: {task.hourstodo}
               </p>
@@ -24,7 +24,7 @@ export function TaskList({ tasks,isComp }: { tasks: task[] | undefined,isComp?:b
             Дата закрытия: {task.closeDate ? new Date(task.closeDate).toLocaleString('ru-RU') : 'Не указана'}
           </p>
           {
-            task.hourstodo === 0 && task.isExpired && (
+            task.hourstodo <= 0 && task.isExpired && (
               <p className="text-gray-200 font-bold underline decoration-red-500 underline-offset-4">
                 Завершено, но с опозданием
               </p>
