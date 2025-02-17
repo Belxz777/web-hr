@@ -90,6 +90,8 @@ export default function Home() {
         );
         
     try{
+      console.log(data);
+      
         const resultData = await sendUserLoginData(data);
             if (!resultData) {
                 setLoading(false);
@@ -107,10 +109,13 @@ export default function Home() {
             }
             router.push("/profile");
         } 
-         catch (err) {
+         catch (err:any) {
+          console.log(err);
+          
           setError({
             status: true,
-            text: 'Неверный логин или пароль',
+            text: "jli"
+          ,
           })
           setShowPopup(true)
           setTimeout(() => setIsPopupVisible(true), 50)

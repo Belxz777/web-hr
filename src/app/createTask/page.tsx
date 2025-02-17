@@ -11,7 +11,7 @@ import { Header } from "@/components/ui/header";
 export default function CreateTaskPage() {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-  const [taskDuration, setTaskDuration] = useState(10);
+  const [taskDuration, setTaskDuration] = useState(30);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
@@ -116,9 +116,9 @@ export default function CreateTaskPage() {
             <div className="flex flex-col items-center">
               <input
                 type="range"
-                min="10"
+                min="30"
                 max="1440"
-                step="10"
+                step="5"
                 value={taskDuration}
                 onChange={(e) => setTaskDuration(Number(e.target.value))}
                 className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer my-2"
