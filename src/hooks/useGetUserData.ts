@@ -9,6 +9,7 @@ const useEmployeeData = () => {
   const [title, setTitle] = useState<string>('');
   const [loadingEmp, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
+  const abortController = new AbortController();
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
@@ -27,9 +28,14 @@ const useEmployeeData = () => {
         }
       } finally {
         setLoading(false);
-    }
+      }
     };
-    fetchEmployeeData();
+    fetchEmployeeData().catch(err => {
+      setError('Failed to fetch employee data');
+    });
+    return () =>{
+abortController.abort();
+    }
   }, []);
 
   return { employeeData, title, loadingEmp, error };

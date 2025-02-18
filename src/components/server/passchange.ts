@@ -12,6 +12,7 @@ async function changePassword(passwordData:changePass): Promise<any> {
     if (!jwt) {
         throw new Error('No token provided');
     }
+    try{
     const response = await fetch(`${host}users/change_password`, {
         method: 'POST',
         headers: {
@@ -22,6 +23,11 @@ async function changePassword(passwordData:changePass): Promise<any> {
     });
     console.log(response)
     return response.json();
+}
+catch (err) { 
+    console.error(err);
+    throw err;
+}
 }
 
 export default changePassword;

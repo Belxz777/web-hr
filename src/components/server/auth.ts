@@ -7,7 +7,7 @@ async function authUser(): Promise<any> {
     if (!jwt) {
         throw new Error('No token provided');
     }
-    
+    try{     
     const res = await fetch(`${host}users/get_user`, {
         credentials: 'include',
         headers: {
@@ -21,6 +21,11 @@ async function authUser(): Promise<any> {
     }
 
     return res.json();
+    }
+    catch(error){
+        console.log(error)
+        throw new Error('Failed to fetch user data');
+    }
 }
 
 export default authUser;

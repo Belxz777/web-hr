@@ -7,6 +7,7 @@ import { cookies} from 'next/headers';
     password: string,
 }
    async function sendUserLoginData(data: LoginData){
+    try{
     const res = await fetch(`${host}users/login`, {
         method: 'POST',
         credentials: 'include', 
@@ -39,8 +40,13 @@ import { cookies} from 'next/headers';
             httpOnly: true,
         })
     }
-
     return receiveddata
+}
+catch(e){
+    console.log(e)
+    throw new Error(`Ошибка при входе попробуйте еще раз`)
+}
+
 }
 
 export default sendUserLoginData;

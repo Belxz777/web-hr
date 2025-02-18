@@ -34,11 +34,8 @@ async function getEmployees(departmentId: any) {
             }
         }
     } catch (error) {
-        if (error instanceof Error) {
-            console.error('Error fetching employees:', error.message)
-        } else {
-            console.error('Error fetching employees:', String(error))
-        }
+        console.error(error)
+        throw new Error("Error occurred in getting  employees")
     }
 }
 export default   getEmployees
