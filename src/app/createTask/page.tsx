@@ -123,16 +123,17 @@ export default function CreateTaskPage() {
                 onChange={(e) => setTaskDuration(Number(e.target.value))}
                 className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer my-2"
               />
-              <div className="mt-2 text-xl font-bold">
+              <div className="mt-2 text-xl font-bold  select-none">
                 {formatTime(taskDuration)}
               </div>
             </div>
 
-            <div className="flex flex-col items-center">
-              <label className="block mb-1">Или</label>
+            <div className="flex flex-col ">
+              <label className="block mb-1 items-start">Ввод в ручную (минуты)</label>
               <input
                 type="number"
                 value={taskDuration}
+                min={30}
                 onChange={(e) => setTaskDuration(Number(e.target.value))}
                 className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
               />

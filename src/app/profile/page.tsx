@@ -38,7 +38,7 @@ export default function ProfilePage() {
               </h2>
               <p className="text-gray-400 select-none">{title}</p>
               <p className="text-gray-400 select-none">Отдел № {employeeData.departmentid}</p>
-              <div className='flex gap-4 justify-between'>
+              <div className='flex gap-4 justify-between '>
                 <button onClick={() => router.push("/createTask")} className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded mr-2">
                   Создать задачу
                 </button>

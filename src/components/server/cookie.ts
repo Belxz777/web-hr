@@ -9,3 +9,6 @@ export async function cookieget() {
 export async function cookiestate() {
     return await cookies().get('cf-pos-x')?.value
 }
+export async function cookiedep() {
+    return await cookies().get('cf-dep-x')?.value
+}

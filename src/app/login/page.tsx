@@ -114,7 +114,7 @@ export default function Home() {
           
           setError({
             status: true,
-            text: "jli"
+            text: "Не удалось выполнить вход, попробуйте снова."
           ,
           })
           setShowPopup(true)
