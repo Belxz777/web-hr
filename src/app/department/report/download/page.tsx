@@ -5,34 +5,7 @@ import { Header } from "@/components/ui/header";
 import getEmployees from "@/components/server/emps_get";
 import { host } from "@/types";
 import useEmployeeData from "@/hooks/useGetUserData";
-
-const useEmployees = (employeeData: any) => {
-  const [employees, setEmployees] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!employeeData?.departmentid) return;
-
-    const fetchEmployees = async () => {
-      setLoading(true);
-      try {
-        const data = await getEmployees(employeeData.departmentid);
-        console.log(data);
-
-        setEmployees(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEmployees();
-  }, [employeeData]);
-
-  return { employees, loading, error };
-};
+import { useEmployees } from "@/hooks/useEmployees";
 
 export default function DownloadReportPage() {
   const { employeeData } = useEmployeeData();
@@ -69,13 +42,12 @@ export default function DownloadReportPage() {
       from_date: startDate,
       end_date: endDate,
     };
-    console.log(body);
 
     try {
       const response = await fetch(`${host}download/department/xlsx/persice/`, {
         method: "POST",
         credentials: "include",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
@@ -98,7 +70,8 @@ export default function DownloadReportPage() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Ошибка загрузки файла:", error);
-    }}
+    }
+  };
 
   const handleDownload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -157,7 +130,7 @@ export default function DownloadReportPage() {
               />
               <div className="max-h-60 overflow-y-auto mt-4">
                 {filteredEmployees.length > 0 ? (
-                  filteredEmployees.map((employee) => (
+                  filteredEmployees.slice(0, 5).map((employee) => (
                     <label
                       key={employee.employeeId}
                       className="flex items-center space-x-3 py-2"
@@ -180,33 +153,66 @@ export default function DownloadReportPage() {
                     Сотрудники не найдены
                   </p>
                 )}
+
+                {filteredEmployees.length > 5 && (
+                  <span className="text-gray-500 mt-2">и другие...</span>
+                )}
               </div>
+
               {selectedEmployees.length > 0 && (
                 <div className="mt-4">
                   <h3 className="text-lg font-semibold">
                     Добавленные сотрудники:
                   </h3>
-                  {employees
-                    .filter((employee) =>
-                      selectedEmployees.includes(employee.employeeId)
-                    )
-                    .map((employee) => (
-                      <div
-                        key={employee.employeeId}
-                        className="flex items-center justify-between py-2"
-                      >
-                        <span>{`${employee.firstName} ${employee.lastName}`}</span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleRemoveSelected(employee.employeeId)
-                          }
-                          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                          Удалить
-                        </button>
-                      </div>
-                    ))}
+                  <div className="max-h-60 overflow-y-auto mt-2">
+                    {selectedEmployees.length > 5
+                      ? employees
+                          .filter((employee) =>
+                            selectedEmployees.includes(employee.employeeId)
+                          )
+                          .slice(0, 5)
+                          .map((employee) => (
+                            <div
+                              key={employee.employeeId}
+                              className="flex items-center justify-between py-2"
+                            >
+                              <span>{`${employee.firstName} ${employee.lastName}`}</span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleRemoveSelected(employee.employeeId)
+                                }
+                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                              >
+                                Удалить
+                              </button>
+                            </div>
+                          ))
+                      : employees
+                          .filter((employee) =>
+                            selectedEmployees.includes(employee.employeeId)
+                          )
+                          .map((employee) => (
+                            <div
+                              key={employee.employeeId}
+                              className="flex items-center justify-between py-2"
+                            >
+                              <span>{`${employee.firstName} ${employee.lastName}`}</span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleRemoveSelected(employee.employeeId)
+                                }
+                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                              >
+                                Удалить
+                              </button>
+                            </div>
+                          ))}
+                  </div>
+                  {selectedEmployees.length > 5 && (
+                    <span className="text-gray-500 mt-2">и другие...</span>
+                  )}
                 </div>
               )}
             </section>

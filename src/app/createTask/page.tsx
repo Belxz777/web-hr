@@ -35,7 +35,7 @@ export default function CreateTaskPage() {
       forEmployeeId: employeeData.employeeId,
       hourstodo: Number((taskDuration / 60).toFixed(1)),
       taskName: taskName,
-      taskDescription:taskDescription
+      taskDescription: taskDescription,
     };
 
     try {
@@ -111,7 +111,7 @@ export default function CreateTaskPage() {
               required
             />
           </div>
-          <div>
+          <div className="flex flex-col w-full justify-center gap-4">
             <label className="block mb-1">Время выполнения</label>
             <div className="flex flex-col items-center">
               <input
@@ -126,6 +126,16 @@ export default function CreateTaskPage() {
               <div className="mt-2 text-xl font-bold">
                 {formatTime(taskDuration)}
               </div>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <label className="block mb-1">Или</label>
+              <input
+                type="number"
+                value={taskDuration}
+                onChange={(e) => setTaskDuration(Number(e.target.value))}
+                className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+              />
             </div>
           </div>
           <div className="flex space-x-4">
