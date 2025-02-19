@@ -16,20 +16,8 @@ export function ReportDownload() {
 
     try {
       // Retrieve the cookie from the browser
-      const cookie = await cookiestate();
-      if (!cookie) {
-        console.error("no rootes");
-        setDownloadStatus('error');
-        return;
-      }
-const depid = await cookiedep()
       // Make the request to download the XLSX file
-          const response = await fetch(`${host}download/department/xlsx/1`, {
-            method: 'GET',
-            credentials: 'include',
-            mode: 'no-cors',
-            
-          });
+          const response = await fetch(`http://localhost:3000/api/download/total`);
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
