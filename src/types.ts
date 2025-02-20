@@ -63,6 +63,7 @@ type employee = {
     new_password:string
   }
   const host ="https://backend-pulse.onrender.com/api/v1/"
+  // const host ="http://127.0.0.1:8000/api/v1/" //for local testing only
   interface statusType {
       code:string | number,
   text:string

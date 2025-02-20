@@ -42,16 +42,16 @@ export default function DownloadReportPage() {
       from_date: startDate,
       end_date: endDate,
     };
-
+console.log("body", body);
     try {
-      const response = await fetch(`${host}download/department/xlsx/persice/`, {
+      const response = await fetch(`http://localhost:3000/api/download/persise`, {
         method: "POST",
         credentials: "include",
+        body: JSON.stringify(body),
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+        }
+    });
 
       if (!response.ok) {
         throw new Error(`Ошибка загрузки: ${response.statusText}`);
