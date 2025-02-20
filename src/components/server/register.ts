@@ -1,20 +1,49 @@
-"use server "
+"use server";
 
-import { host } from "./types";
+import { host } from "@/types";
 
-async function registerUser(userData: createUser): Promise<any> {
-    if (!userData) {
-        throw new Error('User data is required');
+interface CreateUserDTO {
+  login: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  patronymic: string;
+  jobid: number;
+  // age: number;
+  departmentid: number;
+}
+
+async function registerUser(userData: CreateUserDTO): Promise<any> {
+  if (!userData) {
+    throw new Error("User data is required");
+  }
+
+  try {
+    const response = await fetch(`${host}users/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Server error:", errorData);
+      throw new Error(
+        errorData.message ||
+          errorData.jobId?.[0] ||
+          errorData.departmentId?.[0] ||
+          `Failed to create user (Status: ${response.status})`
+      );
     }
 
-    const response = await fetch(`${host}users/create`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData)
-    });
-    return response.json();
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    throw error;
+  }
 }
 
 export default registerUser;
