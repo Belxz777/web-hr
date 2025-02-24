@@ -5,6 +5,7 @@ import Link from "next/link";
 import registerUser from "@/components/server/register";
 import { useRouter } from "next/navigation";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
+import useGetAlldeps from "@/hooks/useDeps";
 
 // const jobs = [
 //   { id: 1, title: "Разработчик" },
@@ -21,6 +22,7 @@ const departments = [
 export default function RegisterPage() {
   const router = useRouter();
   const { jobs, loading } = useGetAllJobs();
+  const {deps}= useGetAlldeps()
 
   const [formData, setFormData] = useState({
     login: "",
@@ -79,7 +81,7 @@ export default function RegisterPage() {
       <main className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <header className="flex flex-col items-center md:items-start mb-6 md:mb-0">
-            <PulseLogo className="w-16 h-16 text-red-600" />
+          <PulseLogo className={`w-16 h-16 ${loading ? 'animate-[pulse_2s_ease-in-out_infinite] text-red-800' : 'text-red-600'}`} />
             <h1 className="mt-4 mr-6 text-3xl font-bold text-gray-100">
               Регистрация
             </h1>
@@ -211,9 +213,9 @@ export default function RegisterPage() {
                   className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-red-500 focus:border-red-500"
                 >
                   <option value="">Выберите отдел</option>
-                  {departments.map((dept) => (
-                    <option key={dept.id} value={dept.id}>
-                      {dept.name}
+                  {deps.map((dept,index) => (
+                    <option key={index} value={dept.departmentId}>
+                      {dept.departmentName}
                     </option>
                   ))}
                 </select>
@@ -226,7 +228,7 @@ export default function RegisterPage() {
                 disabled={isLoading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading || loading ? (
+                {isLoading ? (
                   <>
                     <svg
                       className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
