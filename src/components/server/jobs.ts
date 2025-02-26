@@ -37,4 +37,40 @@ async function getAllJobs(): Promise<any> {
     }
   }
 }
-export default getAllJobs;
+
+
+async function createJob(name:string): Promise<any> {
+  try {
+    const response = await fetch(
+      `${host}entities/jobs/`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ jobName:name }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error creating jobs: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error("Unknown error occurred");
+    }
+  }
+}
+export { getAllJobs, createJob };

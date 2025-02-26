@@ -1,0 +1,502 @@
+"use client"
+
+import type React from "react"
+
+import { useState, useEffect } from "react"
+import Link from "next/link"
+
+// Types
+type Employee = {
+  id: number
+  name: string
+  position: string
+  currentLevel: number
+}
+
+type Department = {
+  id: number
+  name: string
+  description: string
+  head: Employee
+}
+
+type Position = {
+  id: number
+  title: string
+  description: string
+}
+
+// Sample data
+const sampleEmployees: Employee[] = [
+  { id: 1, name: "Иван Иванов", position: "Разработчик", currentLevel: 2 },
+  { id: 2, name: "Мария Петрова", position: "Дизайнер", currentLevel: 3 },
+  { id: 3, name: "Алексей Смирнов", position: "Менеджер", currentLevel: 4 },
+]
+
+const positions: Position[] = [
+  { id: 1, title: "Младший разработчик", description: "Начальная позиция разработчика" },
+  { id: 2, title: "Разработчик", description: "Основная позиция разработчика" },
+  { id: 3, title: "Старший разработчик", description: "Ведущая позиция разработчика" },
+  { id: 4, title: "Дизайнер", description: "Позиция дизайнера" },
+  { id: 5, title: "Менеджер", description: "Управляющая позиция" },
+]
+
+export default function AdminPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<
+    "departments" | "positions" | "promotion" | "projects" | "reports" | "access" | "analytics"
+  >("departments")
+  const [showNotification, setShowNotification] = useState(false)
+  const [notificationMessage, setNotificationMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [adminPassword, setAdminPassword] = useState("")
+  const [showError, setShowError] = useState(false)
+
+  // Department form state
+  const [departmentForm, setDepartmentForm] = useState({
+    name: "",
+    description: "",
+    headId: "",
+  })
+
+  // Position form state
+  const [positionForm, setPositionForm] = useState({
+    title: "",
+    description: "",
+  })
+
+  // Promotion form state
+  const [promotionForm, setPromotionForm] = useState({
+    employeeId: "",
+    newPosition: "",
+    level: 1,
+  })
+
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
+
+  useEffect(() => {
+    // Имитация проверки на админа
+    const checkAdmin = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      setIsLoading(false)
+    }
+    checkAdmin()
+  }, [])
+
+  const handleAdminAuth = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    // Имитация проверки пароля
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    if (adminPassword === "123") {
+      setIsAdmin(true)
+      showSuccessNotification("Доступ предоставлен")
+    } else {
+      setShowError(true)
+      setTimeout(() => setShowError(false), 3000)
+    }
+
+    setIsLoading(false)
+    setAdminPassword("")
+  }
+
+  const showSuccessNotification = (message: string) => {
+    setNotificationMessage(message)
+    setShowNotification(true)
+    setTimeout(() => setShowNotification(false), 3000)
+  }
+
+  const handleDepartmentSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("Создание департамента:", departmentForm)
+    showSuccessNotification("Департамент успешно создан")
+    setDepartmentForm({ name: "", description: "", headId: "" })
+  }
+
+  const handlePositionSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("Создание должности:", positionForm)
+    showSuccessNotification("Должность успешно создана")
+    setPositionForm({ title: "", description: "" })
+  }
+
+  const handlePromotionSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("Повышение сотрудника:", promotionForm)
+    showSuccessNotification("Сотрудник успешно повышен")
+    setPromotionForm({ employeeId: "", newPosition: "", level: 1 })
+    setSelectedEmployee(null)
+  }
+  const [jobout, setjobout] = useState({
+
+        jobId:0 ,
+        jobName: ""
+
+  })
+async function createPos(name: string): Promise<any> {
+    const request: { data: any } = await createPos(name)
+    return request.data
+}
+  const handleEmployeeSelect = (employeeId: string) => {
+    const employee = sampleEmployees.find((emp) => emp.id.toString() === employeeId)
+    setSelectedEmployee(employee || null)
+    setPromotionForm((prev) => ({ ...prev, employeeId }))
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl text-center">
+        <div className="  rounded-xl  mx-auto ">
+            <div className="w-full flex items-center justify-center">
+              <svg
+                className="animate-spin h-10 w-10 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <p className="text-gray-300 text-lg">Проверка прав администратора...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+          <h1 className="text-2xl font-bold text-center mb-6 text-white">Доступ к панели администратора</h1>
+          <form onSubmit={handleAdminAuth} className="space-y-4">
+            <div>
+              <label htmlFor="adminPassword" className="block text-sm font-medium text-gray-300 mb-2">
+                Пароль администратора
+              </label>
+              <input
+                id="adminPassword"
+                type="password"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="Введите пароль администратора"
+                required
+              />
+            </div>
+            {showError && <p className="text-red-500 text-sm text-center">Неверный пароль администратора</p>}
+            <button
+              type="submit"
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+            >
+              Войти
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+      <header className="bg-gray-800 p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Панель администратора</h1>
+        <nav className="relative">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 text-gray-300 hover:text-white focus:outline-none"
+            aria-label="Открыть меню"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+          {isMenuOpen && (
+            <ul className="absolute right-0 mt-2 w-56 bg-gray-800 rounded-xl shadow-lg py-1 z-10">
+              <li>
+                <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                  Дашборд
+                </Link>
+              </li>
+              <li>
+                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                  Профиль
+                </Link>
+              </li>
+              <li>
+                <Link href="/statistics" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                  Статистика
+                </Link>
+              </li>
+              <li>
+                <Link href="/settings" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                  Настройки
+                </Link>
+              </li>
+            </ul>
+          )}
+        </nav>
+      </header>
+
+      <main className="container mx-auto p-4">
+        <div className="mb-6 flex flex-wrap gap-2">
+          <button
+            onClick={() => setActiveTab("departments")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "departments" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+            Управление департаментами
+          </button>
+          <button
+            onClick={() => setActiveTab("positions")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "positions" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+            Управление должностями
+          </button>
+          <button
+            onClick={() => setActiveTab("promotion")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "promotion" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+            Повышение сотрудника
+          </button>
+        
+        </div>
+
+        {activeTab === "departments" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4">Создание нового департамента</h2>
+            <form onSubmit={handleDepartmentSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="departmentName" className="block text-sm font-medium text-gray-300 mb-2">
+                  Название департамента
+                </label>
+                <input
+                  id="departmentName"
+                  type="text"
+                  required
+                  value={departmentForm.name}
+                  onChange={(e) => setDepartmentForm((prev) => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Введите название департамента"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="departmentDescription" className="block text-sm font-medium text-gray-300 mb-2">
+                  Описание департамента
+                </label>
+                <textarea
+                  id="departmentDescription"
+                  required
+                  value={departmentForm.description}
+                  onChange={(e) => setDepartmentForm((prev) => ({ ...prev, description: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  rows={4}
+                  placeholder="Введите описание департамента"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="departmentHead" className="block text-sm font-medium text-gray-300 mb-2">
+                  Начальник департамента
+                </label>
+                <select
+                  id="departmentHead"
+                  required
+                  value={departmentForm.headId}
+                  onChange={(e) => setDepartmentForm((prev) => ({ ...prev, headId: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите начальника департамента</option>
+                  {sampleEmployees.map((employee) => (
+                    <option key={employee.id} value={employee.id}>
+                      {employee.name} - {employee.position}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+              >
+                Создать департамент
+              </button>
+            </form>
+          </section>
+        )}
+
+        {activeTab === "positions" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4">Создание новой должности</h2>
+            <form  className="space-y-4">
+              <div>
+                <label htmlFor="positionTitle" className="block text-sm font-medium text-gray-300 mb-2">
+                  Название должности
+                </label>
+                <input
+                  id="positionTitle"
+                  type="text"
+                  required
+                  value={positionForm.title}
+                  onChange={(e) => setPositionForm((prev) => ({ ...prev, title: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Введите название должности"
+                />
+              </div>
+
+
+              <button
+                type="submit"
+                onClick={()=>{
+                 createPos("position")
+                }}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+              >
+                Создать должность
+              </button>
+              {
+                jobout && <p className="text-red-500">{jobout.jobName}</p>
+              }
+            </form>
+          </section>
+        )}
+
+        {activeTab === "promotion" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4">Повышение сотрудника</h2>
+            <form onSubmit={handlePromotionSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="employee" className="block text-sm font-medium text-gray-300 mb-2">
+                  Выберите сотрудника
+                </label>
+                <select
+                  id="employee"
+                  required
+                  value={promotionForm.employeeId}
+                  onChange={(e) => handleEmployeeSelect(e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите сотрудника</option>
+                  {sampleEmployees.map((employee) => (
+                    <option key={employee.id} value={employee.id}>
+                      {employee.name} - {employee.position}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {selectedEmployee && (
+                <div className="bg-gray-700 p-4 rounded-xl">
+                  <h3 className="font-medium text-gray-300 mb-2">Текущая позиция</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white">{selectedEmployee.position}</p>
+                      <p className="text-sm text-gray-400">Уровень: {selectedEmployee.currentLevel}</p>
+                    </div>
+                    <div className="flex space-x-1">
+                      {[1, 2, 3, 4, 5].map((level) => (
+                        <div
+                          key={level}
+                          className={`w-2 h-8 rounded ${
+                            level <= selectedEmployee.currentLevel ? "bg-red-500" : "bg-gray-600"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label htmlFor="newPosition" className="block text-sm font-medium text-gray-300 mb-2">
+                  Новая должность
+                </label>
+                <select
+                  id="newPosition"
+                  required
+                  value={promotionForm.newPosition}
+                  onChange={(e) => setPromotionForm((prev) => ({ ...prev, newPosition: e.target.value }))}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите новую должность</option>
+                  {positions.map((position) => (
+                    <option key={position.id} value={position.id}>
+                      {position.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-4">
+                  Новый уровень: {promotionForm.level}
+                </label>
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    value={promotionForm.level}
+                    onChange={(e) => setPromotionForm((prev) => ({ ...prev, level: Number.parseInt(e.target.value) }))}
+                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex space-x-1">
+                    {[1, 2, 3, 4, 5].map((level) => (
+                      <button
+                        key={level}
+                        type="button"
+                        onClick={() => setPromotionForm((prev) => ({ ...prev, level }))}
+                        className={`w-8 h-8 rounded ${
+                          level <= promotionForm.level ? "bg-red-500 hover:bg-red-600" : "bg-gray-600 hover:bg-gray-500"
+                        } transition-colors`}
+                      >
+                        {level}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+              >
+                Повысить сотрудника
+              </button>
+            </form>
+          </section>
+        )}
+
+        {/* Notification */}
+        {showNotification && (
+          <div className="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg animate-fade-in">
+            {notificationMessage}
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
+

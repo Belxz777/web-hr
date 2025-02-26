@@ -16,8 +16,8 @@ import { time } from 'console'
 import { Header } from '@/components/ui/header'
 export default function ProfilePage() {
   const router = useRouter()
-  const { employeeData, title, loadingEmp } = useEmployeeData()
-  const { tasks, isMounted, getTasks, error, loading } = useTasks(false)
+  const { employeeData, title, loadingEmp, error: employeeError } = useEmployeeData()
+  const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false)
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
@@ -49,7 +49,7 @@ export default function ProfilePage() {
               </div>
             </div>
           ) : (
-            <h1>Нет данных</h1>
+            <h1>{!loadingEmp && employeeError.text}</h1>
           )}
           <div className="space-y-2">
             <button className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded mr-2" onClick={() => {
@@ -115,8 +115,7 @@ export default function ProfilePage() {
       <UniversalFooter />
     </div>
   )
-} function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {
-  return (
+} function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {  return (
     <section className="bg-gray-800 rounded-xl p-6">
       <h3 className="text-xl font-bold mb-4 flex items-center">
         {icon}

@@ -53,7 +53,7 @@ const HeaderMenu: React.FC<{ employeeData: any }> = ({ employeeData }) => {
           />
         </svg>
       </button>
-      {isMenuOpen && (
+      {isMenuOpen && employeeData && (
         <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
           {(employeeData?.position !== 1 || employeeData?.position === 5) && (
             <>

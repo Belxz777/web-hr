@@ -8,7 +8,10 @@ const useEmployeeData = () => {
   const [employeeData, setData] = useState<employee | null >(null);
   const [title, setTitle] = useState<string>('');
   const [loadingEmp, setLoading] = useState(true);
-  const [error, setError] = useState<null | string>(null);
+  const [error, setError] = useState({
+    status: false,
+    text: "",
+});
   const abortController = new AbortController();
   useEffect(() => {
     const fetchEmployeeData = async () => {
@@ -22,16 +25,25 @@ const useEmployeeData = () => {
         }
       } catch (err) {
         if (err instanceof Error) {
-          setError(err.message);
+          setError({
+            status: true,
+            text: err.message,
+          });
         } else {
-          setError('An unknown error occurred');
+          setError({
+            status: true,
+            text: 'An unexpected error occurred',
+          });
         }
       } finally {
         setLoading(false);
       }
     };
     fetchEmployeeData().catch(err => {
-      setError('Failed to fetch employee data');
+      setError({
+        status: true,
+        text: err.message,
+      });
     });
     return () =>{
 abortController.abort();

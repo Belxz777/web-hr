@@ -2,7 +2,7 @@
 import { host, task } from "@/types";
 import { cookies } from "next/headers";
 
-async function userTasks():Promise<Array<task> | task> {
+async function userTasks():Promise<Array<task> | task | number> {
     const cookieStore = cookies();
     const jwt = cookieStore.get('cf-auth-id')?.value
     if(!jwt){
@@ -16,6 +16,7 @@ async function userTasks():Promise<Array<task> | task> {
     }))
     if(!res.ok) {
         console.log(res.status)
+        return res.status
     }
     const data = await res.json();
     return data
