@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PulseLogo } from '@/svgs/Logo'
 import { Header } from '@/components/ui/header'
-import useEmployeeData from '@/hooks/useGetUserData'
 
 // Пример данных контактов поддержки
 const supportContacts = [
@@ -15,7 +14,6 @@ const supportContacts = [
 export default function SettingsPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [theme, setTheme] = useState('dark')
-  const { employeeData} = useEmployeeData();
   useEffect(() => {
     // Применение темы при загрузке и изменении
     document.body.className = theme
@@ -27,7 +25,7 @@ export default function SettingsPage() {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-red-600 to-gray-900 text-gray-100' : 'bg-gradient-to-br from-red-100 to-gray-100 text-gray-900'}`}>
-    <Header employeeData={employeeData} title="Настройки"/>
+    <Header title="Настройки"/>
 
       <main className="container mx-auto p-4">
         <section className={`mb-8 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>

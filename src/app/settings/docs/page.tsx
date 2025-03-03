@@ -5,7 +5,6 @@ import Link from "next/link"
 import { PulseLogo } from "@/svgs/Logo"
 import { useRouter } from "next/navigation"
 import { Header } from "@/components/ui/header"
-import useEmployeeData from "@/hooks/useGetUserData"
 
 const documentationSections = [
   { id: "frontend", title: "Фронтенд" },
@@ -27,14 +26,13 @@ export default function DocumentationPage() {
     const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("frontend")
-  const { employeeData } = useEmployeeData()
   const handleSectionChange = (sectionId: string) => {
     setActiveSection(sectionId)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-     <Header employeeData={employeeData} title="Документация"/>
+     <Header title="Документация"/>
 
       <main className="container mx-auto p-4 flex flex-col md:flex-row">
         <nav className="w-full md:w-1/4 mb-4 md:mb-0">

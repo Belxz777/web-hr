@@ -3,13 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { PulseLogo } from '@/svgs/Logo'
-import useEmployeeData from '@/hooks/useGetUserData'
 import { Header } from '@/components/ui/header'
 
 export default function UploadTasksPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const { employeeData,title,loadingEmp} = useEmployeeData()
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setSelectedFile(e.target.files[0])
@@ -28,7 +26,7 @@ export default function UploadTasksPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-    <Header employeeData={employeeData} title="Загрузка задач"/>
+    <Header title="Загрузка задач"/>
 
       <main className="container mx-auto p-4">
         <section className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto">

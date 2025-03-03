@@ -4,6 +4,8 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { ReportUpload } from "@/components/buildIn/ReportUpload"
+import { Header } from "@/components/ui/header"
 
 // Types
 type Employee = {
@@ -44,7 +46,7 @@ const positions: Position[] = [
 export default function AdminPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<
-    "departments" | "positions" | "promotion" | "projects" | "reports" | "access" | "analytics"
+    "departments" | "positions" | "promotion" | "projects" | "reports" | "access" | "analytics" | "excel"
   >("departments")
   const [showNotification, setShowNotification] = useState(false)
   const [notificationMessage, setNotificationMessage] = useState("")
@@ -132,155 +134,121 @@ export default function AdminPage() {
   }
   const [jobout, setjobout] = useState({
 
-        jobId:0 ,
-        jobName: ""
+    jobId: 0,
+    jobName: ""
 
   })
-async function createPos(name: string): Promise<any> {
+  async function createPos(name: string): Promise<any> {
     const request: { data: any } = await createPos(name)
     return request.data
-}
+  }
   const handleEmployeeSelect = (employeeId: string) => {
     const employee = sampleEmployees.find((emp) => emp.id.toString() === employeeId)
     setSelectedEmployee(employee || null)
     setPromotionForm((prev) => ({ ...prev, employeeId }))
   }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
+  //       <div className="bg-gray-800 p-8 rounded-lg shadow-xl text-center">
+  //       <div className="  rounded-xl  mx-auto ">
+  //           <div className="w-full flex items-center justify-center">
+  //             <svg
+  //               className="animate-spin h-10 w-10 text-white"
+  //               xmlns="http://www.w3.org/2000/svg"
+  //               fill="none"
+  //               viewBox="0 0 24 24"
+  //             >
+  //               <circle
+  //                 className="opacity-25"
+  //                 cx="12"
+  //                 cy="12"
+  //                 r="10"
+  //                 stroke="currentColor"
+  //                 strokeWidth="4"
+  //               ></circle>
+  //               <path
+  //                 className="opacity-75"
+  //                 fill="currentColor"
+  //                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+  //               ></path>
+  //             </svg>
+  //           </div>
+  //         </div>
+  //         <p className="text-gray-300 text-lg">Проверка прав администратора...</p>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
-        <div className="bg-gray-800 p-8 rounded-lg shadow-xl text-center">
-        <div className="  rounded-xl  mx-auto ">
-            <div className="w-full flex items-center justify-center">
-              <svg
-                className="animate-spin h-10 w-10 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                ></path>
-              </svg>
-            </div>
-          </div>
-          <p className="text-gray-300 text-lg">Проверка прав администратора...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
-        <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
-          <h1 className="text-2xl font-bold text-center mb-6 text-white">Доступ к панели администратора</h1>
-          <form onSubmit={handleAdminAuth} className="space-y-4">
-            <div>
-              <label htmlFor="adminPassword" className="block text-sm font-medium text-gray-300 mb-2">
-                Пароль администратора
-              </label>
-              <input
-                id="adminPassword"
-                type="password"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                placeholder="Введите пароль администратора"
-                required
-              />
-            </div>
-            {showError && <p className="text-red-500 text-sm text-center">Неверный пароль администратора</p>}
-            <button
-              type="submit"
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-            >
-              Войти
-            </button>
-          </form>
-        </div>
-      </div>
-    )
-  }
+  // if (!isAdmin) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
+  //       <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+  //         <h1 className="text-2xl font-bold text-center mb-6 text-white">Доступ к панели администратора</h1>
+  //         <form onSubmit={handleAdminAuth} className="space-y-4">
+  //           <div>
+  //             <label htmlFor="adminPassword" className="block text-sm font-medium text-gray-300 mb-2">
+  //               Пароль администратора
+  //             </label>
+  //             <input
+  //               id="adminPassword"
+  //               type="password"
+  //               value={adminPassword}
+  //               onChange={(e) => setAdminPassword(e.target.value)}
+  //               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+  //               placeholder="Введите пароль администратора"
+  //               required
+  //             />
+  //           </div>
+  //           {showError && <p className="text-red-500 text-sm text-center">Неверный пароль администратора</p>}
+  //           <button
+  //             type="submit"
+  //             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+  //           >
+  //             Войти
+  //           </button>
+  //         </form>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <header className="bg-gray-800 p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Панель администратора</h1>
-        <nav className="relative">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-gray-300 hover:text-white focus:outline-none"
-            aria-label="Открыть меню"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
-          {isMenuOpen && (
-            <ul className="absolute right-0 mt-2 w-56 bg-gray-800 rounded-xl shadow-lg py-1 z-10">
-              <li>
-                <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Дашборд
-                </Link>
-              </li>
-              <li>
-                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Профиль
-                </Link>
-              </li>
-              <li>
-                <Link href="/statistics" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Статистика
-                </Link>
-              </li>
-              <li>
-                <Link href="/settings" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Настройки
-                </Link>
-              </li>
-            </ul>
-          )}
-        </nav>
-      </header>
+      <Header title="Панель администратора" />
 
       <main className="container mx-auto p-4">
         <div className="mb-6 flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab("departments")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "departments" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "departments" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Управление департаментами
           </button>
           <button
             onClick={() => setActiveTab("positions")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "positions" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "positions" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Управление должностями
           </button>
           <button
             onClick={() => setActiveTab("promotion")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "promotion" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "promotion" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Повышение сотрудника
           </button>
-        
+          <button
+            onClick={() => setActiveTab("excel")}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "excel" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
+          >
+            Загрузка Excel файла с задачами
+          </button>
+
         </div>
 
         {activeTab === "departments" && (
@@ -350,7 +318,7 @@ async function createPos(name: string): Promise<any> {
         {activeTab === "positions" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold mb-4">Создание новой должности</h2>
-            <form  className="space-y-4">
+            <form className="space-y-4">
               <div>
                 <label htmlFor="positionTitle" className="block text-sm font-medium text-gray-300 mb-2">
                   Название должности
@@ -369,8 +337,8 @@ async function createPos(name: string): Promise<any> {
 
               <button
                 type="submit"
-                onClick={()=>{
-                 createPos("position")
+                onClick={() => {
+                  createPos("position")
                 }}
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
               >
@@ -419,9 +387,8 @@ async function createPos(name: string): Promise<any> {
                       {[1, 2, 3, 4, 5].map((level) => (
                         <div
                           key={level}
-                          className={`w-2 h-8 rounded ${
-                            level <= selectedEmployee.currentLevel ? "bg-red-500" : "bg-gray-600"
-                          }`}
+                          className={`w-2 h-8 rounded ${level <= selectedEmployee.currentLevel ? "bg-red-500" : "bg-gray-600"
+                            }`}
                         />
                       ))}
                     </div>
@@ -468,9 +435,8 @@ async function createPos(name: string): Promise<any> {
                         key={level}
                         type="button"
                         onClick={() => setPromotionForm((prev) => ({ ...prev, level }))}
-                        className={`w-8 h-8 rounded ${
-                          level <= promotionForm.level ? "bg-red-500 hover:bg-red-600" : "bg-gray-600 hover:bg-gray-500"
-                        } transition-colors`}
+                        className={`w-8 h-8 rounded ${level <= promotionForm.level ? "bg-red-500 hover:bg-red-600" : "bg-gray-600 hover:bg-gray-500"
+                          } transition-colors`}
                       >
                         {level}
                       </button>
@@ -486,6 +452,11 @@ async function createPos(name: string): Promise<any> {
                 Повысить сотрудника
               </button>
             </form>
+          </section>
+        )}
+        {activeTab === "excel" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <ReportUpload />
           </section>
         )}
 

@@ -206,7 +206,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header title="Статистика" employeeData={employeeData} />
+      <Header title="Статистика" />
 
       <main className="container mx-auto p-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -11,10 +11,8 @@ import sendReport from "@/components/server/report";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { BackButton } from "@/svgs/Back";
 import { Header } from "@/components/ui/header";
-import useEmployeeData from "@/hooks/useGetUserData";
 
 export default function ReportPage() {
-  const { employeeData } = useEmployeeData();
   const { tasks, loadingRep } = useReport();
   const router = useRouter();
 
@@ -64,7 +62,7 @@ export default function ReportPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header employeeData={employeeData} title="Заполнение отчета" />
+      <Header title="Заполнение отчета" />
       <main className="container mx-auto p-4">
         {tasks.length > 0 ? (
           <form

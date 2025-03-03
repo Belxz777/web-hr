@@ -1,22 +1,24 @@
   import { NextResponse } from 'next/server';
     import { cookies } from 'next/headers';
   import { json } from 'stream/consumers';
+import { type } from 'os';
 
     export async function POST(request: any, response: any): Promise<any> {
         const cookieStore = cookies();
-        const token = cookieStore.get('cf-auth-id')?.value;
+        const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoyLCJleHAiOjE3NDE4Nzg4MzcsImlhdCI6MTc0MTAxNDgzN30.oD83lYn6HU1gqdx76OVcevxaA5YziKbAy0D8Je2CDuM"
         if (!token) {
           return NextResponse.json({ error: 'No token provided' }, { status: 401 });
         }
       try {
         console.log("POST")
         const data = await request.json()
-        console.log(data)
-        console.log(request.body)
+      
+        console.log(data, typeof data) 
+        console.log(request.body) 
         const response = await fetch('https://backend-pulse.onrender.com/api/v1/download/department/xlsx/persice/', {
           method: 'POST',
           credentials: 'include',
-          body:data,
+          body:JSON.stringify(data),
           headers: {
             'Content-Type': 'application/json',
             Cookie: `jwt=${token}`,
@@ -24,7 +26,7 @@
         });
 
         if (!response.ok) {
-          return NextResponse.json({ error: 'Failed to fetch file', status: response.status }, { status: response.status });
+          return NextResponse.json({ error: 'Failed to fetch file', status: response.status,err2or:response.body }, { status: response.status });
         }
         const date = new Date()
         const fileBuffer = await response.arrayBuffer();

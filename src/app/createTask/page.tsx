@@ -79,7 +79,7 @@ export default function CreateTaskPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header employeeData={employeeData} title="Создание новой задачи" />
+      <Header title="Создание новой задачи" />
       <main className="container mx-auto p-4">
         <form
           onSubmit={handleSubmit}

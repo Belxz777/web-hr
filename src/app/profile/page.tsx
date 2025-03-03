@@ -17,11 +17,12 @@ import { Header } from '@/components/ui/header'
 export default function ProfilePage() {
   const router = useRouter()
   const { employeeData, title, loadingEmp, error: employeeError } = useEmployeeData()
+
   const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false)
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header employeeData={employeeData} title="Личный кабинет" />
+      <Header title="Личный кабинет" />
 
       <main className="container mx-auto p-4">
         <section className="mb-8 bg-gray-800 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -106,7 +107,7 @@ export default function ProfilePage() {
         {
           employeeData?.position !== 1 && employeeData ? (
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
-              <ReportUpload />
+              {/* <ReportUpload /> */}
               <ReportDownload />
             </section>
           ) : null
@@ -115,7 +116,8 @@ export default function ProfilePage() {
       <UniversalFooter />
     </div>
   )
-} function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {  return (
+} function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {
+  return (
     <section className="bg-gray-800 rounded-xl p-6">
       <h3 className="text-xl font-bold mb-4 flex items-center">
         {icon}
