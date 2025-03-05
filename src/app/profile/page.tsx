@@ -21,7 +21,7 @@ export default function ProfilePage() {
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header employeeData={employeeData} title="Личный кабинет" />
+      <Header  title="Личный кабинет" />
 
       <main className="container mx-auto p-4">
         <section className="mb-8 bg-gray-800 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center">

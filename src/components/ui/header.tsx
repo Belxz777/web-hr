@@ -183,10 +183,15 @@ const HeaderMenu: React.FC<{ employeeData: any }> = ({ employeeData }) => {
   );
 };
 
-const Header: React.FC<{ employeeData: any; title: string }> = ({
-  employeeData,
+const Header: React.FC<{  title: string }> = ({
   title,
 }) => {
+  const employeeData = {
+    position: 1,
+    name: "Иванов",
+    surname: "Иванович",
+    department: "Отдел 1",
+  }
   return (
     <header className="bg-gray-800 p-4 flex justify-between items-center">
       <Link href="/profile" prefetch={false}>
