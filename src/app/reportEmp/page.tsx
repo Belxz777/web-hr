@@ -9,7 +9,6 @@ import React from "react";
 import FormEmpl from "@/components/buildIn/form_empl";
 import ReportEmpl from "@/components/buildIn/ReportEmpl";
 import { Header } from "@/components/ui/header";
-import useEmployeeData from "@/hooks/useGetUserData";
 const frameworks = [
   {
     value: "next.js",
@@ -84,7 +83,6 @@ export function ComboboxDemo() {
 export default function ProfilePage() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { employeeData } = useEmployeeData();
   const isPosX = localStorage.getItem("lc-pos-x") === "true";
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
@@ -119,7 +117,7 @@ export default function ProfilePage() {
           )}
         </div>
       </header> */}
-      <Header employeeData={employeeData} title="Отчёты" />
+      <Header title="Отчёты" />
       <section className="h-[60px] mt-2 ml-5">
         <ComboboxDemo />
         {/* Разобраться с ReportEmpl */}

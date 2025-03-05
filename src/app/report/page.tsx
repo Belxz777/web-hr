@@ -11,10 +11,8 @@ import sendReport from "@/components/server/report";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { BackButton } from "@/svgs/Back";
 import { Header } from "@/components/ui/header";
-import useEmployeeData from "@/hooks/useGetUserData";
 
 export default function ReportPage() {
-  const { employeeData } = useEmployeeData();
   const { tasks, loadingRep } = useReport();
   const router = useRouter();
 

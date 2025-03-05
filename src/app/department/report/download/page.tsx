@@ -39,7 +39,7 @@ export default function DownloadReportPage() {
   const downloadExcel = async () => {
     const body = {
       employee_ids: selectedEmployees,
-      from_date: startDate,
+      start_date: startDate,
       end_date: endDate,
     };
 console.log("body", body);
@@ -88,7 +88,7 @@ console.log("body", body);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header employeeData={employeeData} title="Настройки" />
+      <Header title="Скачивание точного отчета" />
 
       {loading ? (
         <div className="w-full h-screen flex items-center justify-center">

@@ -45,7 +45,7 @@ const positions: Position[] = [
 export default function AdminPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<
-    "departments" | "positions" | "promotion" | "projects" | "reports" | "access" | "analytics"
+    "departments" | "positions" | "promotion" | "projects" | "reports" | "access" | "analytics" | "excel"
   >("departments")
   const [showNotification, setShowNotification] = useState(false)
   const [employees, setEmployees] = useState<Employee[]>([])
@@ -177,29 +177,33 @@ async function createPos(name: string): Promise<any> {
         <div className="mb-6 flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab("departments")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "departments" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "departments" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Управление департаментами
           </button>
           <button
             onClick={() => setActiveTab("positions")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "positions" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "positions" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Управление должностями
           </button>
           <button
             onClick={() => setActiveTab("promotion")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "promotion" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "promotion" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Повышение сотрудника
           </button>
-        
+          <button
+            onClick={() => setActiveTab("excel")}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "excel" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
+          >
+            Загрузка Excel файла с задачами
+          </button>
+
         </div>
 
         {activeTab === "departments" && (
@@ -384,9 +388,8 @@ async function createPos(name: string): Promise<any> {
                         key={level}
                         type="button"
                         onClick={() => setPromotionForm((prev) => ({ ...prev, level }))}
-                        className={`w-8 h-8 rounded ${
-                          level <= promotionForm.level ? "bg-red-500 hover:bg-red-600" : "bg-gray-600 hover:bg-gray-500"
-                        } transition-colors`}
+                        className={`w-8 h-8 rounded ${level <= promotionForm.level ? "bg-red-500 hover:bg-red-600" : "bg-gray-600 hover:bg-gray-500"
+                          } transition-colors`}
                       >
                         {level}
                       </button>
@@ -402,6 +405,11 @@ async function createPos(name: string): Promise<any> {
                 Повысить сотрудника
               </button>
             </form>
+          </section>
+        )}
+        {activeTab === "excel" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <ReportUpload />
           </section>
         )}
 

@@ -24,7 +24,6 @@ import { cookies} from 'next/headers';
     const receiveddata = await res.json();
     const cookiesApi = cookies()
 
-
     cookiesApi.set('cf-auth-id', receiveddata.token,{
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
         httpOnly: true,
@@ -40,6 +39,8 @@ import { cookies} from 'next/headers';
             httpOnly: true,
         })
     }
+    
+
     return receiveddata
 }
 catch(e){
