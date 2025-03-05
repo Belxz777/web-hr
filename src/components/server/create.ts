@@ -1,5 +1,6 @@
 "use server"
 import { host } from '@/types';
+import { cookies } from 'next/headers';
 
 
 interface TaskData {
@@ -8,11 +9,17 @@ interface TaskData {
     taskName: string,
 }
 async function createTaskData(data: TaskData) {
+    const cookieStore = cookies();
+        const jwt = cookieStore.get('cf-auth-id')?.value
+        if(!jwt){
+            throw new Error('No token provided')
+        }
     const res = await fetch(`${host}entities/task/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Cookie: `jwt=${jwt}`
         },
         body: JSON.stringify(data)
     })
@@ -26,3 +33,4 @@ async function createTaskData(data: TaskData) {
 }
 
 export default createTaskData;
+

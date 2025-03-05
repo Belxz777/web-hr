@@ -32,7 +32,7 @@ export default function DocumentationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-     <Header title="Документация"/>
+     <Header  title="Документация"/>
 
       <main className="container mx-auto p-4 flex flex-col md:flex-row">
         <nav className="w-full md:w-1/4 mb-4 md:mb-0">

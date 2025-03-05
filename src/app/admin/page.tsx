@@ -4,17 +4,23 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ReportUpload } from "@/components/buildIn/ReportUpload"
+import { createJob } from "@/components/server/jobs"
 import { Header } from "@/components/ui/header"
+<<<<<<< HEAD
 import createDepartment from "@/components/server/createDepartment"
 import { createJob } from "@/components/server/jobs"
+=======
+import getEmployees from "@/components/server/emps_get"
+import promotion from "@/components/server/promotion"
+>>>>>>> 23ab5e80a9201e243da344df8a14ed66cdb72e5a
 
 // Types
 type Employee = {
-  id: number
-  name: string
+  employeeId: number
+  firstName: string
+  lastName: string
   position: string
-  currentLevel: number
+
 }
 
 type Department = {
@@ -31,11 +37,7 @@ type Position = {
 }
 
 // Sample data
-const sampleEmployees: Employee[] = [
-  { id: 1, name: "Иван Иванов", position: "Разработчик", currentLevel: 2 },
-  { id: 2, name: "Мария Петрова", position: "Дизайнер", currentLevel: 3 },
-  { id: 3, name: "Алексей Смирнов", position: "Менеджер", currentLevel: 4 },
-]
+
 
 const positions: Position[] = [
   { id: 1, title: "Младший разработчик", description: "Начальная позиция разработчика" },
@@ -51,6 +53,7 @@ export default function AdminPage() {
     "departments" | "positions" | "promotion" | "projects" | "reports" | "access" | "analytics" | "excel"
   >("departments")
   const [showNotification, setShowNotification] = useState(false)
+  const [employees, setEmployees] = useState<Employee[]>([])
   const [notificationMessage, setNotificationMessage] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -72,9 +75,8 @@ export default function AdminPage() {
 
   // Promotion form state
   const [promotionForm, setPromotionForm] = useState({
-    employeeId: "",
-    newPosition: "",
-    level: 1,
+    empid: "",
+    position: "",
   })
 
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
@@ -85,9 +87,22 @@ export default function AdminPage() {
       await new Promise((resolve) => setTimeout(resolve, 2000))
       setIsLoading(false)
     }
+  
     checkAdmin()
   }, [])
+useEffect(()=>{
+  const getEmps = async () => {
+const emps = await getEmployees();
+if (emps){
+  setEmployees(emps)
+  }
+  alert("emps")
+}
 
+if(activeTab =="promotion"){
+getEmps()
+}
+},[activeTab])
   const handleAdminAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -173,99 +188,40 @@ export default function AdminPage() {
       showSuccessNotification("Произошла ошибка при создании должности");
     }
   }
-
+const promote =  async (employeeId: number, newPosition: number) => {
+  const request: { data: any } = await promotion(employeeId, newPosition)
+  return request.data
+}
   const handlePromotionSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log("Повышение сотрудника:", promotionForm)
+    promote(selectedEmployee)
     showSuccessNotification("Сотрудник успешно повышен")
+
     setPromotionForm({ employeeId: "", newPosition: "", level: 1 })
     setSelectedEmployee(null)
+
   }
   const [jobout, setjobout] = useState({
-
-    jobId: 0,
-    jobName: ""
-
+        jobId:0 ,
+        jobName: ""
   })
-  async function createPos(name: string): Promise<any> {
-    const request: { data: any } = await createPos(name)
+async function createPos(name: string): Promise<any> {
+    const request: { data: any } = await createJob(name)
+    
     return request.data
-  }
-  const handleEmployeeSelect = (employeeId: string) => {
-    const employee = sampleEmployees.find((emp) => emp.id.toString() === employeeId)
-    setSelectedEmployee(employee || null)
+}
+  const handleEmployeeSelect = (employee:Employee): void => {
+    setSelectedEmployee(employee)
+    alert(
+    `Выбран сотрудник с ID: ${employee.firstName, employee.lastName, employee.position}`)
+    
     setPromotionForm((prev) => ({ ...prev, employeeId }))
   }
-  // if (isLoading) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
-  //       <div className="bg-gray-800 p-8 rounded-lg shadow-xl text-center">
-  //       <div className="  rounded-xl  mx-auto ">
-  //           <div className="w-full flex items-center justify-center">
-  //             <svg
-  //               className="animate-spin h-10 w-10 text-white"
-  //               xmlns="http://www.w3.org/2000/svg"
-  //               fill="none"
-  //               viewBox="0 0 24 24"
-  //             >
-  //               <circle
-  //                 className="opacity-25"
-  //                 cx="12"
-  //                 cy="12"
-  //                 r="10"
-  //                 stroke="currentColor"
-  //                 strokeWidth="4"
-  //               ></circle>
-  //               <path
-  //                 className="opacity-75"
-  //                 fill="currentColor"
-  //                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-  //               ></path>
-  //             </svg>
-  //           </div>
-  //         </div>
-  //         <p className="text-gray-300 text-lg">Проверка прав администратора...</p>
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
-  // if (!isAdmin) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
-  //       <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
-  //         <h1 className="text-2xl font-bold text-center mb-6 text-white">Доступ к панели администратора</h1>
-  //         <form onSubmit={handleAdminAuth} className="space-y-4">
-  //           <div>
-  //             <label htmlFor="adminPassword" className="block text-sm font-medium text-gray-300 mb-2">
-  //               Пароль администратора
-  //             </label>
-  //             <input
-  //               id="adminPassword"
-  //               type="password"
-  //               value={adminPassword}
-  //               onChange={(e) => setAdminPassword(e.target.value)}
-  //               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-  //               placeholder="Введите пароль администратора"
-  //               required
-  //             />
-  //           </div>
-  //           {showError && <p className="text-red-500 text-sm text-center">Неверный пароль администратора</p>}
-  //           <button
-  //             type="submit"
-  //             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-  //           >
-  //             Войти
-  //           </button>
-  //         </form>
-  //       </div>
-  //     </div>
-  //   )
-  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header title="Панель администратора" />
+ <Header title="Панель администратора" />
 
       <main className="container mx-auto p-4">
         <div className="mb-6 flex flex-wrap gap-2">
@@ -346,11 +302,11 @@ export default function AdminPage() {
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   <option value="">Выберите начальника департамента</option>
-                  {sampleEmployees.map((employee) => (
+                  {/* {sampleEmployees.map((employee) => (
                     <option key={employee.id} value={employee.id}>
                       {employee.name} - {employee.position}
                     </option>
-                  ))}
+                  ))} */}
                 </select>
               </div>
 
@@ -367,7 +323,11 @@ export default function AdminPage() {
         {activeTab === "positions" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold mb-4">Создание новой должности</h2>
+<<<<<<< HEAD
             <form className="space-y-4" onSubmit={handlePositionSubmit}>
+=======
+            <form  className="space-y-4" onSubmit={handlePositionSubmit}>
+>>>>>>> 23ab5e80a9201e243da344df8a14ed66cdb72e5a
               <div>
                 <label htmlFor="positionTitle" className="block text-sm font-medium text-gray-300 mb-2">
                   Название должности
@@ -386,9 +346,6 @@ export default function AdminPage() {
 
               <button
                 type="submit"
-                onClick={() => {
-                  createPos("position")
-                }}
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
               >
                 Создать должность
@@ -416,15 +373,15 @@ export default function AdminPage() {
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   <option value="">Выберите сотрудника</option>
-                  {sampleEmployees.map((employee) => (
-                    <option key={employee.id} value={employee.id}>
-                      {employee.name} - {employee.position}
+                  {employees.map((employee,index) => (
+                    <option key={index} value={employee.employeeId}>
+                      {employee.firstName}  {employee.lastName}  - {employee.position}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {selectedEmployee && (
+              {/* {selectedEmployee && (
                 <div className="bg-gray-700 p-4 rounded-xl">
                   <h3 className="font-medium text-gray-300 mb-2">Текущая позиция</h3>
                   <div className="flex items-center justify-between">
@@ -436,16 +393,17 @@ export default function AdminPage() {
                       {[1, 2, 3, 4, 5].map((level) => (
                         <div
                           key={level}
-                          className={`w-2 h-8 rounded ${level <= selectedEmployee.currentLevel ? "bg-red-500" : "bg-gray-600"
-                            }`}
+                          className={`w-2 h-8 rounded ${
+                            level <= selectedEmployee ? "bg-red-500" : "bg-gray-600"
+                          }`}
                         />
                       ))}
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
 
-              <div>
+              {/* <div>
                 <label htmlFor="newPosition" className="block text-sm font-medium text-gray-300 mb-2">
                   Новая должность
                 </label>
@@ -463,7 +421,7 @@ export default function AdminPage() {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-4">

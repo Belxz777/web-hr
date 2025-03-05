@@ -3,8 +3,7 @@ import { host } from "@/types"
 import { cookies } from "next/headers"
 import { FunctionComponent } from "react"
 
-async function getEmployees(departmentId: any) {
-    console.log("{departmentId}", departmentId);
+async function getEmployees() {
     
         const cookieStore = cookies()
         const jwt = cookieStore.get('cf-auth-id')?.value
@@ -12,7 +11,7 @@ async function getEmployees(departmentId: any) {
             throw new Error('No token provided')
         }
     try {
-        const response = await fetch(`${host}entities/department/employees/select/?department_id=${departmentId}`,
+        const response = await fetch(`${host}entities/department/employees/select/`,
             {
                 method: 'GET',
                 credentials: 'include',

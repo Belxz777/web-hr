@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import getEmployees from "@/components/server/emps_get";
 import {getAllJobs} from "@/components/server/jobs";
+=======
+import { getAllJobs } from "@/components/server/jobs";
+>>>>>>> 23ab5e80a9201e243da344df8a14ed66cdb72e5a
 import { useEffect, useState } from "react";
 
 const useGetAllJobs = () => {
