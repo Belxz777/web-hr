@@ -212,19 +212,7 @@ const HeaderMenu: React.FC<{}> = () => {
   );
 };
 
-<<<<<<< HEAD
 const Header: React.FC<{ title: string }> = ({ title }) => {
-=======
-const Header: React.FC<{ title: string }> = ({
-  title,
-}) => {
-  const employeeData = {
-    position: 1,
-    name: "Иванов",
-    surname: "Иванович",
-    department: "Отдел 1",
-  }
->>>>>>> 23ab5e80a9201e243da344df8a14ed66cdb72e5a
   return (
     <header className="bg-gray-800 p-4 flex justify-between items-center">
       <Link href="/profile" prefetch={false}>

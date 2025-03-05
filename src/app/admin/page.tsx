@@ -6,13 +6,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { createJob } from "@/components/server/jobs"
 import { Header } from "@/components/ui/header"
-<<<<<<< HEAD
 import createDepartment from "@/components/server/createDepartment"
-import { createJob } from "@/components/server/jobs"
-=======
-import getEmployees from "@/components/server/emps_get"
-import promotion from "@/components/server/promotion"
->>>>>>> 23ab5e80a9201e243da344df8a14ed66cdb72e5a
+import { ReportUpload } from "@/components/buildIn/ReportUpload";
 
 // Types
 type Employee = {
@@ -323,11 +318,7 @@ async function createPos(name: string): Promise<any> {
         {activeTab === "positions" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold mb-4">Создание новой должности</h2>
-<<<<<<< HEAD
             <form className="space-y-4" onSubmit={handlePositionSubmit}>
-=======
-            <form  className="space-y-4" onSubmit={handlePositionSubmit}>
->>>>>>> 23ab5e80a9201e243da344df8a14ed66cdb72e5a
               <div>
                 <label htmlFor="positionTitle" className="block text-sm font-medium text-gray-300 mb-2">
                   Название должности
