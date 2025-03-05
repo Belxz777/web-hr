@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import type React from "react"
 
@@ -6,6 +6,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ReportUpload } from "@/components/buildIn/ReportUpload"
 import { Header } from "@/components/ui/header"
+import createDepartment from "@/components/server/createDepartment"
+import { createJob } from "@/components/server/jobs"
 
 // Types
 type Employee = {
@@ -111,18 +113,65 @@ export default function AdminPage() {
     setTimeout(() => setShowNotification(false), 3000)
   }
 
-  const handleDepartmentSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Создание департамента:", departmentForm)
-    showSuccessNotification("Департамент успешно создан")
-    setDepartmentForm({ name: "", description: "", headId: "" })
-  }
+  const handleDepartmentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    if (!departmentForm.name || !departmentForm.description || !departmentForm.headId) {
+      console.error("Missing department information");
+      showSuccessNotification("Пожалуйста, заполните все поля формы");
+      return;
+    }
+  
+    const formattedData = {
+      departmentName: departmentForm.name,
+      departmentDescription: departmentForm.description,
+      headId: Number(departmentForm.headId),
+    };
+  
+  
+    try {
+      const response = await createDepartment(formattedData);
+  
+      if (!response) {
+        console.error("Failed to create department");
+        showSuccessNotification("Ошибка при создании департамента");
+        return;
+      }
+  
+      console.log("Создание департамента:", formattedData);
+      showSuccessNotification("Департамент успешно создан");
+      setDepartmentForm({ name: "", description: "", headId: "" });
+    } catch (error) {
+      console.error("Ошибка при создании департамента:", error);
+      showSuccessNotification("Произошла ошибка при создании департамента");
+    }
+  };
+  
 
-  const handlePositionSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Создание должности:", positionForm)
-    showSuccessNotification("Должность успешно создана")
-    setPositionForm({ title: "", description: "" })
+  const handlePositionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!positionForm.title) {
+      console.error("Position title is required");
+      showSuccessNotification("Пожалуйста, укажите название должности");
+      return;
+    }
+
+    console.log(positionForm);
+    try {
+      const response = await createJob(positionForm.title);
+
+      if (!response) {
+        console.error("Failed to create position");
+        showSuccessNotification("Ошибка при создании должности");
+        return;
+      }
+      showSuccessNotification("Должность успешно создана");
+      setPositionForm({ title: "", description: "" });
+      
+    } catch (error) {
+      console.error("Error creating position:", error);
+      showSuccessNotification("Произошла ошибка при создании должности");
+    }
   }
 
   const handlePromotionSubmit = (e: React.FormEvent) => {
@@ -318,7 +367,7 @@ export default function AdminPage() {
         {activeTab === "positions" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold mb-4">Создание новой должности</h2>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handlePositionSubmit}>
               <div>
                 <label htmlFor="positionTitle" className="block text-sm font-medium text-gray-300 mb-2">
                   Название должности

@@ -15,7 +15,6 @@ async function getAllDepartments(): Promise<any> {
         },
       }
     );
-    console.log(response);
 
     if (!response.ok) {
       throw new Error(`Error fetching deps: ${response.statusText}`);

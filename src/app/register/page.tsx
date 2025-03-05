@@ -13,15 +13,16 @@ import useGetAlldeps from "@/hooks/useDeps";
 //   { id: 3, title: "Менеджер" },
 // ];
 
-const departments = [
-  { id: 1, name: "IT отдел" },
-  { id: 2, name: "Отдел дизайна" },
-  { id: 3, name: "Отдел продаж" },
-];
+// const departments = [
+//   { id: 1, name: "IT отдел" },
+//   { id: 2, name: "Отдел дизайна" },
+//   { id: 3, name: "Отдел продаж" },
+// ];
 
 export default function RegisterPage() {
   const router = useRouter();
   const { jobs, loading } = useGetAllJobs();
+  
   const {deps}= useGetAlldeps()
 
   const [formData, setFormData] = useState({
