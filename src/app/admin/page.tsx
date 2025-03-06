@@ -8,6 +8,8 @@ import { createJob } from "@/components/server/jobs"
 import { Header } from "@/components/ui/header"
 import createDepartment from "@/components/server/createDepartment"
 import { ReportUpload } from "@/components/buildIn/ReportUpload";
+import getEmployees from "@/components/server/emps_get";
+import promotion from "@/components/server/promotion";
 
 // Types
 type Employee = {
@@ -75,6 +77,8 @@ export default function AdminPage() {
   })
 
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
+  console.log(selectedEmployee);
+  
 
   useEffect(() => {
     // Имитация проверки на админа
@@ -91,7 +95,7 @@ const emps = await getEmployees();
 if (emps){
   setEmployees(emps)
   }
-  alert("emps")
+  
 }
 
 if(activeTab =="promotion"){
@@ -207,11 +211,11 @@ async function createPos(name: string): Promise<any> {
     return request.data
 }
   const handleEmployeeSelect = (employee:Employee): void => {
-    setSelectedEmployee(employee)
-    alert(
-    `Выбран сотрудник с ID: ${employee.firstName, employee.lastName, employee.position}`)
+    console.log(employee);
     
-    setPromotionForm((prev) => ({ ...prev, employeeId }))
+    setSelectedEmployee(employee)
+    
+    setPromotionForm((prev) => ({ ...prev, empid: employee }))
   }
 
   return (
@@ -372,7 +376,7 @@ async function createPos(name: string): Promise<any> {
                 </select>
               </div>
 
-              {/* {selectedEmployee && (
+              {selectedEmployee && (
                 <div className="bg-gray-700 p-4 rounded-xl">
                   <h3 className="font-medium text-gray-300 mb-2">Текущая позиция</h3>
                   <div className="flex items-center justify-between">
@@ -392,9 +396,9 @@ async function createPos(name: string): Promise<any> {
                     </div>
                   </div>
                 </div>
-              )} */}
+              )}
 
-              {/* <div>
+              <div>
                 <label htmlFor="newPosition" className="block text-sm font-medium text-gray-300 mb-2">
                   Новая должность
                 </label>
@@ -412,7 +416,7 @@ async function createPos(name: string): Promise<any> {
                     </option>
                   ))}
                 </select>
-              </div> */}
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-4">
