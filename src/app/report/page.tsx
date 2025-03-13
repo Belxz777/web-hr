@@ -171,7 +171,7 @@ export default function ReportPage() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto mt-4">
+          <div className="flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto mt-4 min-h-[300px]">
             <h1 className="text-2xl font-bold text-gray-300 mt-4">
               Задач для отчета нет
             </h1>

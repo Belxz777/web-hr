@@ -33,6 +33,12 @@ const BarChart = ({ data }: { data: PerformanceData[] }) => {
   const height = 200;
   const padding = 40;
 
+  if (data.length === 0) {
+    return <text className="text-2xl ml-2">
+      Нет данных
+    </text>
+  }
+
   return (
     <svg
       width={width + padding * 2}
@@ -65,9 +71,8 @@ const BarChart = ({ data }: { data: PerformanceData[] }) => {
         return (
           <g
             key={index}
-            transform={`translate(${
-              padding + index * (barWidth + gap)
-            }, ${padding})`}
+            transform={`translate(${padding + index * (barWidth + gap)
+              }, ${padding})`}
           >
             <rect
               x={0}
@@ -111,21 +116,21 @@ const BarChart = ({ data }: { data: PerformanceData[] }) => {
   );
 };
 
-const MetricsCard = ({
-  title,
-  value,
-  subtitle,
-}: {
-  title: string;
-  value: string;
-  subtitle: string;
-}) => (
-  <div className="bg-gray-800 border border-gray-700 rounded shadow p-4">
-    <h3 className="text-sm text-gray-400 mb-2">{title}</h3>
-    <div className="text-2xl font-bold mb-1 text-white">{value}</div>
-    <div className="text-sm text-gray-500">{subtitle}</div>
-  </div>
-);
+// const MetricsCard = ({
+//   title,
+//   value,
+//   subtitle,
+// }: {
+//   title: string;
+//   value: string;
+//   subtitle: string;
+// }) => (
+//   <div className="bg-gray-800 border border-gray-700 rounded shadow p-4">
+//     <h3 className="text-sm text-gray-400 mb-2">{title}</h3>
+//     <div className="text-2xl font-bold mb-1 text-white">{value}</div>
+//     <div className="text-sm text-gray-500">{subtitle}</div>
+//   </div>
+// );
 
 export default function DashboardPage() {
   const { employeeData, loadingEmp } = useEmployeeData();
@@ -206,7 +211,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <Header title="Статистика"  />
+      <Header title="Статистика" />
 
       <main className="container mx-auto p-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

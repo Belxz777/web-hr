@@ -5,6 +5,7 @@ import Link from "next/link"
 import { PulseLogo } from "@/svgs/Logo"
 import { useRouter } from "next/navigation"
 import { Header } from "@/components/ui/header"
+import { Notes } from "@/components/buildIn/Notes"
 
 const documentationSections = [
   { id: "frontend", title: "Фронтенд" },
@@ -224,16 +225,10 @@ s</li>
                 <div>
                   <h3>Заметки</h3>
                   <p>
-                    Для отслеживания и документирования багов мы используем систему issue tracking в GitHub. Процесс
-                    работы с багами:
+                   В поле ниже вы можете написать заметки, которые будут видны только вам
                   </p>
                   <ol>
-                    <li>Обнаружение и регистрация бага в GitHub Issues</li>
-                    <li>Присвоение приоритета и назначение ответственного разработчика</li>
-                    <li>Воспроизведение и анализ бага</li>
-                    <li>Исправление бага и создание pull request</li>
-                    <li>Код ревью и тестирование исправления</li>
-                    <li>Мерж исправления в основную ветку</li>
+                      <Notes/>
                   </ol>
                 </div>
               )}
