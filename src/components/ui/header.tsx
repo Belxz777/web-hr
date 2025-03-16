@@ -217,7 +217,7 @@ const Header: React.FC<{ title: string }> = ({ title }) => {
     <header className="bg-gray-800 p-4 flex justify-between items-center">
       <Link href="/profile" prefetch={false}>
         <div className="inline-flex items-center">
-          <PulseLogo className="w-16 h-16 text-red-600 animate-pulse" />
+          <PulseLogo className="pulseLogo animate-pulse" />
           <h1 className="text-2xl pl-4 font-bold">
             {title || "Тестовое название"}
           </h1>

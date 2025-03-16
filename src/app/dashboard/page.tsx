@@ -34,9 +34,7 @@ const BarChart = ({ data }: { data: PerformanceData[] }) => {
   const padding = 40;
 
   if (data.length === 0) {
-    return <text className="text-2xl ml-2">
-      Нет данных
-    </text>
+    return <text className="text-2xl ml-2">Нет данных</text>;
   }
 
   return (
@@ -71,8 +69,9 @@ const BarChart = ({ data }: { data: PerformanceData[] }) => {
         return (
           <g
             key={index}
-            transform={`translate(${padding + index * (barWidth + gap)
-              }, ${padding})`}
+            transform={`translate(${
+              padding + index * (barWidth + gap)
+            }, ${padding})`}
           >
             <rect
               x={0}
@@ -80,7 +79,7 @@ const BarChart = ({ data }: { data: PerformanceData[] }) => {
               width={barWidth}
               height={barHeight}
               fill="#ef4444"
-              className="hover:fill-red-600 transition-colors"
+              className="rectHoverStyles"
             />
             <text
               x={barWidth / 2}
@@ -125,7 +124,7 @@ const BarChart = ({ data }: { data: PerformanceData[] }) => {
 //   value: string;
 //   subtitle: string;
 // }) => (
-//   <div className="bg-gray-800 border border-gray-700 rounded shadow p-4">
+//   <div className="mainDashboardDiv">
 //     <h3 className="text-sm text-gray-400 mb-2">{title}</h3>
 //     <div className="text-2xl font-bold mb-1 text-white">{value}</div>
 //     <div className="text-sm text-gray-500">{subtitle}</div>
@@ -210,14 +209,14 @@ export default function DashboardPage() {
   }, [selectedEmployee]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="mainProfileDiv">
       <Header title="Статистика" />
 
       <main className="container mx-auto p-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-gray-800 border border-gray-700 rounded shadow p-4">
+          <div className="mainDashboardDiv">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold bg-gray-700 text-white px-3 py-1 rounded">
+              <h3 className="h3Text">
                 ОБЩАЯ СТАТИСТИКА ОТДЕЛА:{" "}
                 {departmentData?.department || "Неизвестно"}
               </h3>
@@ -235,7 +234,7 @@ export default function DashboardPage() {
               placeholder="Поиск сотрудников..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-red-500"
+              className="searchInputStyles"
             />
             <div className="max-h-60 overflow-y-auto mt-4">
               {filteredEmployees.length > 0 ? (
@@ -248,7 +247,7 @@ export default function DashboardPage() {
                       type="checkbox"
                       checked={selectedEmployee === employee.employeeId}
                       onChange={() => handleEmployeeToggle(employee.employeeId)}
-                      className="form-checkbox h-5 w-5 text-red-600"
+                      className="form-checkbox checkboxInputStyles"
                     />
                     <span>{`${employee.firstName} ${employee.lastName}`}</span>
                   </label>
@@ -266,8 +265,8 @@ export default function DashboardPage() {
             {selectedEmployee !== null && (
               <div className="mt-4">
                 <h3 className="text-lg font-semibold">Выбранный сотрудник:</h3>
-                <div className="bg-gray-800 border border-gray-700 rounded shadow p-4 w-full overflow-x-auto">
-                  <h3 className="font-semibold bg-gray-700 text-white px-3 py-1 rounded">
+                <div className="selectedEmployeeStyles">
+                  <h3 className="h3Text">
                     СТАТИСТИКА:{" "}
                     {employees.find((e) => e.employeeId === selectedEmployee)
                       ?.firstName +

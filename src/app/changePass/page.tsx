@@ -69,15 +69,15 @@ setIsPopupVisible(true);
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex flex-col items-center justify-center p-4">
-    <main className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-md w-full space-y-8">
+    <div className="divWrapper">
+    <main className="mainWrapper">
       <header className="flex flex-col items-center">
-        <PulseLogo className="w-16 h-16 text-red-600 hover:cursor-pointer" onClick={() =>router.push('/profile')} />
-        <h1 className="mt-4 text-3xl font-bold text-gray-100">Смена пароля</h1>
+        <PulseLogo className="pulseLogo" onClick={() =>router.push('/profile')} />
+        <h1 className="textH1">Смена пароля</h1>
       </header>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="pass" className="block text-sm font-medium text-gray-300 select-none">
+          <label htmlFor="pass" className="labelStyles select-none">
             Старый пароль
           </label>
           <div className="relative">
@@ -88,11 +88,11 @@ setIsPopupVisible(true);
               required
               value={credentials.old_password}
               onChange={(e) => setCredentials({ ...credentials, old_password: e.target.value })}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+              className="emailInputStyles"
             />
         <button
           type="button"
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-red-600"
+          className="redButtonStyles"
           onClick={() => setShowPassword({ ...showPassword, oldpass: !showPassword.oldpass })}
           aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
         >
@@ -123,7 +123,7 @@ setIsPopupVisible(true);
           </div>
         </div>      
         <div>  
-                  <label htmlFor="password"  className="block text-sm font-medium text-gray-300 select-none">
+                  <label htmlFor="password"  className="labelStyles select-none">
          Новый пароль
           </label>
           <div className='relative'>
@@ -135,13 +135,13 @@ setIsPopupVisible(true);
             required
             value={credentials.new_password}
             onChange={(e) => setCredentials({ ...credentials, new_password: e.target.value })}
-            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+            className="emailInputStyles"
             placeholder="********"
           />
         </div>
         </div>
         <div>
-          <label htmlFor="propassword" className="block text-sm font-medium text-gray-300">
+          <label htmlFor="propassword" className="labelStyles">
          Подтвердите пароль
           </label>
           <div className='relative'>
@@ -153,12 +153,12 @@ setIsPopupVisible(true);
             required
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+            className="emailInputStyles"
             placeholder="********"
           />
                   {/* <button
           type="button"
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-red-600"
+          className="redButtonStyles"
           onClick={() => setShowPassword({ ...showPassword, newpassconfirm: !showPassword.newpassconfirm })}
           aria-label={showPassword.newpassconfirm ? "Скрыть пароль" : "Показать пароль"}
         >
@@ -192,7 +192,7 @@ setIsPopupVisible(true);
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="submitButtonStyles"
         >
           {loading ? (
             <>
@@ -207,7 +207,7 @@ setIsPopupVisible(true);
         </div>
       </form>
     </main>
-    <footer className="mt-8 text-center text-gray-400">
+    <footer className="footerAuthStyles">
     </footer>
     
   {showWarning.status && (
@@ -221,12 +221,12 @@ setIsPopupVisible(true);
           isPopupVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
         }`}
       >
-        <h2 className="text-xl font-bold text-red-500 mb-4">{showWarning.text}</h2>
+        <h2 className="svgStyles">{showWarning.text}</h2>
         <button
           onClick={() => {
             setIsPopupVisible(false)
             setTimeout(() => setShowWarning({status: false, text: ''}), 300)          }}
-          className="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+          className="closePopUpStyles"
         >
           Закрыть
         </button>

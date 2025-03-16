@@ -92,7 +92,7 @@ export default function RegisterPage() {
               <div>
                 <label
                   htmlFor="login"
-                  className="block text-sm font-medium text-gray-300"
+                  className="labelStyles"
                 >
                   Логин
                 </label>
@@ -103,13 +103,13 @@ export default function RegisterPage() {
                   required
                   value={formData.login}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                  className="emailInputStyles"
                 />
               </div>
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-300"
+                  className="labelStyles"
                 >
                   Пароль
                 </label>
@@ -120,13 +120,13 @@ export default function RegisterPage() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                  className="emailInputStyles"
                 />
               </div>
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-300"
+                  className="labelStyles"
                 >
                   Имя
                 </label>
@@ -137,13 +137,13 @@ export default function RegisterPage() {
                   required
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                  className="emailInputStyles"
                 />
               </div>
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-300"
+                  className="labelStyles"
                 >
                   Фамилия
                 </label>
@@ -154,13 +154,13 @@ export default function RegisterPage() {
                   required
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                  className="emailInputStyles"
                 />
               </div>
               <div>
                 <label
                   htmlFor="patronymic"
-                  className="block text-sm font-medium text-gray-300"
+                  className="labelStyles"
                 >
                   Отчество
                 </label>
@@ -170,13 +170,13 @@ export default function RegisterPage() {
                   type="text"
                   value={formData.patronymic}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                  className="emailInputStyles"
                 />
               </div>
               <div>
                 <label
                   htmlFor="jobid"
-                  className="block text-sm font-medium text-gray-300"
+                  className="labelStyles"
                 >
                   Должность
                 </label>
@@ -199,7 +199,7 @@ export default function RegisterPage() {
               <div>
                 <label
                   htmlFor="departmentid"
-                  className="block text-sm font-medium text-gray-300"
+                  className="labelStyles"
                 >
                   Отдел
                 </label>
@@ -227,7 +227,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="submitButtonStyles"
               >
                 {isLoading ? (
                   <>
@@ -261,12 +261,12 @@ export default function RegisterPage() {
           </form>
         </div>
       </main>
-      <footer className="mt-8 text-center text-gray-400">
+      <footer className="footerAuthStyles">
         <p>
           Уже есть аккаунт?{" "}
           <Link
             href="/login"
-            className="font-medium text-red-400 hover:text-red-300"
+            className="linkStyles"
           >
             Войти
           </Link>

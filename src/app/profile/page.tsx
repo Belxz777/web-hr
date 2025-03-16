@@ -21,11 +21,11 @@ export default function ProfilePage() {
   const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false)
   return (
 
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="mainProfileDiv">
       <Header  title="Личный кабинет" />
 
       <main className="container mx-auto p-4">
-        <section className="mb-8 bg-gray-800 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center">
+        <section className="sectionStyles">
           {loadingEmp ? (
             <div className=" w-1/2 animate-pulse">
               <div className="h-8 bg-gray-700 rounded w-4/6 mb-4"></div>
@@ -33,18 +33,18 @@ export default function ProfilePage() {
               <div className="h-4 bg-gray-700 rounded w-2/5 "></div>
             </div>
           ) : employeeData ? (
-            <div className="mb-4 md:mb-0    cursor-pointer">
+            <div className="mb-4 md:mb-0 cursor-pointer">
               <h2 className="text-2xl font-bold mb-2 select-none">
                 {employeeData.firstName} {employeeData.lastName}
               </h2>
               <p className="text-gray-400 select-none">{title}</p>
               <p className="text-gray-400 select-none">Отдел № {employeeData.departmentid}</p>
               <div className='flex gap-4 justify-between '>
-                <button onClick={() => router.push("/createTask")} className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded mr-2">
+                <button onClick={() => router.push("/createTask")} className="buttonRedirectStyles">
                   Создать задачу
                 </button>
 
-                <button onClick={() => router.push("/report")} className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded mr-2">
+                <button onClick={() => router.push("/report")} className="buttonRedirectStyles">
                   Заполнение отчета
                 </button>
               </div>
@@ -53,16 +53,18 @@ export default function ProfilePage() {
             <h1>{!loadingEmp && employeeError.text}</h1>
           )}
           <div className="space-y-2">
-            <button className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded mr-2" onClick={() => {
+            <button className="buttonRedirectStyles" onClick={() => {
               router.push('/changePass')
             }}>
               Сменить пароль
             </button>
-            <button className="w-full md:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" onClick={() => {
+            <button className="buttonLogoutStyles" onClick={() => {
               let is = confirm('Вы уверены что хотите выйти?')
               if (!is) return
               logout()
+              const notes = localStorage.getItem('notes')
               localStorage.clear()
+              if (notes) localStorage.setItem('notes', notes)
               router.push('/')
             }}>
               Выйти
@@ -73,7 +75,7 @@ export default function ProfilePage() {
           <TaskSection
             title="Завершенные задачи"
             icon={
-              <svg className="w-6 h-6 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="completedTaskIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             }
@@ -85,7 +87,7 @@ export default function ProfilePage() {
           <TaskSection
             title="Задачи в процессе и неначатые"
             icon={
-              <svg className="w-6 h-6 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="currentTaskIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             }
@@ -96,7 +98,7 @@ export default function ProfilePage() {
           <TaskSection
             title="Просроченные задачи"
             icon={
-              <svg className="w-6 h-6 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="overdueTaskIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             }
@@ -118,7 +120,7 @@ export default function ProfilePage() {
   )
 } function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {
   return (
-    <section className="bg-gray-800 rounded-xl p-6">
+    <section className="taskSectionStyles">
       <h3 className="text-xl font-bold mb-4 flex items-center">
         {icon}
         {title}

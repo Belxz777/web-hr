@@ -85,10 +85,10 @@ export default function ProfilePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isPosX = localStorage.getItem("lc-pos-x") === "true";
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="mainProfileDiv">
       {/* <header className="bg-gray-800 p-4 flex justify-between items-center">
         <div className=' inline-flex items-center '> 
-          <PulseLogo className="w-16 h-16 text-red-600 animate-pulse" />
+          <PulseLogo className="pulseLogo animate-pulse" />
           <h1 className="text-2xl  pl-4 font-bold">Отчёты</h1>  
           </div>
         <div className="relative">

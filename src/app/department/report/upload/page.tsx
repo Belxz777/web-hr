@@ -25,15 +25,15 @@ export default function UploadTasksPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="mainProfileDiv">
     <Header title="Загрузка задач"/>
 
       <main className="container mx-auto p-4">
-        <section className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto">
+        <section className="taskSectionStyles max-w-2xl mx-auto">
           <h2 className="text-2xl font-bold mb-4">Загрузка задач</h2>
           <form onSubmit={handleUpload} className="space-y-4">
             <div>
-              <label htmlFor="file-upload" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="file-upload" className="labelStyles mb-2">
                 Выберите excel файл для загрузки
               </label>
               <input

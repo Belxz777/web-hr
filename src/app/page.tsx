@@ -9,7 +9,7 @@ export default function HomePage() {
   const router  = useRouter()
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900   flex flex-col items-center justify-center p-4 rounded-lg">
-      <main className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-md w-full space-y-8">
+      <main className="mainWrapper">
         <header className="flex flex-col items-center">
           <PulseLogo className="w-24 h-24 text-red-600  animate-pulse" />
           <h1 className="mt-4 text-4xl font-bold text-gray-100">Рабочий Пульс</h1>
@@ -33,7 +33,7 @@ export default function HomePage() {
             </button>
         </nav>
       </main>
-      <footer className="mt-8 text-center text-gray-400">
+      <footer className="footerAuthStyles">
         <p>&copy;  2025 Рабочий Пульс Все права защищены.</p>
       </footer>
     </div>

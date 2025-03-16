@@ -87,7 +87,7 @@ console.log("body", body);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="mainProfileDiv">
       <Header title="Скачивание точного отчета" />
 
       {loading ? (
@@ -117,7 +117,7 @@ console.log("body", body);
         <main className="container mx-auto p-4">
           <form
             onSubmit={handleDownload}
-            className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto"
+            className="taskSectionStyles max-w-2xl mx-auto"
           >
             <section className="mb-6">
               <h2 className="text-xl font-bold mb-4">Выберите сотрудников</h2>
@@ -126,7 +126,7 @@ console.log("body", body);
                 placeholder="Поиск сотрудников..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-red-500"
+                className="searchInputStyles"
               />
               <div className="max-h-60 overflow-y-auto mt-4">
                 {filteredEmployees.length > 0 ? (
@@ -143,7 +143,7 @@ console.log("body", body);
                         onChange={() =>
                           handleEmployeeToggle(employee.employeeId)
                         }
-                        className="form-checkbox h-5 w-5 text-red-600"
+                        className="form-checkbox checkboxInputStyles"
                       />
                       <span>{`${employee.firstName} ${employee.lastName}`}</span>
                     </label>
@@ -223,7 +223,7 @@ console.log("body", body);
                 <div>
                   <label
                     htmlFor="startDate"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="labelStyles mb-2"
                   >
                     Начальная дата
                   </label>
@@ -239,7 +239,7 @@ console.log("body", body);
                 <div>
                   <label
                     htmlFor="endDate"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="labelStyles mb-2"
                   >
                     Конечная дата
                   </label>

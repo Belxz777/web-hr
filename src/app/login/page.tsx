@@ -33,48 +33,6 @@ export default function Home() {
         text: "",
     });
 
-    // const sendData = async () => {
-    //     setLoading(true);
-
-    //     const data = {
-    //         login: login || "",
-    //         password: password || "",
-    //     };
-
-    //     const result = schema.safeParse(data);
-
-    //     if (!result.success) {
-    //         setLoading(false);
-    //         setError({
-    //             status: true,
-    //             text: result.error.issues[0].message,
-    //         });
-    //         console.error(result.error.message);
-
-    //         return;
-    //     }
-    //     try {
-    //         const resultData = await sendUserLoginData(data);
-
-    //         if (!resultData) {
-    //             setLoading(false);
-    //             setError({
-    //                 status: true,
-    //                 text: "Ошибка аутентификации пользователя",
-    //             });
-    //             return;
-    //         }
-            
-    //         router.push("/profile");
-    //         localStorage.setItem("userData", JSON.stringify(resultData));
-    //     } catch (error) {
-    //         setLoading(false);
-    //         setError({
-    //             status: true,
-    //             text: "Не удалось выполнить вход, попробуйте снова.",
-    //         });
-    //     }
-    // };
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const data = {
@@ -124,15 +82,15 @@ export default function Home() {
         }
       }
     return (
-        <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex flex-col items-center justify-center p-4">
-        <main className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-md w-full space-y-8">
+        <div className="divWrapper">
+        <main className="mainWrapper">
           <header className="flex flex-col items-center">
-            <PulseLogo className="w-16 h-16 text-red-600" />
-            <h1 className="mt-4 text-3xl font-bold text-gray-100">Вход</h1>
+            <PulseLogo className="pulseLogo" />
+            <h1 className="textH1">Вход</h1>
           </header>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="login" className="block text-sm font-medium text-gray-300">
+              <label htmlFor="login" className="labelStyles">
                 Логин
               </label>
               <input
@@ -143,12 +101,12 @@ export default function Home() {
                 required
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
-                placeholder=""
+                className="emailInputStyles"
+                placeholder="Введите email"
               />
             </div>
             <div className="relative">
-      <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+      <label htmlFor="password" className="labelStyles">
         Пароль
       </label>
       <div className="mt-1 relative rounded-xl shadow-sm">
@@ -160,17 +118,17 @@ export default function Home() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500 pr-10"
+          className="passwordInputStyles"
           placeholder="********"
         />
         <button
           type="button"
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-red-600"
+          className="redButtonStyles"
           onClick={() => setShowPassword(!showPassword)}
           aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
         >
           <svg
-            className="h-5 w-5 text-red-400"
+            className="svgStyles"
             fill="#fff"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 640 512"
@@ -199,7 +157,7 @@ export default function Home() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="submitButtonStyles"
             >
               {loading ? (
                 <>
@@ -214,9 +172,9 @@ export default function Home() {
             </div>
           </form>
         </main>
-        <footer className="mt-8 text-center text-gray-400">
+        <footer className="footerAuthStyles">
           <p>Нет аккаунта?{' '}
-            <Link href="/register" className="font-medium text-red-400 hover:text-red-300">
+            <Link href="/register" className="linkStyles">
               Зарегистрироваться
             </Link>
           </p>
@@ -233,14 +191,14 @@ export default function Home() {
               isPopupVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
           >
-            <h2 className="text-xl font-bold text-red-500 mb-4">Ошибка</h2>
-            <p className="text-gray-300 mb-4">{error.text}</p>
+            <h2 className="svgStyles">Ошибка</h2>
+            <p className="error">{error.text}</p>
             <button
               onClick={() => {
                 setIsPopupVisible(false)
                 setTimeout(() => setShowPopup(false), 300)
               }}
-              className="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+              className="closePopUpStyles"
             >
               Закрыть
             </button>

@@ -47,7 +47,7 @@ export function ReportDownload() {
   };
 
   return (
-    <div className="bg-gray-800 rounded-xl p-6">
+    <div className="taskSectionStyles">
       <div className="grid grid-cols-[1fr_3fr]">
         <h2 className="text-xl font-bold mb-4">Скачать отчет</h2>
       </div>

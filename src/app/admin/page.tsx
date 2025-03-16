@@ -219,7 +219,7 @@ async function createPos(name: string): Promise<any> {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="mainProfileDiv">
  <Header title="Панель администратора" />
 
       <main className="container mx-auto p-4">
@@ -260,7 +260,7 @@ async function createPos(name: string): Promise<any> {
             <h2 className="text-xl font-bold mb-4">Создание нового департамента</h2>
             <form onSubmit={handleDepartmentSubmit} className="space-y-4">
               <div>
-                <label htmlFor="departmentName" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="departmentName" className="labelStyles mb-2">
                   Название департамента
                 </label>
                 <input
@@ -275,7 +275,7 @@ async function createPos(name: string): Promise<any> {
               </div>
 
               <div>
-                <label htmlFor="departmentDescription" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="departmentDescription" className="labelStyles mb-2">
                   Описание департамента
                 </label>
                 <textarea
@@ -290,7 +290,7 @@ async function createPos(name: string): Promise<any> {
               </div>
 
               <div>
-                <label htmlFor="departmentHead" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="departmentHead" className="labelStyles mb-2">
                   Начальник департамента
                 </label>
                 <select
@@ -324,7 +324,7 @@ async function createPos(name: string): Promise<any> {
             <h2 className="text-xl font-bold mb-4">Создание новой должности</h2>
             <form className="space-y-4" onSubmit={handlePositionSubmit}>
               <div>
-                <label htmlFor="positionTitle" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="positionTitle" className="labelStyles mb-2">
                   Название должности
                 </label>
                 <input
@@ -357,7 +357,7 @@ async function createPos(name: string): Promise<any> {
             <h2 className="text-xl font-bold mb-4">Повышение сотрудника</h2>
             <form onSubmit={handlePromotionSubmit} className="space-y-6">
               <div>
-                <label htmlFor="employee" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="employee" className="labelStyles mb-2">
                   Выберите сотрудника
                 </label>
                 <select
@@ -399,7 +399,7 @@ async function createPos(name: string): Promise<any> {
               )}
 
               <div>
-                <label htmlFor="newPosition" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="newPosition" className="labelStyles mb-2">
                   Новая должность
                 </label>
                 <select
@@ -419,7 +419,7 @@ async function createPos(name: string): Promise<any> {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-4">
+                <label className="labelStyles mb-4">
                   Новый уровень: {promotionForm.level}
                 </label>
                 <div className="flex items-center space-x-4">

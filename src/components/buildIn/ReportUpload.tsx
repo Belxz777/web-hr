@@ -42,7 +42,7 @@ export function ReportUpload() {
   }
 
   return (
-    <div className="bg-gray-800 rounded-xl p-6">
+    <div className="taskSectionStyles">
       <h2 className="text-xl font-bold mb-4">Загрузка Excel файла с задачами</h2>
       <div className="space-y-4">
         <input 

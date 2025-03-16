@@ -78,12 +78,12 @@ export default function CreateTaskPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="mainProfileDiv">
       <Header  title="Создание новой задачи" />
       <main className="container mx-auto p-4">
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto my-6 flex flex-col gap-4"
+          className="formStyles"
         >
           <div>
             <label htmlFor="taskName" className="block mb-1">
@@ -94,7 +94,7 @@ export default function CreateTaskPage() {
               id="taskName"
               value={taskName}
               onChange={(e) => setTaskName(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+              className="emailInputStyles"
               required
             />
           </div>
@@ -106,7 +106,7 @@ export default function CreateTaskPage() {
               id="taskDescription"
               value={taskDescription}
               onChange={(e) => setTaskDescription(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+              className="emailInputStyles"
               rows={4}
               required
             />
@@ -135,21 +135,21 @@ export default function CreateTaskPage() {
                 value={taskDuration}
                 min={30}
                 onChange={(e) => setTaskDuration(Number(e.target.value))}
-                className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                className="emailInputStyles"
               />
             </div>
           </div>
           <div className="flex space-x-4">
             <button
               type="submit"
-              className="px-4 py-2 bg-red-500 rounded-xl hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+              className="createButton"
             >
               Создать задачу
             </button>
             <button
               type="button"
               onClick={autoFill}
-              className="px-4 py-2 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+              className="autofillButton"
             >
               Автозаполнение
             </button>

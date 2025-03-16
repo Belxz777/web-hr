@@ -65,3 +65,121 @@ body{
 
 }
 
+.pulseLogo {
+  @apply w-16 h-16 text-red-600 cursor-pointer;
+}
+/* Login */
+
+.divWrapper {
+  @apply min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex flex-col items-center justify-center p-4;
+}
+.mainWrapper {
+  @apply bg-gray-800 rounded-xl shadow-2xl p-8 max-w-md w-full space-y-8;
+}
+
+.textH1 {
+  @apply mt-4 text-3xl font-bold text-gray-100;
+}
+
+.labelStyles {
+  @apply block text-sm font-medium text-gray-300;
+}
+
+.emailInputStyles {
+  @apply mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500;
+}
+.passwordInputStyles {
+  @apply block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500 pr-10;
+}
+.redButtonStyles {
+  @apply absolute inset-y-0 right-0 pr-3 flex items-center text-red-600;
+}
+.submitButtonStyles {
+  @apply w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+.footerAuthStyles {
+  @apply mt-8 text-center text-gray-400;
+}
+.linkStyles {
+  @apply font-medium text-red-400 hover:text-red-300;
+}
+
+.textErrorStyles {
+  @apply bg-gray-800;
+}
+.error {
+  @apply text-gray-300 mb-4;
+}
+.closePopUpStyles {
+  @apply w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50;
+}
+
+.svgStyles {
+  @apply text-xl font-bold text-red-500 mb-4;
+}
+
+/* Login */
+
+/* Profile */
+
+.taskSectionStyles {
+  @apply bg-gray-800 rounded-xl p-6;
+}
+.completedTaskIcon {
+  @apply w-6 h-6 mr-2 text-green-500;
+}
+.currentTaskIcon {
+  @apply w-6 h-6 mr-2 text-yellow-500;
+}
+.overdueTaskIcon {
+  @apply w-6 h-6 mr-2 text-red-500;
+}
+.buttonRedirectStyles {
+  @apply w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded mr-2;
+}
+.buttonLogoutStyles {
+  @apply w-full md:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded;
+}
+.mainProfileDiv {
+  @apply min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100;
+}
+.sectionStyles {
+  @apply mb-8 bg-gray-800 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center;
+}
+
+/* createTask */
+.formStyles {
+  @apply space-y-4 bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto my-6 flex flex-col gap-4;
+}
+.createButton {
+  @apply px-4 py-2 bg-red-500 rounded-xl hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50;
+}
+.autofillButton {
+  @apply px-4 py-2 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50;
+}
+/* createTask */
+
+/* dashboard */
+
+.mainDashboardDiv {
+  @apply bg-gray-800 border border-gray-700 rounded shadow p-4;
+}
+
+.rectHoverStyles {
+  @apply hover:fill-red-600 transition-colors;
+}
+.h3Text {
+  @apply font-semibold bg-gray-700 text-white px-3 py-1 rounded;
+}
+
+.searchInputStyles {
+  @apply w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-red-500;
+}
+.checkboxInputStyles {
+  @apply h-5 w-5 text-red-600;
+}
+.selectedEmployeeStyles {
+  @apply bg-gray-800 border border-gray-700 rounded shadow p-4 w-full overflow-x-auto;
+}
+
+/* dashboard */

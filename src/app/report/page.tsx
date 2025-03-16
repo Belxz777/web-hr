@@ -61,13 +61,13 @@ export default function ReportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="mainProfileDiv">
       <Header  title="Заполнение отчета" />
       <main className="container mx-auto p-4">
         {tasks.length > 0 ? (
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto"
+            className="taskSectionStyles max-w-2xl mx-auto"
           >
             <h1 className="text-center text-gray-300 text-2xl font-bold">
               Заполнение отчета
@@ -75,7 +75,7 @@ export default function ReportPage() {
             <div className="mb-4">
               <label
                 htmlFor="taskId"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="labelStyles mb-2"
               >
                 Выберите задачу
               </label>
@@ -102,7 +102,7 @@ export default function ReportPage() {
             <div className="mb-4">
               <label
                 htmlFor="workingHours"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="labelStyles mb-2"
               >
                 Количество рабочих часов
               </label>
@@ -122,7 +122,7 @@ export default function ReportPage() {
             <div className="mb-6">
               <label
                 htmlFor="comment"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="labelStyles mb-2"
               >
                 Комментарий
               </label>
@@ -146,7 +146,7 @@ export default function ReportPage() {
             </button>
           </form>
         ) : loadingRep ? (
-          <div className="flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto mt-4">
+          <div className="flex flex-col items-center justify-center taskSectionStyles max-w-2xl mx-auto mt-4">
             <div className="w-full h-96 flex items-center justify-center">
               <svg
                 className="animate-spin h-10 w-10 text-white"
@@ -171,7 +171,7 @@ export default function ReportPage() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto mt-4 min-h-[300px]">
+          <div className="flex flex-col items-center justify-center taskSectionStyles max-w-2xl mx-auto mt-4 min-h-[300px]">
             <h1 className="text-2xl font-bold text-gray-300 mt-4">
               Задач для отчета нет
             </h1>
