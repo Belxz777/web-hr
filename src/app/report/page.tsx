@@ -19,7 +19,7 @@ export default function ReportPage() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<report>({
     taskId: tasks[0]?.taskId,
-    workingHours: 0,
+    workingHours: 0.5,
     comment: "",
   });
   
@@ -50,6 +50,7 @@ export default function ReportPage() {
     
     if (Number(formData.workingHours) > tasks.find((el: task) => el.taskId === Number(formData.taskId))?.hourstodo) {
       alert("Неверное количество отработанных часов");
+      setFormData((prev) => ({ ...prev, workingHours: 0.5 }));
       return;
     }
 
@@ -119,7 +120,7 @@ export default function ReportPage() {
                 onChange={handleChange}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                 required
-                min="0.1"
+                min="0.5"
                 step="0.1"
               />
             </div>

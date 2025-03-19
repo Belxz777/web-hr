@@ -95,7 +95,7 @@ export default function Home() {
               value={login}
               onChange={(e) => setLogin(e.target.value)}
               className="emailInputStyles"
-              placeholder="Введите email"
+              placeholder="Введите логин"
             />
           </div>
           <div className="relative">
