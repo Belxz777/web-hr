@@ -17,6 +17,7 @@ import { Header } from '@/components/ui/header'
 export default function ProfilePage() {
   const router = useRouter()
   const { employeeData, title, loadingEmp, error: employeeError } = useEmployeeData()
+console.log(employeeData);
 
   const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false)
   return (

@@ -1,3 +1,4 @@
+import { useUserStore } from "@/store/userStore";
 import { PulseLogo } from "@/svgs/Logo";
 import Link from "next/link";
 import { useState } from "react";
@@ -30,8 +31,7 @@ const MenuItem: React.FC<{
 
 const HeaderMenu: React.FC<{}> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const employeePos = localStorage.getItem("lc-pos-x");
-  const employeePosBool = JSON.parse(employeePos);
+  const { isBoss } = useUserStore();
 
   return (
     <div className="relative">
@@ -55,9 +55,9 @@ const HeaderMenu: React.FC<{}> = () => {
           />
         </svg>
       </button>
-      {isMenuOpen && employeePos && (
+      {isMenuOpen && (
         <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
-          {employeePosBool && (
+          {isBoss && (
             <>
               <MenuItem
                 href="/department/report/download"

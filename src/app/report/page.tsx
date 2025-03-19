@@ -22,7 +22,7 @@ export default function ReportPage() {
     workingHours: 0,
     comment: "",
   });
-
+  
   useEffect(() => {
     if (tasks.length > 0) {
       setFormData((prev) => ({ ...prev, taskId: tasks[0].taskId }));
@@ -45,6 +45,11 @@ export default function ReportPage() {
     e.preventDefault();
     if (tasks.length === 0) {
       alert("Нет доступных задач для отчета");
+      return;
+    }
+    
+    if (Number(formData.workingHours) > tasks.find((el: task) => el.taskId === Number(formData.taskId))?.hourstodo) {
+      alert("Неверное количество отработанных часов");
       return;
     }
 
