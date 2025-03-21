@@ -4,7 +4,6 @@ export function calculateTimeLeft(created: string, hoursToAccomplish: number): s
     const localTime = timestamp
     const totalMilliseconds = hoursToAccomplish * 60 * 60 * 1000;
     const expirationDate = new Date(localTime.getTime() + totalMilliseconds);
-//console.log(createdDate,expirationDate,currentDate,hoursToAccomplish)
     const timeDiff = expirationDate.getTime() -new Date().getTime();
     const hoursLeft = Math.floor(timeDiff / (1000 * 60 * 60));
     const minutesLeft = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));

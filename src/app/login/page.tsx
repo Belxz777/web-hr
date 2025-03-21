@@ -40,9 +40,7 @@ export default function Home() {
     });
 
     try {
-      console.log(data);
       const resultData = await sendUserLoginData(data);
-      console.log(resultData);
 
       if (!resultData) {
         setLoading(false);
@@ -53,7 +51,7 @@ export default function Home() {
         return;
       }
 
-      setIsBoss(resultData.isBoss);
+      setIsBoss(resultData.isBoss); 
 
       localStorage.setItem("lc-pos-x", resultData.isBoss);
       if (resultData.isBoss) {

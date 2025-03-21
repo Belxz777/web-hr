@@ -13,7 +13,6 @@ export const useEmployees = (employeeData: any) => {
       setLoading(true);
       try {
         const data = await getEmployees(employeeData.departmentid);
-        console.log(data);
 
         setEmployees(data);
       } catch (err) {

@@ -14,12 +14,13 @@ import { useState } from 'react'
 import UniversalFooter from '@/components/buildIn/UniversalFooter'
 import { time } from 'console'
 import { Header } from '@/components/ui/header'
+import { useUserStore } from '@/store/userStore'
 export default function ProfilePage() {
   const router = useRouter()
   const { employeeData, title, loadingEmp, error: employeeError } = useEmployeeData()
-console.log(employeeData);
-
-  const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false)
+  const { isBoss } = useUserStore();
+  const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false);
+  
   return (
 
     <div className="mainProfileDiv">
@@ -108,7 +109,7 @@ console.log(employeeData);
           />
         </div>
         {
-          employeeData?.position !== 1 && employeeData ? (
+          (employeeData?.position !== 1 || isBoss) && employeeData ? (
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
               {/* <ReportUpload /> */}
               <ReportDownload />

@@ -168,7 +168,7 @@ export default function DocumentationPage() {
               )}
                {activeSection === "fuck" && (
                 <div>
-                  <h3>Заебали баги</h3>
+                  <h3>Баги</h3>
                   <p>
                     Для отслеживания и документирования багов мы используем систему issue tracking в GitHub. Процесс
                     работы с багами:

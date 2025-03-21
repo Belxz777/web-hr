@@ -1,11 +1,19 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type UserStore = {
   isBoss: boolean;
   setIsBoss: (isBoss: boolean) => void;
 };
 
-export const useUserStore = create<UserStore>((set) => ({
-  isBoss: false,
-  setIsBoss: (isBoss) => set({ isBoss }),
-}));
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      isBoss: false,
+      setIsBoss: (isBoss) => set({ isBoss }),
+    }),
+    {
+      name: "user-storage",
+    }
+  )
+);
