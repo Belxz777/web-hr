@@ -24,7 +24,8 @@ export default function ProfilePage() {
   return (
 
     <div className="mainProfileDiv">
-      <Header  title="Личный кабинет" />
+      <Header title="Личный кабинет" empPos={employeeData?.position || 0} />
+  
 
       <main className="container mx-auto p-4">
         <section className="sectionStyles">
