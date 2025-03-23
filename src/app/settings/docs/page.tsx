@@ -34,8 +34,8 @@ export default function DocumentationPage() {
   return (
     <div className="mainProfileDiv">
      <Header  title="Документация"/>
-
-      <main className="container mx-auto p-4 flex flex-col md:flex-row">
+<text>В разработке...</text>
+      {/* <main className="container mx-auto p-4 flex flex-col md:flex-row">
         <nav className="w-full md:w-1/4 mb-4 md:mb-0">
           <ul className="bg-gray-800 rounded-lg p-4">
             {documentationSections.map((section) => (
@@ -235,7 +235,7 @@ s</li>
             </div>
           </div>
         </section>
-      </main>
+      </main> */}
     </div>
   )
 }

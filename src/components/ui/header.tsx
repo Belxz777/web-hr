@@ -56,7 +56,7 @@ const HeaderMenu = ({empPos}: {empPos: number}) => {
       </button>
       {isMenuOpen && (
         <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
-          {(isBoss || empPos != 1 )&& (
+          {(isBoss || empPos > 1 )&& (
             <>
               <MenuItem
                 href="/department/report/download"

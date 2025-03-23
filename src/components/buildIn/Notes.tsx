@@ -33,6 +33,7 @@ export const Notes = () => {
       <div className="space-y-4 bg-gray-800 rounded-xl p-6 my-6 flex flex-col gap-4 border border-gray-700 ">
         <div>
           <h2 className="text-base font-medium text-gray-100">Заметки</h2>
+          <h3 className="text-base font-medium text-gray-600">здесь вы можете написать заметки, которые будут видны только вам</h3>
         </div>
 
         <ul className="max-h-80 overflow-y-auto space-y-2">

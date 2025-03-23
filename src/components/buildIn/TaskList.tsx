@@ -15,7 +15,7 @@ export function TaskList({ tasks,isComp }: { tasks: task[] | undefined,isComp?:b
           {
              task.hourstodo > 0 && (
               <p className="text-gray-400">
-                Часов до завершения: {task.hourstodo}
+                {`Часов до завершения: ${task.hourstodo} (${task.hourstodo * 60} мин)`}
               </p>
             )
           }

@@ -121,7 +121,7 @@ export default function ReportPage() {
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                 required
                 min="0.5"
-                step="0.1"
+                step="0.10"
               />
             </div>
 
@@ -139,7 +139,6 @@ export default function ReportPage() {
                 onChange={handleChange}
                 rows={4}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                required
               ></textarea>
             </div>
 
