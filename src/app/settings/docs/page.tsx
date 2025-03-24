@@ -5,7 +5,6 @@ import Link from "next/link"
 import { PulseLogo } from "@/svgs/Logo"
 import { useRouter } from "next/navigation"
 import { Header } from "@/components/ui/header"
-import { Notes } from "@/components/buildIn/Notes"
 
 const documentationSections = [
   { id: "frontend", title: "Фронтенд" },

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PulseLogo } from '@/svgs/Logo'
 import { Header } from '@/components/ui/header'
-import { Notes } from '@/components/buildIn/Notes'
 
 // Пример данных контактов поддержки
 const supportContacts = [
@@ -63,7 +62,6 @@ export default function SettingsPage() {
 Документация 
           </Link>
         </section> */}
-                      <Notes  />
             </section>
       </main>
     </div>
