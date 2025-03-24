@@ -24,7 +24,7 @@ export default function ProfilePage() {
   return (
 
     <div className="mainProfileDiv">
-      <Header title="Личный кабинет" empPos={employeeData?.position || 0} />
+      <Header title="Личный кабинет" />
   
 
       <main className="container mx-auto p-4">

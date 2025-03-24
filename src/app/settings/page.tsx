@@ -26,7 +26,7 @@ export default function SettingsPage() {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-red-600 to-gray-900 text-gray-100' : 'bg-gradient-to-br from-red-100 to-gray-100 text-gray-900'}`}>
-    <Header  title="Настройки"/>
+    <Header  title="Настройки" />
 
       <main className="container mx-auto p-4">
         <section className={`mb-8 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>

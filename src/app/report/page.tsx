@@ -68,7 +68,7 @@ export default function ReportPage() {
 
   return (
     <div className="mainProfileDiv">
-      <Header  title="Заполнение отчета" />
+      <Header  title="Заполнение отчета"/>
       <main className="container mx-auto p-4">
         {tasks.length > 0 ? (
           <form
