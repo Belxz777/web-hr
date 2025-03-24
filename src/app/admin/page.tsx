@@ -8,6 +8,7 @@ import { createJob } from "@/components/server/jobs";
 import createDepartment from "@/components/server/createDepartment";
 import getEmployees from "@/components/server/emps_get";
 import promotion from "@/components/server/promotion";
+import { deleteUser } from "@/components/server/userdata";
 
 // Types
 type Employee = {
@@ -124,19 +125,15 @@ export default function AdminPage() {
   const handleDepartmentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !departmentForm.name ||
-      !departmentForm.description ||
-      !departmentForm.headId
-    ) {
-      showSuccessNotification("Пожалуйста, заполните все поля формы");
+    if (!departmentForm.name) {
+      showSuccessNotification("Пожалуйста, заполните имя");
       return;
     }
-
+    
     const formattedData = {
       departmentName: departmentForm.name,
-      departmentDescription: departmentForm.description,
-      headId: Number(departmentForm.headId),
+      ...(departmentForm.description && { departmentDescription: departmentForm.description }),
+      ...(departmentForm.headId && Number(departmentForm.headId) > 0 && { headId: Number(departmentForm.headId) }),
     };
 
     try {
@@ -209,8 +206,7 @@ export default function AdminPage() {
     }
 
     try {
-      const response = "";
-
+      const response =  await deleteUser(employeeForDelete.empid)
       if (response) {
         showSuccessNotification("Сотрудник успешно удален");
         setEmployeeForDelete({ empid: 0 });
