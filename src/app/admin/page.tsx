@@ -372,7 +372,6 @@ export default function AdminPage() {
                 </label>
                 <select
                   id="departmentHead"
-                  required
                   value={departmentForm.headId}
                   onChange={(e) =>
                     setDepartmentForm((prev) => ({
