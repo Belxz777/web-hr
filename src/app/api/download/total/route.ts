@@ -1,6 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { host } from '@/types';
 
 export async function GET() {
   try {
@@ -11,7 +12,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const response = await fetch('https://backend-pulse.onrender.com/api/v1/download/department/xlsx/', {
+    const response = await fetch(`${host}download/department/xlsx/`, {
         credentials: 'include',
         headers: {
             Cookie: `jwt=${token}`, 
