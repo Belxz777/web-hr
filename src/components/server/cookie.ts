@@ -3,12 +3,10 @@ import { cookies } from "next/headers";
 
 export async function cookieget() {
     const cookieStore = cookies();
-    console.log(cookieStore)
     const jwt = cookieStore.get('cf-auth-id')?.value
     if (!jwt) {
         throw new Error('No token provided');
     }
-    console.log(jwt)
     return jwt
 }
 export async function cookiestate() {

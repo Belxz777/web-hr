@@ -23,7 +23,6 @@ async function getPerformanceData(employeeId: number): Promise<any> {
   }
 
   const data = await response.json();
-  console.log(data)
   return data;
 }
 

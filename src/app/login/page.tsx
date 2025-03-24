@@ -7,14 +7,11 @@ import { useState } from "react";
 import "@/app/globals.css";
 import { PulseLogo } from "@/svgs/Logo";
 import { useUserStore } from "@/store/userStore";
+import { host } from "@/types";
 
 export default function Home() {
   const { setIsBoss } = useUserStore();
-  const router = useRouter();
-  const schema = z.object({
-    login: z.string().min(6, "Логин должен содержать минимум 6 символов"),
-    password: z.string().min(6, "Пароль должен содержать минимум 6 символов"),
-  });
+    const router = useRouter();
 
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -40,9 +37,7 @@ export default function Home() {
     });
 
     try {
-      console.log(data);
       const resultData = await sendUserLoginData(data);
-      console.log(resultData);
 
       if (!resultData) {
         setLoading(false);
@@ -53,7 +48,7 @@ export default function Home() {
         return;
       }
 
-      setIsBoss(resultData.isBoss);
+      setIsBoss(resultData.isBoss); 
 
       localStorage.setItem("lc-pos-x", resultData.isBoss);
       if (resultData.isBoss) {

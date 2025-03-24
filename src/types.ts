@@ -62,10 +62,10 @@ type employee = {
     old_password:string,
     new_password:string
   }
-  const host ="https://backend-pulse.onrender.com/api/v1/"
+  const host =process.env.BACKEND_URL || "https://belxz777-backend-pulse-d8b6.twc1.net/api/v1/"
   // const host ="http://127.0.0.1:8000/api/v1/" //for local testing only
   interface statusType {
-      code:string | number,
+    code:string | number,
   text:string
   }
   

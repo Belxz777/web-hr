@@ -21,7 +21,6 @@ async function changePassword(passwordData:changePass): Promise<any> {
         },
         body: JSON.stringify(passwordData)
     });
-    console.log(response)
     return response.json();
 }
 catch (err) { 

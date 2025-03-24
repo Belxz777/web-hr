@@ -17,7 +17,6 @@ export default function UploadTasksPage() {
   const handleUpload = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (selectedFile) {
-      console.log(`Загрузка файла: ${selectedFile.name}`)
       // Здесь будет логика загрузки файла на сервер
     } else {
       console.log('Файл не выбран')

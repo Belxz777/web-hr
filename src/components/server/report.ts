@@ -8,11 +8,9 @@ export default async function sendReport(reportData:report) {
     if(!jwt){
         throw new Error('No token provided')
     }
-        // Convert taskId and workingHours from string to number
         const parsedReportData = {
             ...reportData,
         };
-    console.log(parsedReportData)
         const res = await (await fetch(`${host}fill/progress/?task_id=${Number(parsedReportData.taskId)}`, {
             method: 'POST',
             credentials: 'include',

@@ -10,11 +10,8 @@ import { type } from 'os';
           return NextResponse.json({ error: 'No token provided' }, { status: 401 });
         }
       try {
-        console.log("POST")
         const data = await request.json()
       
-        console.log(data, typeof data) 
-        console.log(request.body) 
         const response = await fetch('https://backend-pulse.onrender.com/api/v1/download/department/xlsx/persice/', {
           method: 'POST',
           credentials: 'include',

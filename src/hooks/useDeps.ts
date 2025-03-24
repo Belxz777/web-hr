@@ -13,7 +13,6 @@ const useGetAlldeps = () => {
         const response = await getAllDepartments();
         const data = Array.isArray(response) ? response : [];
         setdeps(data);
-        console.log(data)
       } catch (err) {
         console.log(err);
         setError(err instanceof Error ? err.message : "Unknown error");

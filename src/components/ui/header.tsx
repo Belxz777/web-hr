@@ -28,8 +28,7 @@ const MenuItem: React.FC<{
     </li>
   );
 };
-
-const HeaderMenu: React.FC<{}> = () => {
+const HeaderMenu = ({empPos}: {empPos: number}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isBoss } = useUserStore();
 
@@ -57,7 +56,7 @@ const HeaderMenu: React.FC<{}> = () => {
       </button>
       {isMenuOpen && (
         <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
-          {isBoss && (
+          {(isBoss || empPos > 1 )&& (
             <>
               <MenuItem
                 href="/department/report/download"
@@ -212,7 +211,8 @@ const HeaderMenu: React.FC<{}> = () => {
   );
 };
 
-const Header: React.FC<{ title: string }> = ({ title }) => {
+const Header: React.FC<{ title: string; empPos: number }> = ({ title, empPos }) => {
+
   return (
     <header className="bg-gray-800 p-4 flex justify-between items-center">
       <Link href="/profile" prefetch={false}>
@@ -223,7 +223,7 @@ const Header: React.FC<{ title: string }> = ({ title }) => {
           </h1>
         </div>
       </Link>
-      <HeaderMenu />
+      <HeaderMenu empPos = {empPos}/>
     </header>
   );
 };
