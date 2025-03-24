@@ -136,7 +136,10 @@ export default function DashboardPage() {
   const [employeeSelectedData, setEmployeeSelectedData] = useState<
     PerformanceData[]
   >([]);
-  const [departmentData, setDepartmentData] = useState<DepartmentData>({});
+  const [departmentData, setDepartmentData] = useState<DepartmentData>({
+    department: '',
+    performance: []
+  });
   const [loading, setLoading] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -189,14 +192,19 @@ export default function DashboardPage() {
         const data = await getDepartmentPerformanceData(
           employeeData.departmentid
         );
-        setDepartmentData(data);
+        setDepartmentData({
+          department: data.department,
+          performance: data.performance.map(item => ({
+            ...item,
+            total_hours: item.total_hours.toString()
+          }))
+        });
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
     };
-
     getDepartmentPerformance();
   }, [employeeData]);
 
