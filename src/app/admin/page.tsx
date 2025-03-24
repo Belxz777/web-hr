@@ -18,31 +18,31 @@ type Employee = {
   currentLevel?: number;
 };
 
-type Position = {
-  id: number;
-  title: string;
-  description: string;
-};
+// type Position = {
+//   id: number;
+//   title: string;
+//   description: string;
+// };
 
-const positions: Position[] = [
-  {
-    id: 1,
-    title: "Младший разработчик",
-    description: "Начальная позиция разработчика",
-  },
-  { id: 2, title: "Разработчик", description: "Основная позиция разработчика" },
-  {
-    id: 3,
-    title: "Старший разработчик",
-    description: "Ведущая позиция разработчика",
-  },
-  { id: 4, title: "Дизайнер", description: "Позиция дизайнера" },
-  { id: 5, title: "Менеджер", description: "Управляющая позиция" },
-];
+// const positions: Position[] = [
+//   {
+//     id: 1,
+//     title: "Младший разработчик",
+//     description: "Начальная позиция разработчика",
+//   },
+//   { id: 2, title: "Разработчик", description: "Основная позиция разработчика" },
+//   {
+//     id: 3,
+//     title: "Старший разработчик",
+//     description: "Ведущая позиция разработчика",
+//   },
+//   { id: 4, title: "Дизайнер", description: "Позиция дизайнера" },
+//   { id: 5, title: "Менеджер", description: "Управляющая позиция" },
+// ];
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<
-    "departments" | "positions" | "promotion" | "excel"
+    "departments" | "positions" | "promotion"| "delete" | "excel"
   >("departments");
   const [showNotification, setShowNotification] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -63,6 +63,7 @@ export default function AdminPage() {
     title: "",
     description: "",
   });
+  const [employeeForDelete, setEmployeeForDelete] = useState({empid: 0});
 
   // Promotion form state
   const [promotionForm, setPromotionForm] = useState({
@@ -96,23 +97,23 @@ export default function AdminPage() {
     }
   }, [activeTab]);
 
-  const handleAdminAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  // const handleAdminAuth = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  //   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (adminPassword === "123") {
-      setIsAdmin(true);
-      showSuccessNotification("Доступ предоставлен");
-    } else {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
-    }
+  //   if (adminPassword === "123") {
+  //     setIsAdmin(true);
+  //     showSuccessNotification("Доступ предоставлен");
+  //   } else {
+  //     setShowError(true);
+  //     setTimeout(() => setShowError(false), 3000);
+  //   }
 
-    setIsLoading(false);
-    setAdminPassword("");
-  };
+  //   setIsLoading(false);
+  //   setAdminPassword("");
+  // };
 
   const showSuccessNotification = (message: string) => {
     setNotificationMessage(message);
@@ -200,6 +201,26 @@ export default function AdminPage() {
     }
   };
 
+  const handleEmployeeDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!employeeForDelete.empid) {
+      showSuccessNotification("Пожалуйста, выберите сотрудника");
+      return;
+    }
+
+    try {
+      const response = "";
+
+      if (response) {
+        showSuccessNotification("Сотрудник успешно удален");
+        setEmployeeForDelete({ empid: 0 });
+      }
+    } catch (error) {
+      console.error("Error promoting employee:", error);
+      showSuccessNotification("Ошибка при удалении сотрудника");
+    }
+  };
+
   const handleEmployeeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const employeeId = e.target.value;
     const employee = employees.find(
@@ -275,6 +296,16 @@ export default function AdminPage() {
             }`}
           >
             Повышение сотрудника
+          </button>
+          <button
+            onClick={() => setActiveTab("delete")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "delete"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+            Удаление сотрудника
           </button>
           <button
             onClick={() => setActiveTab("excel")}
@@ -535,6 +566,48 @@ export default function AdminPage() {
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
               >
                 Повысить сотрудника
+              </button>
+            </form>
+          </section>
+        )}
+
+{activeTab === "delete" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4 text-white">
+              Удаление сотрудника
+            </h2>
+            <form className="space-y-4" onSubmit={handleEmployeeDelete}>
+              <div>
+                <label htmlFor="deleteTitle" className="labelStyles mb-2">
+                  Сотрудник
+                </label>
+                <select
+                  id="deleteTitle"
+                  required
+                  value={employeeForDelete.empid}
+                  onChange={(e) =>{
+                    setEmployeeForDelete({empid: Number(e.target.value)})
+                  }
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите сотрудника</option>
+                  {employees.map((employee) => (
+                    <option
+                      key={employee.employeeId}
+                      value={employee.employeeId}
+                    >
+                      {employee.firstName} {employee.lastName} (поз.{" "}
+                      {employee.position})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
+              >
+                Удалить
               </button>
             </form>
           </section>

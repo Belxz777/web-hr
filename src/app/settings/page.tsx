@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PulseLogo } from '@/svgs/Logo'
 import { Header } from '@/components/ui/header'
+import { Notes } from '@/components/buildIn/Notes'
 
 // Пример данных контактов поддержки
 const supportContacts = [
@@ -38,8 +39,8 @@ export default function SettingsPage() {
               </li>
             ))}
           </ul>
-        </section>
-        <section className={`mb-8 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>
+      
+        {/* <section className={`mb-8 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>
           <h2 className="text-2xl font-bold mb-4">Тема приложения</h2>
           <div className="flex items-center justify-between">
             <span>Текущая тема: {theme === 'dark' ? 'Темная' : 'Светлая'}</span>
@@ -54,14 +55,16 @@ export default function SettingsPage() {
               Переключить тему
             </button>
           </div>
-        </section>
+        </section> */}
 
-        <section className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>
+        {/* <section className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6`}>
           <h2 className="text-2xl font-bold mb-4">Будущие настройки</h2>
           <Link href="/settings/docs" className="text-red-600 hover:underline">
 Документация 
           </Link>
-        </section>
+        </section> */}
+                      <Notes  />
+            </section>
       </main>
     </div>
   )
