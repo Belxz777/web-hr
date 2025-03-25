@@ -64,7 +64,7 @@ type employee = {
   }
   const host =process.env.BACKEND_URL || "https://telegram-quests-backend.onrender.com/api/v1/"
 
-/" //for local testing only
+
   interface statusType {
     code:string | number,
   text:string
