@@ -43,7 +43,7 @@ export default function DownloadReportPage() {
       end_date: endDate,
     };
     try {
-      const response = await fetch(`http://localhost:3000/api/download/persise`, {
+      const response = await fetch(`/api/download/persise`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(body),
