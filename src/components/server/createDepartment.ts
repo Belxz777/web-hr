@@ -10,7 +10,7 @@ interface DepartmentData {
   headId: number;
 }
 
-async function createDepartment(departmentData: DepartmentData): Promise<any> {
+async function createDepartment(departmentData: DepartmentData | any): Promise<any> {
   try {
     const response = await fetch(`${host}entities/department/create/`, {
       method: "POST",

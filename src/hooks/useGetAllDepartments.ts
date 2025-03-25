@@ -1,6 +1,6 @@
-import getEmployees from "@/components/server/emps_get";
-import getAllJobs from "@/components/server/jobs";
-import { useEffect, useState } from "react";
+// import getEmployees from "@/components/server/emps_get";
+// import getAllJobs from "@/components/server/jobs";
+// import { useEffect, useState } from "react";
 
 const useGetAllDepartments = () => {
   // const [jobs, setJobs] = useState<any[]>([]);

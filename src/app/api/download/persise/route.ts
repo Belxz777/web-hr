@@ -2,6 +2,7 @@
     import { cookies } from 'next/headers';
   import { json } from 'stream/consumers';
 import { type } from 'os';
+import { host } from '@/types';
 
     export async function POST(request: any, response: any): Promise<any> {
         const cookieStore = cookies();
@@ -12,7 +13,7 @@ import { type } from 'os';
       try {
         const data = await request.json()
       
-        const response = await fetch('https://backend-pulse.onrender.com/api/v1/download/department/xlsx/persice/', {
+        const response = await fetch(`${host}download/department/xlsx/persice/`, {
           method: 'POST',
           credentials: 'include',
           body:JSON.stringify(data),

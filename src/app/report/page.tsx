@@ -123,6 +123,13 @@ export default function ReportPage() {
                 min="0.5"
                 step="0.10"
               />
+              <div className="text-gray-300 mt-2">
+    {formData.workingHours > 0 && (
+      <p>
+        {Math.floor(formData.workingHours)} ч {Math.round((formData.workingHours % 1) * 60)} мин
+      </p>
+    )}
+  </div>
             </div>
 
             <div className="mb-6">
@@ -176,7 +183,7 @@ export default function ReportPage() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center taskSectionStyles max-w-2xl mx-auto mt-4 min-h-[300px]">
+          <div className="flex flex-col items-center justify-center taskSectionStyles max-w-2xl mx-auto mt-4 min-h-[300px] cursor-pointer">
             <h1 className="text-2xl font-bold text-gray-300 mt-4">
               Задач для отчета нет
             </h1>

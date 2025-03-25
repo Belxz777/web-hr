@@ -40,4 +40,18 @@ async function userTaskstoReport():Promise<Array<task> | task | []> {
     const data = await res.json();
     return data
 }
-export {userTasks,userTaskstoReport}
+async function  deleteUser(id:number) {
+
+    const res = await (await fetch(`${host}users/delete/${id}`, {
+        credentials: 'include',  
+method:"DELETE"
+    }))
+    if(!res.ok) {
+        console.log(res.status)
+        throw new Error('ERR')
+    }
+    const data = await res.json();
+    return data
+    
+}
+export {userTasks,userTaskstoReport,deleteUser}

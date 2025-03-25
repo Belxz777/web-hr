@@ -12,7 +12,7 @@ export const useEmployees = (employeeData: any) => {
     const fetchEmployees = async () => {
       setLoading(true);
       try {
-        const data = await getEmployees(employeeData.departmentid);
+        const data = await getEmployees();
 
         setEmployees(data);
       } catch (err) {
