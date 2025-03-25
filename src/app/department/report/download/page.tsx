@@ -87,7 +87,7 @@ export default function DownloadReportPage() {
 
   return (
     <div className="mainProfileDiv">
-      <Header title="Скачивание точного отчета" />
+      <Header title="Скачивание точного отчета"  showPanel={false}  position={0}/>
 
       {loading ? (
         <div className="w-full h-screen flex items-center justify-center">

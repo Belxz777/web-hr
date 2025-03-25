@@ -79,7 +79,7 @@ export default function CreateTaskPage() {
 
   return (
     <div className="mainProfileDiv">
-      <Header  title="Создание новой задачи" />
+      <Header  title="Создание новой задачи" showPanel={false} />
       <main className="container mx-auto p-4">
         <form
           onSubmit={handleSubmit}

@@ -28,9 +28,8 @@ const MenuItem: React.FC<{
     </li>
   );
 };
-const HeaderMenu = () => {
+const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isBoss } = useUserStore();
 
   return (
     <div className="relative">
@@ -56,7 +55,7 @@ const HeaderMenu = () => {
       </button>
       {isMenuOpen && (
         <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
-          {isBoss && (
+          {position !== null && position >= 2 && (
             <>
               <MenuItem
                 href="/department/report/download"
@@ -102,33 +101,37 @@ const HeaderMenu = () => {
               >
                 Анализ отдела
               </MenuItem>
-
-              <MenuItem
-                href="/admin"
-                icon={
-                  <svg
-                    className="w-6 h-6  dark:text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 2L3 5v6c0 5.5 3.5 10.75 9 12 5.5-1.25 9-6.5 9-12V5l-9-3z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 12l2 2 4-4"
-                    />
-                  </svg>
-                }
-              >
-                Панель администрации
-              </MenuItem>
+{
+  position >=4 && (
+    <MenuItem
+    href="/admin"
+    icon={
+      <svg
+        className="w-6 h-6  dark:text-white"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 2L3 5v6c0 5.5 3.5 10.75 9 12 5.5-1.25 9-6.5 9-12V5l-9-3z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M9 12l2 2 4-4"
+        />
+      </svg>
+    }
+  >
+    Панель администрации
+  </MenuItem>
+  )
+}
+            
             </>
           )}
           <MenuItem
@@ -210,9 +213,7 @@ const HeaderMenu = () => {
     </div>
   );
 };
-
-const Header: React.FC<{ title: string;  }> = ({ title, }) => {
-
+const Header: React.FC<{ title: string; position?: number | null; showPanel: boolean }> = ({ title, position = null, showPanel }) => {  
   return (
     <header className="bg-gray-800 p-4 flex justify-between items-center">
       <Link href="/profile" prefetch={false}>
@@ -223,9 +224,8 @@ const Header: React.FC<{ title: string;  }> = ({ title, }) => {
           </h1>
         </div>
       </Link>
-      <HeaderMenu />
+    {showPanel &&  <HeaderMenu  position={position}/>} 
     </header>
   );
 };
-
 export { Header };

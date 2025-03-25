@@ -11,7 +11,7 @@ async function getEmployees() {
             throw new Error('No token provided')
         }
     try {
-        const response = await fetch(`${host}entities/department/employees/select/`,
+        const response = await fetch(`${host}users/`,
             {
                 method: 'GET',
                 credentials: 'include',

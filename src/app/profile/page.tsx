@@ -10,9 +10,8 @@ import { task } from '@/types'
 import { TaskList } from '@/components/buildIn/TaskList'
 import { ReportDownload } from '@/components/buildIn/ReportDownload'
 import { ReportUpload } from '@/components/buildIn/ReportUpload'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import UniversalFooter from '@/components/buildIn/UniversalFooter'
-import { time } from 'console'
 import { Header } from '@/components/ui/header'
 import { useUserStore } from '@/store/userStore'
 export default function ProfilePage() {
@@ -20,13 +19,21 @@ export default function ProfilePage() {
   const { employeeData, title, loadingEmp, error: employeeError } = useEmployeeData()
   const { isBoss } = useUserStore();
   const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false);
-  
+  const [position, setPosition] = useState<number>(1)
+  useEffect(() => {
+setTimeout(() => {
+  if (employeeData) {
+  setPosition(employeeData.position)
+}
+},
+3000)
+  }, []);
   return (
-
     <div className="mainProfileDiv">
-      <Header title="Личный кабинет" />
-  
+    {
+      employeeData &&  <Header title="Личный кабинет" position={employeeData.position} showPanel />
 
+    }
       <main className="container mx-auto p-4">
         <section className="sectionStyles">
           {loadingEmp ? (
@@ -121,8 +128,7 @@ export default function ProfilePage() {
       <UniversalFooter />
     </div>
   )
-} function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {
-  return (
+} function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {  return (
     <section className="taskSectionStyles">
       <h3 className="text-xl font-bold mb-4 flex items-center">
         {icon}

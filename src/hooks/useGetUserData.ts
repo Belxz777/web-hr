@@ -18,6 +18,7 @@ const useEmployeeData = () => {
       try {
         setLoading(true);
         const response = await authUser();
+        console.log(response)
         setData(response);
         if (response?.jobid) {
           const jobTitle = await fetchTitle(response.jobid);

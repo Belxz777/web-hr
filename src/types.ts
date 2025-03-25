@@ -62,7 +62,7 @@ type employee = {
     old_password:string,
     new_password:string
   }
-  const host = process.env.BACKEND_URL || "https://belxz777-backend-pulse-f838.twc1.net/api/v1/"
+  const host = process.env.BACKEND_URL || "http://127.0.0.1:8000/api/v1/"
 
 
   interface statusType {
