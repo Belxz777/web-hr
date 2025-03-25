@@ -62,7 +62,7 @@ type employee = {
     old_password:string,
     new_password:string
   }
-  const host =process.env.BACKEND_URL || "https://telegram-quests-backend.onrender.com/api/v1/"
+  const host = "https://telegram-quests-backend.onrender.com/api/v1/"
 
 
   interface statusType {
