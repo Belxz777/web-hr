@@ -17,7 +17,7 @@ export function ReportDownload() {
     try {
       // Retrieve the cookie from the browser
       // Make the request to download the XLSX file
-          const response = await fetch(`http://localhost:3000/api/download/total`);
+          const response = await fetch(`/api/download/total`);
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
