@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Рабочий Пульс",
   description: "Эффективный менеджер трудозатрат",
   icons: {
-    icon: "/logo.png",
+    icon: "https://storage.yandexcloud.net/filesup/photo_5411229227967182152_m.png",
   }
 };
 
@@ -18,8 +18,6 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
 
-      <head><link rel="icon" href='/logo.png' sizes="any" />
-      </head>
       <body   >
       <ThemeProvider>
       {children}
