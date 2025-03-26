@@ -9,6 +9,7 @@ import createDepartment from "@/components/server/createDepartment";
 import getEmployees from "@/components/server/emps_get";
 import promotion from "@/components/server/promotion";
 import { deleteUser } from "@/components/server/userdata";
+import { useRouter } from "next/navigation";
 
 // Types
 type Employee = {
@@ -115,7 +116,7 @@ export default function AdminPage() {
   //   setIsLoading(false);
   //   setAdminPassword("");
   // };
-
+const router  = useRouter();
   const showSuccessNotification = (message: string) => {
     setNotificationMessage(message);
     setShowNotification(true);
@@ -260,7 +261,7 @@ export default function AdminPage() {
 
   return (
     <div className="mainProfileDiv">
-      <Header title="Панель администратора" />
+      <Header title="Панель администратора" position={5} showPanel={false}/>
       <main className="container mx-auto p-4">
         <div className="mb-6 flex flex-wrap gap-2">
           <button
@@ -313,6 +314,24 @@ export default function AdminPage() {
           >
             Загрузка Excel файла с задачами
           </button>
+          <button
+            onClick={() => router.push('/stats')}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "excel"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+Работоспособность бекенда          </button>
+<button
+            onClick={() => router.push('/admin/users')}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "excel"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+Поиск пользователя       </button>
         </div>
 
         {activeTab === "departments" && (

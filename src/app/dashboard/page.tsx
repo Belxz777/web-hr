@@ -218,7 +218,7 @@ export default function DashboardPage() {
 
   return (
     <div className="mainProfileDiv">
-      <Header title="Статистика" />
+      <Header title="Статистика" showPanel={false}  />
 
       <main className="container mx-auto p-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

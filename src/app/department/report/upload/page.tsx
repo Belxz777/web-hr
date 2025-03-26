@@ -25,7 +25,7 @@ export default function UploadTasksPage() {
 
   return (
     <div className="mainProfileDiv">
-    <Header title="Загрузка задач"/>
+    <Header title="Загрузка задач" showPanel={false}  />
 
       <main className="container mx-auto p-4">
         <section className="taskSectionStyles max-w-2xl mx-auto">

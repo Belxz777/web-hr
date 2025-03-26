@@ -43,7 +43,7 @@ export default function DownloadReportPage() {
       end_date: endDate,
     };
     try {
-      const response = await fetch(`http://localhost:3000/api/download/persise`, {
+      const response = await fetch(`/api/download/persise`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(body),
@@ -87,7 +87,7 @@ export default function DownloadReportPage() {
 
   return (
     <div className="mainProfileDiv">
-      <Header title="Скачивание точного отчета" />
+      <Header title="Скачивание точного отчета"  showPanel={false}  position={0}/>
 
       {loading ? (
         <div className="w-full h-screen flex items-center justify-center">
