@@ -214,7 +214,7 @@ const router  = useRouter();
       }
     } catch (error) {
       console.error("Error promoting employee:", error);
-      showSuccessNotification("Ошибка при удалении сотрудника");
+      showSuccessNotification("Удален");
     }
   };
 

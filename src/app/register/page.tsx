@@ -24,7 +24,7 @@ export default function RegisterPage() {
   const { jobs, loading } = useGetAllJobs();
   
   const {deps}= useGetAlldeps()
-
+const [sended, setSent] = useState(false);
   const [formData, setFormData] = useState({
     login: "",
     password: "",
@@ -67,6 +67,7 @@ export default function RegisterPage() {
       const response = await registerUser(formData);
       console.log("Success:", response);
       router.push("/profile");
+      setSent(true);
     } catch (err) {
       console.error("Submit error:", err);
       setError(
@@ -226,7 +227,7 @@ export default function RegisterPage() {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || sended}
                 className="submitButtonStyles"
               >
                 {isLoading ? (

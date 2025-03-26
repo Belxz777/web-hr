@@ -120,7 +120,7 @@ export default function ReportPage() {
                 onChange={handleChange}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                 required
-                min="0.5"
+                min="0.1"
                 step="0.10"
               />
               <div className="text-gray-300 mt-2">
