@@ -5,7 +5,9 @@ import { ThemeProvider } from 'next-themes';
 export const metadata: Metadata = {
   title: "Рабочий Пульс",
   description: "Эффективный менеджер трудозатрат",
-  
+  icons: {
+    icon: "/logo.png",
+  }
 };
 
 export default function RootLayout({
