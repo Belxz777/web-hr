@@ -11,11 +11,79 @@ import sendReport from "@/components/server/report";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { BackButton } from "@/svgs/Back";
 import { Header } from "@/components/ui/header";
-
 export default function ReportPage() {
+  interface Responsibility {
+    name: string;
+    description: string;
+    type: number; // 1 for auxiliary, 2 for main
+    averageCompletionTime: number; // in hours.minutes format
+  }
+  
+  const responsibilities: Responsibility[] = [
+    {
+      name: "Development of regulatory documentation",
+      description: "Development of standards, regulations, instructions related to the organization of personnel assessment, training and development, mentoring, and career planning for employees.",
+      type: 2,
+      averageCompletionTime: 35.45
+    },
+    {
+      name: "Formation of training and development plans",
+      description: "Formation of personnel training and development plans for a month, quarter, year. Updating them if necessary by order of the HR director.",
+      type: 2,
+      averageCompletionTime: 20.30
+    },
+    {
+      name: "Organization of professional training",
+      description: "Organization of professional training of personnel according to approved plans for personnel training and advanced training.",
+      type: 2,
+      averageCompletionTime: 45.15
+    },
+    {
+      name: "Formation of personnel assessment plans",
+      description: "Formation of personnel assessment plans in accordance with the company's goals. Determination of resources, means and methods for conducting personnel assessment.",
+      type: 2,
+      averageCompletionTime: 18.20
+    },
+    {
+      name: "Organization of personnel assessment procedure",
+      description: "Organization of personnel assessment procedure in accordance with approved plans. Analysis of personnel assessment results, preparation of recommendations for management and personnel. Providing feedback on the assessment results to personnel and management.",
+      type: 2,
+      averageCompletionTime: 30.50
+    },
+    {
+      name: "Analysis of employee knowledge and skills",
+      description: "Analysis of information about employees' existing knowledge and skills, providing management with reports prepared in forms agreed with the manager.",
+      type: 1,
+      averageCompletionTime: 12.40
+    },
+    {
+      name: "Management of educational programs development",
+      description: "Management of the development of the company's educational programs.",
+      type: 2,
+      averageCompletionTime: 25.10
+    },
+    {
+      name: "Organization of department participation",
+      description: "Organization of enterprise departments' participation in the preparation of training materials, development of the Department's material and technical base, and the training process itself.",
+      type: 1,
+      averageCompletionTime: 15.25
+    },
+    {
+      name: "Preparation of presentations",
+      description: "Preparation of presentations on topics related to training and development.",
+      type: 1,
+      averageCompletionTime: 8.45
+    },
+    {
+      name: "Development of individual development plans",
+      description: "Development of individual development plans for employees based on assessment results.",
+      type: 2,
+      averageCompletionTime: 22.35
+    }
+  ];
   const { tasks, loadingRep } = useReport();
   const router = useRouter();
-
+const [datas, setdata] = useState<any>()
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<report>({
     taskId: tasks[0]?.taskId,
@@ -27,6 +95,7 @@ export default function ReportPage() {
     if (tasks.length > 0) {
       setFormData((prev) => ({ ...prev, taskId: tasks[0].taskId }));
     }
+
   }, [tasks]);
 
   const handleChange = (
@@ -83,7 +152,7 @@ export default function ReportPage() {
                 htmlFor="taskId"
                 className="labelStyles mb-2"
               >
-                Выберите задачу
+                Выберите функциональную обязанность
               </label>
               <select
                 id="taskId"
@@ -96,11 +165,16 @@ export default function ReportPage() {
                 {loadingRep ? (
                   <option value="">Загрузка...</option>
                 ) : (
-                  tasks.map((task: task) => (
-                    <option key={task.taskId} value={task.taskId}>
-                      {task.taskName}
+                  // tasks.map((task: task) => (
+                  //   <option key={task.taskId} value={task.taskId}>
+                  //     {task.taskName}
+                  //   </option>
+                  responsibilities.map((typical:any,index:number)=>(
+     <option key={index} value={index} className={` text-white ${typical.type==1 ? "bg-red-400" : "bg-green-700"}`}>
+                      {typical.name}
                     </option>
                   ))
+
                 )}
               </select>
             </div>
