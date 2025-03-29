@@ -30,10 +30,7 @@ setTimeout(() => {
   }, []);
   return (
     <div className="mainProfileDiv">
-    {
-      employeeData &&  <Header title="Личный кабинет" position={employeeData.position} showPanel />
-// сделай что бы не прыгал
-    }
+      <Header title="Личный кабинет" position={employeeData?.position} showPanel />
       <main className="container mx-auto p-4">
         <section className="sectionStyles">
           {loadingEmp ? (
@@ -49,8 +46,7 @@ setTimeout(() => {
               </h2>
               <p className="text-gray-400 select-none">{title}</p>
               <p className="text-gray-400 select-none">Отдел № {employeeData.departmentid}</p>
-              <div className='flex gap-4 justify-between '>
-              {/* перенести кнопку что бы не мешала и не портила вид*/}
+              <div className='flex gap-4 justify-between my-2'>
                 <button onClick={() => router.push("/report")} className="buttonRedirectStyles">
                   Заполнение отчета
                 </button>
