@@ -40,7 +40,10 @@ export default function ReportPage() {
       return;
     }
 
-    if (formData?.workingHours === undefined || Number(formData.workingHours) <= 0) {
+    if (
+      formData?.workingHours === undefined ||
+      Number(formData.workingHours) <= 0
+    ) {
       console.log("Invalid working hours:", formData.workingHours);
       alert("Укажите корректное количество часов");
       return;
@@ -107,7 +110,7 @@ export default function ReportPage() {
               required
             >
               {responsibilities.map((task) => (
-                <option key={task.id} value={task.id}>
+                <option key={task.id} value={task.id} className={`${task.type === 1 ? "bg-red-600" : "bg-gray-600"}`}>
                   {task.name}
                 </option>
               ))}

@@ -10,6 +10,7 @@ import getEmployees from "@/components/server/emps_get";
 import promotion from "@/components/server/promotion";
 import { deleteUser } from "@/components/server/userdata";
 import { useRouter } from "next/navigation";
+import { DownloadingAllReports } from "@/components/buildIn/DownloadingAllReports";
 
 // Types
 type Employee = {
@@ -44,7 +45,13 @@ type Employee = {
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<
-    "departments" | "positions" | "promotion"| "delete" | "excel"
+    | "departments"
+    | "positions"
+    | "promotion"
+    | "delete"
+    | "excel"
+    | "downloadingAllReports"
+    | "addFR"
   >("departments");
   const [showNotification, setShowNotification] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -65,7 +72,11 @@ export default function AdminPage() {
     title: "",
     description: "",
   });
-  const [employeeForDelete, setEmployeeForDelete] = useState({empid: 0});
+  const [FRForm, setFRForm] = useState({
+    name: "",
+    type: 1
+  });
+  const [employeeForDelete, setEmployeeForDelete] = useState({ empid: 0 });
 
   // Promotion form state
   const [promotionForm, setPromotionForm] = useState({
@@ -116,7 +127,7 @@ export default function AdminPage() {
   //   setIsLoading(false);
   //   setAdminPassword("");
   // };
-const router  = useRouter();
+  const router = useRouter();
   const showSuccessNotification = (message: string) => {
     setNotificationMessage(message);
     setShowNotification(true);
@@ -130,11 +141,16 @@ const router  = useRouter();
       showSuccessNotification("Пожалуйста, заполните имя");
       return;
     }
-    
+
     const formattedData = {
       departmentName: departmentForm.name,
-      ...(departmentForm.description && { departmentDescription: departmentForm.description }),
-      ...(departmentForm.headId && Number(departmentForm.headId) > 0 && { headId: Number(departmentForm.headId) }),
+      ...(departmentForm.description && {
+        departmentDescription: departmentForm.description,
+      }),
+      ...(departmentForm.headId &&
+        Number(departmentForm.headId) > 0 && {
+          headId: Number(departmentForm.headId),
+        }),
     };
 
     try {
@@ -207,7 +223,7 @@ const router  = useRouter();
     }
 
     try {
-      const response =  await deleteUser(employeeForDelete.empid)
+      const response = await deleteUser(employeeForDelete.empid);
       if (response) {
         showSuccessNotification("Сотрудник успешно удален");
         setEmployeeForDelete({ empid: 0 });
@@ -227,6 +243,11 @@ const router  = useRouter();
       setSelectedEmployee(employee);
       setPromotionForm((prev) => ({ ...prev, empid: employeeId }));
     }
+  };
+  const handleFRSubmit  = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("FRForm:", FRForm);
+    
   };
 
   // if (!isAdmin) {
@@ -261,7 +282,7 @@ const router  = useRouter();
 
   return (
     <div className="mainProfileDiv">
-      <Header title="Панель администратора" position={5} showPanel={false}/>
+      <Header title="Панель администратора" position={5} showPanel={false} />
       <main className="container mx-auto p-4">
         <div className="mb-6 flex flex-wrap gap-2">
           <button
@@ -315,23 +336,45 @@ const router  = useRouter();
             Загрузка Excel файла с задачами
           </button>
           <button
-            onClick={() => router.push('/stats')}
+            onClick={() => router.push("/stats")}
             className={`px-4 py-2 rounded-xl transition-colors ${
               activeTab === "excel"
                 ? "bg-red-600 text-white"
                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
             }`}
           >
-Работоспособность бекенда          </button>
-<button
-            onClick={() => router.push('/admin/users')}
+            Работоспособность бекенда{" "}
+          </button>
+          <button
+            onClick={() => router.push("/admin/users")}
             className={`px-4 py-2 rounded-xl transition-colors ${
               activeTab === "excel"
                 ? "bg-red-600 text-white"
                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
             }`}
           >
-Поиск пользователя       </button>
+            Поиск пользователя{" "}
+          </button>
+          <button
+            onClick={() => setActiveTab("downloadingAllReports")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "downloadingAllReports"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+           Скачивание всех отчетов
+          </button>
+          <button
+            onClick={() => setActiveTab("addFR")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "addFR"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+        Добавление функциональной обязанности
+          </button>
         </div>
 
         {activeTab === "departments" && (
@@ -448,6 +491,61 @@ const router  = useRouter();
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
               >
                 Создать должность
+              </button>
+            </form>
+          </section>
+        )}
+        {activeTab === "addFR" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4 text-white">
+              Добавление функциональной обязанности
+            </h2>
+            <form className="space-y-4" onSubmit={handleFRSubmit}>
+              <div>
+                <label htmlFor="positionTitle" className="labelStyles mb-2">
+                  Название функциональной обязанности
+                </label>
+                <input
+                  id="positionTitle"
+                  type="text"
+                  required
+                  value={FRForm.name}
+                  onChange={(e) =>
+                    setFRForm((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Введите название функциональной обязанности"
+                />
+              </div>
+
+              <div>
+                <label className="labelStyles mb-4">
+                  Тип: {FRForm.type}
+                </label>
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    value={FRForm.type}
+                    onChange={(e) =>
+                      setFRForm((prev) => ({
+                        ...prev,
+                        type: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
+              >
+                Добавить функциональную обязанность
               </button>
             </form>
           </section>
@@ -585,7 +683,7 @@ const router  = useRouter();
           </section>
         )}
 
-{activeTab === "delete" && (
+        {activeTab === "delete" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold mb-4 text-white">
               Удаление сотрудника
@@ -599,10 +697,9 @@ const router  = useRouter();
                   id="deleteTitle"
                   required
                   value={employeeForDelete.empid}
-                  onChange={(e) =>{
-                    setEmployeeForDelete({empid: Number(e.target.value)})
-                  }
-                  }
+                  onChange={(e) => {
+                    setEmployeeForDelete({ empid: Number(e.target.value) });
+                  }}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   <option value="">Выберите сотрудника</option>
@@ -624,6 +721,15 @@ const router  = useRouter();
                 Удалить
               </button>
             </form>
+          </section>
+        )}
+
+        {activeTab === "downloadingAllReports" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4 text-white">
+              Скачивание всех отчетов
+            </h2>
+            <DownloadingAllReports/>
           </section>
         )}
 
