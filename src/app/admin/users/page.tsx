@@ -6,6 +6,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import getEmployeeId from "@/components/server/fetchuserbyid"
+import { Header } from "@/components/ui/header"
 
 // Тип данных сотрудника согласно требованиям
 type Employee = {
@@ -91,15 +92,11 @@ export default function AdminUserDetailsPage() {
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
 
 
+      <Header title="Поиск сотрудника" position={5} showPanel={false} />
       <main className="container mx-auto p-4">
-        <div className="mb-6">
-          <Link href="/admin" className="inline-flex items-center text-gray-300 hover:text-white">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Вернуться к админ-панели
-          </Link>
-        </div>
+      <div className="flex w-full">
+        <button onClick={() => router.back()} className="flex m-3 items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{`<- Вернуться к админ-панели`}</button>
+      </div>
 
         <div className="bg-gray-800 rounded-lg p-6 shadow-lg mb-6">
           <h2 className="text-xl font-bold mb-4">Поиск сотрудника</h2>

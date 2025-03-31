@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { host } from "@/types"
+import { Header } from "@/components/ui/header"
+import { useRouter } from "next/navigation"
 
 // Типы для данных о состоянии системы
 type BackendStatus = {
@@ -22,6 +24,7 @@ export default function SystemStatusPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
 
   // Функция для форматирования времени работы
   const formatUptime = (seconds: number): string => {
@@ -91,9 +94,8 @@ export default function SystemStatusPage() {
         </div>
         <div className="w-full bg-gray-700 rounded-full h-2.5">
           <div
-            className={`h-2.5 rounded-full ${
-              percentage > 80 ? "bg-red-500" : percentage > 60 ? "bg-yellow-500" : "bg-green-500"
-            }`}
+            className={`h-2.5 rounded-full ${percentage > 80 ? "bg-red-500" : percentage > 60 ? "bg-yellow-500" : "bg-green-500"
+              }`}
             style={{ width: `${percentage}%` }}
           ></div>
         </div>
@@ -104,18 +106,19 @@ export default function SystemStatusPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
-        <div className="bg-gray-800 p-8 rounded-lg shadow-xl text-center">
-          <div className="animate-spin mb-4 mx-auto">
-            <svg className="w-12 h-12 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl text-center max-w-md w-full mx-4">
+          {/* Улучшенный лоадер с плавной анимацией */}
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-500 mx-auto mb-6"></div>
+          
+          {/* Текст с анимацией пульсации для лучшего UX */}
+          <p className="text-gray-300 text-lg animate-pulse">
+            Загрузка данных о состоянии системы...
+          </p>
+          
+          {/* Дополнительный прогресс-бар */}
+          <div className="mt-4 w-full bg-gray-700 rounded-full h-2">
+            <div className="bg-red-500 h-2 rounded-full animate-progress"></div>
           </div>
-          <p className="text-gray-300 text-lg">Загрузка данных о состоянии системы...</p>
         </div>
       </div>
     )
@@ -123,50 +126,10 @@ export default function SystemStatusPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
-      <header className="bg-gray-800 p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Состояние системы</h1>
-        <nav className="relative">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-gray-300 hover:text-white focus:outline-none"
-            aria-label="Открыть меню"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
-          {isMenuOpen && (
-            <ul className="absolute right-0 mt-2 w-56 bg-gray-800 rounded-md shadow-lg py-1 z-10">
-              <li>
-                <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Дашборд
-                </Link>
-              </li>
-              <li>
-                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Профиль
-                </Link>
-              </li>
-              <li>
-                <Link href="/statistics" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Статистика
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Админ панель
-                </Link>
-              </li>
-              <li>
-                <Link href="/settings" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                  Настройки
-                </Link>
-              </li>
-            </ul>
-          )}
-        </nav>
-      </header>
-
+      <Header title="Состояние системы" position={5} showPanel={false} />
+      <div className="flex w-full">
+        <button onClick={() => router.back()} className="flex m-3 items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{`<- Вернуться к админ-панели`}</button>
+      </div>
       <main className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
@@ -242,7 +205,7 @@ export default function SystemStatusPage() {
                 Информация о бэкенде
               </h3>
               <div className="space-y-3">
-              <div className="flex justify-between">
+                <div className="flex justify-between">
                   <span className="text-gray-400 mr-4">Адрес:  </span>
                   <span className="text-gray-300">{host}</span>
                 </div>

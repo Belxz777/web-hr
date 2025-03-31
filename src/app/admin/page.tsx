@@ -149,8 +149,8 @@ export default function AdminPage() {
       }),
       ...(departmentForm.headId &&
         Number(departmentForm.headId) > 0 && {
-          headId: Number(departmentForm.headId),
-        }),
+        headId: Number(departmentForm.headId),
+      }),
     };
 
     try {
@@ -244,10 +244,10 @@ export default function AdminPage() {
       setPromotionForm((prev) => ({ ...prev, empid: employeeId }));
     }
   };
-  const handleFRSubmit  = (e: React.FormEvent) => {
+  const handleFRSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("FRForm:", FRForm);
-    
+
   };
 
   // if (!isAdmin) {
@@ -287,93 +287,78 @@ export default function AdminPage() {
         <div className="mb-6 flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab("departments")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "departments"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "departments"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Управление департаментами
           </button>
           <button
             onClick={() => setActiveTab("positions")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "positions"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "positions"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Управление должностями
           </button>
           <button
             onClick={() => setActiveTab("promotion")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "promotion"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "promotion"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Повышение сотрудника
           </button>
           <button
             onClick={() => setActiveTab("delete")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "delete"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "delete"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Удаление сотрудника
           </button>
           <button
             onClick={() => setActiveTab("excel")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "excel"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "excel"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
             Загрузка Excel файла с задачами
           </button>
           <button
             onClick={() => router.push("/stats")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "excel"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600`}
           >
             Работоспособность бекенда{" "}
           </button>
           <button
             onClick={() => router.push("/admin/users")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "excel"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600`}
           >
             Поиск пользователя{" "}
           </button>
           <button
             onClick={() => setActiveTab("downloadingAllReports")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "downloadingAllReports"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "downloadingAllReports"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
-           Скачивание всех отчетов
+            Скачивание всех отчетов
           </button>
           <button
             onClick={() => setActiveTab("addFR")}
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              activeTab === "addFR"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "addFR"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
           >
-        Добавление функциональной обязанности
+            Добавление функциональной обязанности
           </button>
         </div>
 
@@ -597,11 +582,10 @@ export default function AdminPage() {
                       {[1, 2, 3, 4, 5].map((level) => (
                         <div
                           key={level}
-                          className={`w-2 h-8 rounded ${
-                            level <= (selectedEmployee.currentLevel || 1)
-                              ? "bg-red-500"
-                              : "bg-gray-600"
-                          }`}
+                          className={`w-2 h-8 rounded ${level <= (selectedEmployee.currentLevel || 1)
+                            ? "bg-red-500"
+                            : "bg-gray-600"
+                            }`}
                         />
                       ))}
                     </div>
@@ -660,11 +644,10 @@ export default function AdminPage() {
                         onClick={() =>
                           setPromotionForm((prev) => ({ ...prev, level }))
                         }
-                        className={`w-8 h-8 rounded ${
-                          level <= promotionForm.level
-                            ? "bg-red-500 hover:bg-red-600"
-                            : "bg-gray-600 hover:bg-gray-500"
-                        } transition-colors`}
+                        className={`w-8 h-8 rounded ${level <= promotionForm.level
+                          ? "bg-red-500 hover:bg-red-600"
+                          : "bg-gray-600 hover:bg-gray-500"
+                          } transition-colors`}
                       >
                         {level}
                       </button>
@@ -729,7 +712,7 @@ export default function AdminPage() {
             <h2 className="text-xl font-bold mb-4 text-white">
               Скачивание всех отчетов
             </h2>
-            <DownloadingAllReports/>
+            <DownloadingAllReports />
           </section>
         )}
 

@@ -34,7 +34,7 @@ export default function HomePage() {
         </nav>
       </main>
       <footer className="footerAuthStyles">
-        <p>&copy;  2025 Рабочий Пульс Все права защищены.</p>
+        <p>&copy;  {`${new Date().getFullYear()} Рабочий Пульс Все права защищены.`}</p>
       </footer>
     </div>
   )

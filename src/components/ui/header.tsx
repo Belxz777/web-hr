@@ -182,7 +182,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
           >
             Настройки
           </MenuItem>
-          <MenuItem
+          {/* <MenuItem
             href="/createTask"
             icon={
               <svg
@@ -202,7 +202,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
             }
           >
             Создать задачу
-          </MenuItem>
+          </MenuItem> */}
           <li>
             <div className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-red-600 select-none">
               <span className="mr-3">{new Date().toLocaleTimeString()}</span>
