@@ -19,6 +19,8 @@ export default function ProfilePage() {
   const { employeeData, title, loadingEmp, error: employeeError } = useEmployeeData()
   const { isBoss } = useUserStore();
   const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false);
+  console.log(tasks);
+  
   const [position, setPosition] = useState<number>(1)
   useEffect(() => {
 setTimeout(() => {

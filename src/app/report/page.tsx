@@ -1,21 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import sendReport from "@/components/server/report";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { Header } from "@/components/ui/header";
-import responsibilities from "./data.json";
+import useEmployeeData from "@/hooks/useGetUserData";
+import allTfByDepartment from "@/components/server/allTfByDepartment";
+import { TFData } from "@/types";
 
 export default function ReportPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    taskId: 4,
-    workingHours: 0.5,
+    tf_id: "",
+    workingHours: "0.50",
     comment: "",
   });
-  console.log(formData);
+  const { employeeData, loadingEmp } = useEmployeeData();
+  const [responsibilities, setResponsibilities] = useState<TFData[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (employeeData?.departmentid) {
+        try {
+          const data = await allTfByDepartment(employeeData.departmentid);
+          setResponsibilities(data || []);
+        } catch (error) {
+          console.error("Failed to fetch responsibilities:", error);
+        }
+      }
+    };
+    fetchData();
+  }, [employeeData?.departmentid]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -25,25 +42,31 @@ export default function ReportPage() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "taskId" ? Number(value) : value,
+      [name]:
+        name === "workingHours"
+          ? Number(value).toFixed(2)
+          : name === "tf_id"
+          ? value
+          : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("Submitting report:", formData);
-
-    if (responsibilities?.length === 0) {
+    if (!responsibilities.length) {
       console.log("No tasks available for report");
       alert("Нет доступных задач для отчета");
       return;
     }
 
-    if (
-      formData?.workingHours === undefined ||
-      Number(formData.workingHours) <= 0
-    ) {
+    if (!formData.tf_id) {
+      console.log("No task selected");
+      alert("Выберите задачу");
+      return;
+    }
+
+    if (Number(formData.workingHours) <= 0) {
       console.log("Invalid working hours:", formData.workingHours);
       alert("Укажите корректное количество часов");
       return;
@@ -51,24 +74,18 @@ export default function ReportPage() {
 
     setLoading(true);
     try {
-      console.log("Sending report data:", {
-        ...formData,
-        taskId: formData.taskId,
+      const reportData = {
+        tf_id: Number(formData.tf_id),
         workingHours: Number(formData.workingHours),
-      });
+        comment: formData.comment,
+      };
 
-      const req = await sendReport({
-        ...formData,
-        taskId: formData.taskId,
-        workingHours: Number(formData.workingHours),
-      });
+      const req = await sendReport(reportData);
 
       if (req) {
-        console.log("Report submitted successfully");
         alert("Успешно");
         router.push("/profile");
       } else {
-        console.log("Failed to submit report:", req);
         alert("Ошибка");
       }
     } catch (error) {
@@ -98,20 +115,23 @@ export default function ReportPage() {
           </h1>
 
           <div className="mb-4">
-            <label htmlFor="taskId" className="block text-gray-300 mb-2">
-              Выберите функциональную обязанность
+            <label htmlFor="tf_id" className="block text-gray-300 mb-2">
+              Выберите задачу
             </label>
             <select
-              id="taskId"
-              name="taskId"
-              value={formData.taskId}
+              id="tf_id"
+              name="tf_id"
+              value={formData.tf_id}
               onChange={handleChange}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
               required
             >
-              {responsibilities.map((task) => (
-                <option key={task.id} value={task.id} className={`${task.type === 1 ? "bg-red-600" : "bg-gray-600"}`}>
-                  {task.name}
+              <option value="" disabled>
+                -- Выберите задачу --
+              </option>
+              {responsibilities.map((task: TFData) => (
+                <option key={task.tfId} value={task.tfId}>
+                  {task.tfName}
                 </option>
               ))}
             </select>
@@ -119,13 +139,13 @@ export default function ReportPage() {
 
           <div className="mb-4">
             <label htmlFor="workingHours" className="block text-gray-300 mb-2">
-              Количество рабочих часов
+              Количество выполненных часов
             </label>
             <input
               type="number"
               id="workingHours"
               name="workingHours"
-              value={formData.workingHours}
+              value={Number(formData.workingHours)}
               onChange={handleChange}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
               required
@@ -133,7 +153,8 @@ export default function ReportPage() {
               step="0.1"
             />
             <div className="text-gray-300 mt-2">
-              {formData.workingHours > 0 && formatTime(formData.workingHours)}
+              {Number(formData.workingHours) > 0 &&
+                formatTime(Number(formData.workingHours))}
             </div>
           </div>
 
@@ -148,12 +169,13 @@ export default function ReportPage() {
               onChange={handleChange}
               rows={4}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Опишите выполненную работу (опционально)"
             />
           </div>
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || loadingEmp || !responsibilities.length}
             className="w-full py-2 px-4 bg-red-600 text-white rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Отправка..." : "Отправить отчет"}
