@@ -15,6 +15,7 @@ interface TFData {
 tfId: string;
 tfName: string;
 isMain: boolean;
+time: number;
 }
 interface defaultTF {
   typicalFunctionName: string;
