@@ -7,7 +7,7 @@ async function fetchTitle(id:number):Promise<string> {
         return "no id provided"
     }
     try{
-    const res = await fetch(`${host}entities/job/${id}`);
+    const res = await fetch(`${host}entities/job/?id=${id}`);
     if(!res.ok) {
         console.log(res.status)
         throw new Error('Failed to fetch data')

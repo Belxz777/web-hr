@@ -1,27 +1,31 @@
 "use server";
-import { host } from "@/types";
+import { defaultTF, host } from "@/types";
 import { cookies } from "next/headers";
 import { FunctionComponent } from "react";
 
-async function allTfByDepartment(): Promise<any> {
+async function createTF(dataTF: defaultTF): Promise<any> {
   const cookieStore = cookies();
   const jwt = cookieStore.get("cf-auth-id")?.value;
-  if (!jwt) {
+  if (jwt === null || jwt === undefined) {
     throw new Error("No token provided");
   }
   try {
-    const response = await fetch(`${host}entities/tf/employee`, {
-      method: "GET",
+    if (dataTF === null || dataTF === undefined) {
+      throw new Error("No data provided");
+    }
+    const response = await fetch(`${host}entities/tf`, {
+      method: "POST",
       credentials: "include",
       headers: {
         Cookie: `jwt=${jwt}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(dataTF),
     });
 
     if (!response.ok) {
       const error = new Error(
-        `Error fetching TFs by department: ${response.statusText}`
+        `Error creating TFs by department: ${response.statusText}`
       );
       throw error;
     }
@@ -33,7 +37,11 @@ async function allTfByDepartment(): Promise<any> {
     return data;
   } catch (error) {
     console.error("error ", error);
-    throw new Error("Error occurred in getting employees");
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error("Unknown error occurred");
+    }
   }
 }
-export default allTfByDepartment;
+export default createTF;

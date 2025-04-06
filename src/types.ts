@@ -14,6 +14,13 @@ comment: string,
 interface TFData {
 tfId: string;
 tfName: string;
+isMain: boolean;
+}
+interface defaultTF {
+  typicalFunctionName: string;
+  typicalFunctionDescription: string;
+  time: number;
+  isMain: boolean;
 }
 interface createUser {
   job_title_id: number,
@@ -67,7 +74,7 @@ interface changePass {
   old_password:string,
   new_password:string
 }
-const host = process.env.BACKEND_URL || "https://belxz777-backend-pulse-f838.twc1.net/api/v1/"
+const host = process.env.BACKEND_URL || "https://backend-pulse.onrender.com/api/v1/"
 
 
 interface statusType {
@@ -76,4 +83,4 @@ text:string
 }
 
 export { host }
-export type { department, createUser,report, jobTitle, task, changePass, statusType,employee, TFData }
+export type { department, createUser,report,defaultTF, jobTitle, task, changePass, statusType,employee, TFData }

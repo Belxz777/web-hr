@@ -11,6 +11,7 @@ import promotion from "@/components/server/promotion";
 import { deleteUser } from "@/components/server/userdata";
 import { useRouter } from "next/navigation";
 import { DownloadingAllReports } from "@/components/buildIn/DownloadingAllReports";
+import createTF from "@/components/server/createTF";
 
 // Types
 type Employee = {
@@ -73,9 +74,12 @@ export default function AdminPage() {
     description: "",
   });
   const [FRForm, setFRForm] = useState({
-    name: "",
-    type: 1
+    typicalFunctionName: "",
+    typicalFunctionDescription: "",
+    time: 0,
+    isMain: false
   });
+  
   const [employeeForDelete, setEmployeeForDelete] = useState({ empid: 0 });
 
   // Promotion form state
@@ -244,41 +248,24 @@ export default function AdminPage() {
       setPromotionForm((prev) => ({ ...prev, empid: employeeId }));
     }
   };
-  const handleFRSubmit = (e: React.FormEvent) => {
+  const handleFRSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("FRForm:", FRForm);
+try {
+  const res = await createTF(FRForm);
+
+  if (!res) {
+    showSuccessNotification("Произошла ошибка при создании функциональной обязанности");
+    return;
+  }
+
+  showSuccessNotification("Функциональная обязанность была успешно создана");
+  
+} catch (error) {
+  console.error("Error creating TF:", error);
+  showSuccessNotification("Произошла ошибка при создании функциональной обязанности");
+}
 
   };
-
-  // if (!isAdmin) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-gray-900">
-  //       <form
-  //         onSubmit={handleAdminAuth}
-  //         className="bg-gray-800 p-6 rounded-lg w-96"
-  //       >
-  //         <h2 className="text-xl font-bold mb-4 text-white">
-  //           Вход для администратора
-  //         </h2>
-  //         <input
-  //           type="password"
-  //           value={adminPassword}
-  //           onChange={(e) => setAdminPassword(e.target.value)}
-  //           placeholder="Введите пароль"
-  //           className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 mb-4"
-  //         />
-  //         <button
-  //           type="submit"
-  //           disabled={isLoading}
-  //           className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl"
-  //         >
-  //           {isLoading ? "Проверка..." : "Войти"}
-  //         </button>
-  //         {showError && <p className="text-red-500 mt-2">Неверный пароль</p>}
-  //       </form>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="mainProfileDiv">
@@ -494,24 +481,62 @@ export default function AdminPage() {
                   id="positionTitle"
                   type="text"
                   required
-                  value={FRForm.name}
+                  value={FRForm.typicalFunctionName}
                   onChange={(e) =>
                     setFRForm((prev) => ({
                       ...prev,
-                      name: e.target.value,
+                      typicalFunctionName: e.target.value,
                     }))
                   }
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Введите название функциональной обязанности"
                 />
               </div>
+              <div>
+                <label htmlFor="positionTitle" className="labelStyles mb-2">
+                  Описание функциональной обязанности
+                </label>
+                <textarea
+                  id="positionTitle"
+                  required
+                  value={FRForm.typicalFunctionDescription}
+                  onChange={(e) =>
+                    setFRForm((prev) => ({
+                      ...prev,
+                      typicalFunctionDescription: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Введите описание функциональной обязанности"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="positionTitle" className="labelStyles mb-2">
+                  Врямя выполнения функциональной обязанности (формат: часы:минуты)
+                </label>
+                <input
+                  id="positionTitle"
+                  type="number"
+                  required
+                  value={FRForm.time}
+                  onChange={(e) =>
+                    setFRForm((prev) => ({
+                      ...prev,
+                      time: Number(e.target.value),
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Введите время выполнения функциональной обязанности (формат: часы:минуты)"
+                />
+              </div>
 
               <div>
                 <label className="labelStyles mb-4">
-                  Тип: {FRForm.type}
+                  Тип: {FRForm.isMain ? "Основная" : "Дополнительная"}
                 </label>
                 <div className="flex items-center space-x-4">
-                  <input
+                  {/* <input
                     type="range"
                     min="1"
                     max="5"
@@ -523,7 +548,17 @@ export default function AdminPage() {
                       }))
                     }
                     className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                  />
+                  /> */}
+                  <div className="flex justify-center items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setFRForm((prev) => ({ ...prev, isMain: !prev.isMain }))}
+                      className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors"
+                    >
+                      {FRForm.isMain ? "Основная" : "Дополнительная"}
+                    </button>
+
+                  </div>
                 </div>
               </div>
               <button

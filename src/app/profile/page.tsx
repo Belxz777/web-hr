@@ -1,38 +1,71 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import useEmployeeData from '@/hooks/useGetUserData'
-import { useRouter } from 'next/navigation'
-import { logout } from '@/components/server/logout'
-import { PulseLogo } from '@/svgs/Logo'
-import { useTasks } from '@/hooks/useTasks'
-import { task } from '@/types'
-import { TaskList } from '@/components/buildIn/TaskList'
-import { ReportDownload } from '@/components/buildIn/ReportDownload'
-import { ReportUpload } from '@/components/buildIn/ReportUpload'
-import { useEffect, useState } from 'react'
-import UniversalFooter from '@/components/buildIn/UniversalFooter'
-import { Header } from '@/components/ui/header'
-import { useUserStore } from '@/store/userStore'
+import Link from "next/link";
+import useEmployeeData from "@/hooks/useGetUserData";
+import { useRouter } from "next/navigation";
+import { logout } from "@/components/server/logout";
+import { PulseLogo } from "@/svgs/Logo";
+import { useTasks } from "@/hooks/useTasks";
+import { task, TFData } from "@/types";
+import { TaskList } from "@/components/buildIn/TaskList";
+import { ReportDownload } from "@/components/buildIn/ReportDownload";
+import { ReportUpload } from "@/components/buildIn/ReportUpload";
+import { useEffect, useState } from "react";
+import UniversalFooter from "@/components/buildIn/UniversalFooter";
+import { Header } from "@/components/ui/header";
+import { useUserStore } from "@/store/userStore";
+import allTfByDepartment from "@/components/server/allTfByDepartment";
 export default function ProfilePage() {
-  const router = useRouter()
-  const { employeeData, title, loadingEmp, error: employeeError } = useEmployeeData()
+  const router = useRouter();
+  const {
+    employeeData,
+    title,
+    loadingEmp,
+    error: employeeError,
+  } = useEmployeeData();
   const { isBoss } = useUserStore();
-  const { tasks, isMounted, getTasks, error: tasksError, loading } = useTasks(false);
-  console.log(tasks);
-  
-  const [position, setPosition] = useState<number>(1)
+  const {
+    tasks,
+    isMounted,
+    getTasks,
+    error: tasksError,
+    loading,
+  } = useTasks(false);
+  const [showAllResponsibilities, setShowAllResponsibilities] = useState(false);
+  const [responsibilities, setResponsibilities] = useState([]);
+  const [position, setPosition] = useState<number>(1);
+  const [theme, setTheme] = useState("dark");
+  const initialDisplayCount = 3;
+  const displayedData = showAllResponsibilities
+    ? responsibilities
+    : responsibilities.slice(0, initialDisplayCount);
+
   useEffect(() => {
-setTimeout(() => {
-  if (employeeData) {
-  setPosition(employeeData.position)
-}
-},
-3000)
+    const fetchData = async () => {
+      try {
+        const data = await allTfByDepartment();
+        setResponsibilities(data || []);
+      } catch (error) {
+        console.error("Failed to fetch responsibilities:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (employeeData) {
+        setPosition(employeeData.position);
+      }
+    }, 3000);
   }, []);
   return (
     <div className="mainProfileDiv">
-      <Header title="Личный кабинет" position={employeeData?.position} showPanel />
+      <Header
+        title="Личный кабинет"
+        position={employeeData?.position}
+        showPanel
+      />
       <main className="container mx-auto p-4">
         <section className="sectionStyles">
           {loadingEmp ? (
@@ -47,9 +80,14 @@ setTimeout(() => {
                 {employeeData.firstName} {employeeData.lastName}
               </h2>
               <p className="text-gray-400 select-none">{title}</p>
-              <p className="text-gray-400 select-none">Отдел № {employeeData.departmentid}</p>
-              <div className='flex gap-4 justify-between my-2'>
-                <button onClick={() => router.push("/report")} className="buttonRedirectStyles">
+              <p className="text-gray-400 select-none">
+                Отдел № {employeeData.departmentid}
+              </p>
+              <div className="flex gap-4 justify-between my-2">
+                <button
+                  onClick={() => router.push("/report")}
+                  className="buttonRedirectStyles"
+                >
                   Заполнение отчета
                 </button>
               </div>
@@ -58,26 +96,33 @@ setTimeout(() => {
             <h1>{!loadingEmp && employeeError.text}</h1>
           )}
           <div className="space-y-2">
-            <button className="buttonRedirectStyles" onClick={() => {
-              router.push('/changePass')
-            }}>
+            <button
+              className="buttonRedirectStyles"
+              onClick={() => {
+                router.push("/changePass");
+              }}
+            >
               Сменить пароль
             </button>
-            <button className="buttonLogoutStyles" onClick={() => {
-              let is = confirm('Вы уверены что хотите выйти?')
-              if (!is) return
-              logout()
-              const notes = localStorage.getItem('notes')
-              localStorage.clear()
-              if (notes) localStorage.setItem('notes', notes)
-              router.push('/')
-            }}>
+            <button
+              className="buttonLogoutStyles"
+              onClick={() => {
+                let is = confirm("Вы уверены что хотите выйти?");
+                if (!is) return;
+                logout();
+                const notes = localStorage.getItem("notes");
+                localStorage.clear();
+                if (notes) localStorage.setItem("notes", notes);
+                router.push("/");
+              }}
+            >
               Выйти
             </button>
           </div>
         </section>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <TaskSection
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4"> */}
+        <div>
+          {/* <TaskSection
             title="Завершенные задачи"
             icon={
               <svg className="completedTaskIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -109,81 +154,167 @@ setTimeout(() => {
             }
             loading={loading ?? false}
             tasks={tasks?.expired_tasks}
-          />
+          /> */}
+          <div className="flex flex-col gap-2 taskSectionStyles">
+            <div className="flex justify-between flex-col items-center mb-4 w-full">
+              <h2 className="text-2xl font-bold">
+                Ваши функциональные обязанности
+              </h2>
+              {responsibilities.length === 0 ? (
+                <h2 className="text-xl font-bold text-gray-400 my-5">
+                  Нет Функциональных обязанностей
+                </h2>
+              ) : (
+                <div>
+                  {responsibilities.length > initialDisplayCount && (
+                    <button
+                      onClick={() =>
+                        setShowAllResponsibilities(!showAllResponsibilities)
+                      }
+                      className={`text-sm px-3 py-1 rounded ${
+                        theme === "dark"
+                          ? "bg-red-600 hover:bg-red-700 text-white"
+                          : "bg-red-100 hover:bg-red-200 text-red-800"
+                      }`}
+                    >
+                      {showAllResponsibilities
+                        ? "Скрыть"
+                        : `Показать все (${responsibilities.length})`}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              {displayedData.map((item: TFData) => (
+                <div
+                  key={item.tfId}
+                  className={`${
+                    theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                  } rounded-lg p-3`}
+                >
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-medium text-base">{item.tfName}</h3>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-xs ${
+                          item.isMain === false
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
+                      >
+                        Тип {item.isMain ? "Основная" : "Дополнительная"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {!showAllResponsibilities &&
+              responsibilities.length > initialDisplayCount && (
+                <div className="mt-2 text-center">
+                  <button
+                    onClick={() => setShowAllResponsibilities(true)}
+                    className={`text-sm ${
+                      theme === "dark"
+                        ? "text-red-400 hover:text-red-300"
+                        : "text-red-600 hover:text-red-700"
+                    }`}
+                  >
+                    Показать еще {responsibilities.length - initialDisplayCount}{" "}
+                    обязанностей...
+                  </button>
+                </div>
+              )}
+          </div>
         </div>
-        {
-          (employeeData?.position !== 1 || isBoss) && employeeData ? (
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
-              {/* <ReportUpload /> */}
-              <ReportDownload />
-            </section>
-          ) : null
-        }
+        {(employeeData?.position !== 1 || isBoss) && employeeData ? (
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
+            {/* <ReportUpload /> */}
+            <ReportDownload />
+          </section>
+        ) : null}
       </main>
       <UniversalFooter />
     </div>
-  )
-} function TaskSection({ title, icon, loading, tasks }: { title: string; icon: React.ReactNode; loading: boolean; tasks: any[] }) {  return (
-    <section className="taskSectionStyles">
-      <h3 className="text-xl font-bold mb-4 flex items-center">
-        {icon}
-        {title}
-      </h3>
-      {loading ? (
-        <EmptyTasksAnimation />
-      ) : (
-        <TaskList tasks={tasks} />
-      )}
-    </section>
-  )
+  );
 }
+// function TaskSection({
+//   title,
+//   icon,
+//   loading,
+//   tasks,
+// }: {
+//   title: string;
+//   icon: React.ReactNode;
+//   loading: boolean;
+//   tasks: any[];
+// }) {
+//   return (
+//     <section className="taskSectionStyles">
+//       <h3 className="text-xl font-bold mb-4 flex items-center">
+//         {icon}
+//         {title}
+//       </h3>
+//       {loading ? <EmptyTasksAnimation /> : <TaskList tasks={tasks} />}
+//     </section>
+//   );
+// }
 
-
-
-function EmptyTasksAnimation() {
-  return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <svg className="w-24 h-24 mb-4" viewBox="0 0 100 100">
-        <rect x="20" y="20" width="60" height="60" fill="none" stroke="#6B7280" strokeWidth="4">
-          <animate
-            attributeName="stroke-dasharray"
-            from="0 240"
-            to="240 240"
-            dur="1.5s"
-            repeatCount="indefinite"
-          />
-        </rect>
-        <line x1="30" y1="40" x2="70" y2="40" stroke="#6B7280" strokeWidth="4">
-          <animate
-            attributeName="stroke-dasharray"
-            from="0 40"
-            to="40 40"
-            dur="1.5s"
-            repeatCount="indefinite"
-          />
-        </line>
-        <line x1="30" y1="50" x2="70" y2="50" stroke="#6B7280" strokeWidth="4">
-          <animate
-            attributeName="stroke-dasharray"
-            from="0 40"
-            to="40 40"
-            dur="1.5s"
-            repeatCount="indefinite"
-            begin="0.3s"
-          />
-        </line>
-        <line x1="30" y1="60" x2="70" y2="60" stroke="#6B7280" strokeWidth="4">
-          <animate
-            attributeName="stroke-dasharray"
-            from="0 40"
-            to="40 40"
-            dur="1.5s"
-            repeatCount="indefinite"
-            begin="0.6s"
-          />
-        </line>
-      </svg>
-      <p className="text-gray-400 text-center">Нет задач</p>
-    </div>
-  )
-}
+// function EmptyTasksAnimation() {
+//   return (
+//     <div className="flex flex-col items-center justify-center p-4">
+//       <svg className="w-24 h-24 mb-4" viewBox="0 0 100 100">
+//         <rect
+//           x="20"
+//           y="20"
+//           width="60"
+//           height="60"
+//           fill="none"
+//           stroke="#6B7280"
+//           strokeWidth="4"
+//         >
+//           <animate
+//             attributeName="stroke-dasharray"
+//             from="0 240"
+//             to="240 240"
+//             dur="1.5s"
+//             repeatCount="indefinite"
+//           />
+//         </rect>
+//         <line x1="30" y1="40" x2="70" y2="40" stroke="#6B7280" strokeWidth="4">
+//           <animate
+//             attributeName="stroke-dasharray"
+//             from="0 40"
+//             to="40 40"
+//             dur="1.5s"
+//             repeatCount="indefinite"
+//           />
+//         </line>
+//         <line x1="30" y1="50" x2="70" y2="50" stroke="#6B7280" strokeWidth="4">
+//           <animate
+//             attributeName="stroke-dasharray"
+//             from="0 40"
+//             to="40 40"
+//             dur="1.5s"
+//             repeatCount="indefinite"
+//             begin="0.3s"
+//           />
+//         </line>
+//         <line x1="30" y1="60" x2="70" y2="60" stroke="#6B7280" strokeWidth="4">
+//           <animate
+//             attributeName="stroke-dasharray"
+//             from="0 40"
+//             to="40 40"
+//             dur="1.5s"
+//             repeatCount="indefinite"
+//             begin="0.6s"
+//           />
+//         </line>
+//       </svg>
+//       <p className="text-gray-400 text-center">Нет задач</p>
+//     </div>
+//   );
+// }
