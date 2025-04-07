@@ -21,7 +21,7 @@ export default function ReportPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await allTfByDepartment();
+        const data = await allTfByDepartment("employee");
         setResponsibilities(data || []);
       } catch (error) {
         console.error("Failed to fetch responsibilities:", error);
