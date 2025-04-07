@@ -18,7 +18,7 @@ isMain: boolean;
 time: number;
 }
 interface defaultTF {
-  typicalFunctionName: string;
+  tfName: string;
   typicalFunctionDescription: string;
   time: number;
   isMain: boolean;

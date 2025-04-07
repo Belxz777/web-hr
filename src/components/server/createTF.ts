@@ -1,7 +1,6 @@
 "use server";
 import { defaultTF, host } from "@/types";
 import { cookies } from "next/headers";
-import { FunctionComponent } from "react";
 
 async function createTF(dataTF: defaultTF): Promise<any> {
   const cookieStore = cookies();
@@ -13,7 +12,7 @@ async function createTF(dataTF: defaultTF): Promise<any> {
     if (dataTF === null || dataTF === undefined) {
       throw new Error("No data provided");
     }
-    const response = await fetch(`${host}entities/tf`, {
+    const response = await fetch(`${host}entities/tf/`, {
       method: "POST",
       credentials: "include",
       headers: {

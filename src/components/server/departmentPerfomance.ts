@@ -12,7 +12,7 @@ interface PerformanceData {
 async function getDepartmentPerformanceData(
   departmentId: number
 ): Promise<PerformanceData> {
-  const url = `${host}history/department/tasks?department_id=${departmentId}`;
+  const url = `${host}history/department/?department_id=${departmentId}`;
   const response = await fetch(url, {
     method: "GET",
     headers: {

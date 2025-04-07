@@ -74,7 +74,7 @@ export default function AdminPage() {
     description: "",
   });
   const [FRForm, setFRForm] = useState({
-    typicalFunctionName: "",
+    tfName: "",
     typicalFunctionDescription: "",
     time: 0,
     isMain: false
@@ -329,7 +329,7 @@ try {
           >
             Поиск пользователя{" "}
           </button>
-          <button
+          {/* <button
             onClick={() => setActiveTab("downloadingAllReports")}
             className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "downloadingAllReports"
               ? "bg-red-600 text-white"
@@ -337,7 +337,7 @@ try {
               }`}
           >
             Скачивание всех отчетов
-          </button>
+          </button> */}
           <button
             onClick={() => setActiveTab("addFR")}
             className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "addFR"
@@ -481,11 +481,11 @@ try {
                   id="positionTitle"
                   type="text"
                   required
-                  value={FRForm.typicalFunctionName}
+                  value={FRForm.tfName}
                   onChange={(e) =>
                     setFRForm((prev) => ({
                       ...prev,
-                      typicalFunctionName: e.target.value,
+                      tfName: e.target.value,
                     }))
                   }
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -513,7 +513,7 @@ try {
 
               <div>
                 <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Врямя выполнения функциональной обязанности (формат: часы:минуты)
+                  Врямя выполнения функциональной обязанности (формат: часы,минуты)
                 </label>
                 <input
                   id="positionTitle"
@@ -527,7 +527,7 @@ try {
                     }))
                   }
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите время выполнения функциональной обязанности (формат: часы:минуты)"
+                  placeholder="Введите время выполнения функциональной обязанности (формат: часы,минуты)"
                 />
               </div>
 
@@ -742,14 +742,14 @@ try {
           </section>
         )}
 
-        {activeTab === "downloadingAllReports" && (
+        {/* {activeTab === "downloadingAllReports" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold mb-4 text-white">
               Скачивание всех отчетов
             </h2>
             <DownloadingAllReports />
           </section>
-        )}
+        )} */}
 
         {activeTab === "excel" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">

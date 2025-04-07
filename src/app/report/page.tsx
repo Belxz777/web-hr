@@ -112,7 +112,7 @@ export default function ReportPage() {
 
           <div className="mb-4">
             <label htmlFor="tf_id" className="block text-gray-300 mb-2">
-              Выберите задачу
+              Выберите обязанность
             </label>
             <select
               id="tf_id"
@@ -123,7 +123,7 @@ export default function ReportPage() {
               required
             >
               <option value="" className="text-gray-400">
-                -- Выберите задачу --
+                -- Выберите обязанность --
               </option>
               {responsibilities.map((task: TFData) => (
                 <option key={task.tfId} value={task.tfId} className={`${task.isMain ? "text-red-400" : ""}`}>
