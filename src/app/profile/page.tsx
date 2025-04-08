@@ -131,16 +131,18 @@ export default function ProfilePage() {
         <div>
           {employeeData?.position === 1 && (
             <div className="flex flex-col gap-2 taskSectionStyles">
-              <div className="flex justify-between flex-col items-center mb-4 w-full">
-                <h2 className="text-2xl font-bold">
-                  Ваши функциональные обязанности
-                </h2>
-                {responsibilities.length === 0 ? (
-                  <h2 className="text-xl font-bold text-gray-400 my-5">
-                    Нет Функциональных обязанностей
-                  </h2>
+              <h2 className="text-2xl font-bold">
+                Ваши функциональные обязанности
+              </h2>
+              <div className="flex justify-between items-center flex-col mb-4 w-full">
+                {responsibilities.length == 0 ? (
+                  [1, 2, 3, 4, 5].map((e) => (
+                    <div className="w-full animate-pulse">
+                      <div className="h-10 bg-gray-700 rounded w-full mb-4"></div>
+                    </div>
+                  ))
                 ) : (
-                  <div>
+                  <div className="flex justify-between items-end flex-col w-full">
                     {responsibilities.length > initialDisplayCount && (
                       <button
                         onClick={() =>
@@ -162,29 +164,33 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-2">
-                {displayedData.map((item: TFData) => (
-                  <div
-                    key={item.tfId}
-                    className={`${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                    } rounded-lg p-3`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-medium text-base">{item.tfName}</h3>
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-xs ${
-                            item.isMain === false
-                              ? "bg-green-500 text-white"
-                              : "bg-red-500 text-white"
-                          }`}
-                        >
-                          Тип {item.isMain ? "Основная" : "Дополнительная"}
-                        </span>
+                {[...displayedData]
+                  .sort((a, b) =>
+                    a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1
+                  )
+                  .map((item: TFData) => (
+                    <div
+                      key={item.tfId}
+                      className={`${
+                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                      } rounded-lg p-3`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium text-base">{item.tfName}</h3>
+                        <div className="flex items-center space-x-2">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs ${
+                              item.isMain === false
+                                ? "bg-green-500 text-white"
+                                : "bg-red-500 text-white"
+                            }`}
+                          >
+                            Тип {item.isMain ? "Основная" : "Дополнительная"}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
 
               {!showAllResponsibilities &&
@@ -210,16 +216,18 @@ export default function ProfilePage() {
             employeeData.position >= 2 &&
             employeeData.position <= 4 && (
               <div className="flex flex-col gap-2 taskSectionStyles">
-                <div className="flex justify-between flex-col items-center mb-4 w-full">
-                  <h2 className="text-2xl font-bold">
-                    Функциональные обязанности отдела
-                  </h2>
-                  {responsibilities.length === 0 ? (
-                    <h2 className="text-xl font-bold text-gray-400 my-5">
-                      Нет Функциональных обязанностей
-                    </h2>
+                <h2 className="text-2xl font-bold">
+                  Функциональные обязанности отдела
+                </h2>
+                <div className="flex justify-between items-center flex-col mb-4 w-full">
+                  {responsibilities.length == 0 ? (
+                    [1, 2, 3, 4, 5].map((e) => (
+                      <div className="w-full animate-pulse">
+                        <div className="h-10 bg-gray-700 rounded w-full mb-4"></div>
+                      </div>
+                    ))
                   ) : (
-                    <div>
+                    <div className="flex justify-between items-end flex-col w-full">
                       {responsibilities.length > initialDisplayCount && (
                         <button
                           onClick={() =>
@@ -241,7 +249,101 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="space-y-2">
-                  {displayedData.map((item: TFData) => (
+                  {[...displayedData]
+                    .sort((a, b) =>
+                      a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1
+                    )
+                    .map((item: TFData) => (
+                      <div
+                        key={item.tfId}
+                        className={`${
+                          theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        } rounded-lg p-3`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <h3 className="font-medium text-base">
+                            {item.tfName}
+                          </h3>
+                          <div className="flex items-center space-x-2">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-xs ${
+                                item.isMain === false
+                                  ? "bg-green-500 text-white"
+                                  : "bg-red-500 text-white"
+                              }`}
+                            >
+                              Тип {item.isMain ? "Основная" : "Дополнительная"}
+                            </span>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-xs bg-blue-500 text-white`}
+                            >
+                              Время {item.time} ч
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {!showAllResponsibilities &&
+                  responsibilities.length > initialDisplayCount && (
+                    <div className="mt-2 text-center">
+                      <button
+                        onClick={() => setShowAllResponsibilities(true)}
+                        className={`text-sm ${
+                          theme === "dark"
+                            ? "text-red-400 hover:text-red-300"
+                            : "text-red-600 hover:text-red-700"
+                        }`}
+                      >
+                        Показать еще{" "}
+                        {responsibilities.length - initialDisplayCount}{" "}
+                        обязанностей...
+                      </button>
+                    </div>
+                  )}
+              </div>
+            )}
+          {employeeData?.position === 5 && (
+            <div className="flex flex-col gap-2 taskSectionStyles">
+              <h2 className="text-2xl font-bold">
+                Все Функциональные обязанности
+              </h2>
+              <div className="flex justify-between items-center flex-col mb-4 w-full">
+                {responsibilities.length == 0 ? (
+                  [1, 2, 3, 4, 5].map((e) => (
+                    <div className="w-full animate-pulse">
+                      <div className="h-10 bg-gray-700 rounded w-full mb-4"></div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex justify-between items-end flex-col w-full">
+                    {responsibilities.length > initialDisplayCount && (
+                      <button
+                        onClick={() =>
+                          setShowAllResponsibilities(!showAllResponsibilities)
+                        }
+                        className={`text-sm px-3 py-1 rounded ${
+                          theme === "dark"
+                            ? "bg-red-600 hover:bg-red-700 text-white"
+                            : "bg-red-100 hover:bg-red-200 text-red-800"
+                        }`}
+                      >
+                        {showAllResponsibilities
+                          ? "Скрыть"
+                          : `Показать все (${responsibilities.length})`}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                {[...displayedData]
+                  .sort((a, b) =>
+                    a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1
+                  )
+                  .map((item: TFData) => (
                     <div
                       key={item.tfId}
                       className={`${
@@ -269,88 +371,6 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   ))}
-                </div>
-
-                {!showAllResponsibilities &&
-                  responsibilities.length > initialDisplayCount && (
-                    <div className="mt-2 text-center">
-                      <button
-                        onClick={() => setShowAllResponsibilities(true)}
-                        className={`text-sm ${
-                          theme === "dark"
-                            ? "text-red-400 hover:text-red-300"
-                            : "text-red-600 hover:text-red-700"
-                        }`}
-                      >
-                        Показать еще{" "}
-                        {responsibilities.length - initialDisplayCount}{" "}
-                        обязанностей...
-                      </button>
-                    </div>
-                  )}
-              </div>
-            )}
-          {employeeData?.position === 5 && (
-            <div className="flex flex-col gap-2 taskSectionStyles">
-              <div className="flex justify-between flex-col items-center mb-4 w-full">
-                <h2 className="text-2xl font-bold">
-                  Все Функциональные обязанности
-                </h2>
-                {responsibilities.length === 0 ? (
-                  <h2 className="text-xl font-bold text-gray-400 my-5">
-                    Нет Функциональных обязанностей
-                  </h2>
-                ) : (
-                  <div>
-                    {responsibilities.length > initialDisplayCount && (
-                      <button
-                        onClick={() =>
-                          setShowAllResponsibilities(!showAllResponsibilities)
-                        }
-                        className={`text-sm px-3 py-1 rounded ${
-                          theme === "dark"
-                            ? "bg-red-600 hover:bg-red-700 text-white"
-                            : "bg-red-100 hover:bg-red-200 text-red-800"
-                        }`}
-                      >
-                        {showAllResponsibilities
-                          ? "Скрыть"
-                          : `Показать все (${responsibilities.length})`}
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                {displayedData.map((item: TFData) => (
-                  <div
-                    key={item.tfId}
-                    className={`${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                    } rounded-lg p-3`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-medium text-base">{item.tfName}</h3>
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-xs ${
-                            item.isMain === false
-                              ? "bg-green-500 text-white"
-                              : "bg-red-500 text-white"
-                          }`}
-                        >
-                          Тип {item.isMain ? "Основная" : "Дополнительная"}
-                        </span>
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-xs bg-blue-500 text-white`}
-                        >
-                          Время {item.time} ч
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
               </div>
 
               {!showAllResponsibilities &&

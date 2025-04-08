@@ -12,6 +12,13 @@ import { deleteUser } from "@/components/server/userdata";
 import { useRouter } from "next/navigation";
 import { DownloadingAllReports } from "@/components/buildIn/DownloadingAllReports";
 import createTF from "@/components/server/createTF";
+import { TFData } from "@/types";
+import allTfByDepartment from "@/components/server/allTfByDepartment";
+import useGetAlldeps from "@/hooks/useDeps";
+import createTFForDepartment from "@/components/server/createTFForDepartment";
+import useGetAllJobs from "@/hooks/useGetAllJobs";
+import createTFForPosition from "@/components/server/createTFForPosition";
+import updateTF from "@/components/server/updateTF";
 
 // Types
 type Employee = {
@@ -22,28 +29,6 @@ type Employee = {
   currentLevel?: number;
 };
 
-// type Position = {
-//   id: number;
-//   title: string;
-//   description: string;
-// };
-
-// const positions: Position[] = [
-//   {
-//     id: 1,
-//     title: "Младший разработчик",
-//     description: "Начальная позиция разработчика",
-//   },
-//   { id: 2, title: "Разработчик", description: "Основная позиция разработчика" },
-//   {
-//     id: 3,
-//     title: "Старший разработчик",
-//     description: "Ведущая позиция разработчика",
-//   },
-//   { id: 4, title: "Дизайнер", description: "Позиция дизайнера" },
-//   { id: 5, title: "Менеджер", description: "Управляющая позиция" },
-// ];
-
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<
     | "departments"
@@ -53,36 +38,51 @@ export default function AdminPage() {
     | "excel"
     | "downloadingAllReports"
     | "addFR"
+    | "addFRForDepartment"
+    | "addFRPosition"
+    | "updateFR"
   >("departments");
   const [showNotification, setShowNotification] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [adminPassword, setAdminPassword] = useState("");
-  const [showError, setShowError] = useState(false);
-  // Department form state
+  const [responsibilities, setResponsibilities] = useState<TFData[]>([]);
+  const { jobs } = useGetAllJobs();
+  const { deps } = useGetAlldeps();
+
   const [departmentForm, setDepartmentForm] = useState({
     name: "",
     description: "",
     headId: "",
   });
 
-  // Position form state
   const [positionForm, setPositionForm] = useState({
     title: "",
     description: "",
   });
   const [FRForm, setFRForm] = useState({
     tfName: "",
-    typicalFunctionDescription: "",
+    tfDescription: "",
     time: 0,
-    isMain: false
+    isMain: false,
   });
-  
+  const [FRFormForDepartment, setFRFormForDepartment] = useState({
+    tfId: 0,
+    departmentId: 0,
+  });
+  const [FRFormForPosition, setFRFormForPosition] = useState({
+    tfId: 0,
+    jobId: 0,
+  });
+  const [updateFRForm, setUpdateFRForm] = useState({
+    tfId: 0,
+    tfName: "",
+    tfDescription: "",
+    time: 0,
+    isMain: false,
+  });
+
   const [employeeForDelete, setEmployeeForDelete] = useState({ empid: 0 });
 
-  // Promotion form state
   const [promotionForm, setPromotionForm] = useState({
     empid: "",
     position: "",
@@ -92,14 +92,6 @@ export default function AdminPage() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
   );
-
-  // useEffect(() => {
-  //   const checkAdmin = async () => {
-  //     await new Promise((resolve) => setTimeout(resolve, 2000));
-  //     setIsLoading(false);
-  //   };
-  //   checkAdmin();
-  // }, []);
 
   useEffect(() => {
     const getEmps = async () => {
@@ -114,23 +106,24 @@ export default function AdminPage() {
     }
   }, [activeTab]);
 
-  // const handleAdminAuth = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await allTfByDepartment("all");
+        setResponsibilities(data || []);
+      } catch (error) {
+        console.error("Failed to fetch responsibilities:", error);
+      }
+    };
+    if (
+      activeTab === "addFRPosition" ||
+      activeTab === "addFRForDepartment" ||
+      activeTab === "updateFR"
+    ) {
+      fetchData();
+    }
+  }, [activeTab]);
 
-  //   await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  //   if (adminPassword === "123") {
-  //     setIsAdmin(true);
-  //     showSuccessNotification("Доступ предоставлен");
-  //   } else {
-  //     setShowError(true);
-  //     setTimeout(() => setShowError(false), 3000);
-  //   }
-
-  //   setIsLoading(false);
-  //   setAdminPassword("");
-  // };
   const router = useRouter();
   const showSuccessNotification = (message: string) => {
     setNotificationMessage(message);
@@ -153,8 +146,8 @@ export default function AdminPage() {
       }),
       ...(departmentForm.headId &&
         Number(departmentForm.headId) > 0 && {
-        headId: Number(departmentForm.headId),
-      }),
+          headId: Number(departmentForm.headId),
+        }),
     };
 
     try {
@@ -250,21 +243,93 @@ export default function AdminPage() {
   };
   const handleFRSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-try {
-  const res = await createTF(FRForm);
+    try {
+      const res = await createTF(FRForm);
 
-  if (!res) {
-    showSuccessNotification("Произошла ошибка при создании функциональной обязанности");
-    return;
-  }
+      if (!res) {
+        showSuccessNotification(
+          "Произошла ошибка при создании функциональной обязанности"
+        );
+        return;
+      }
 
-  showSuccessNotification("Функциональная обязанность была успешно создана");
-  
-} catch (error) {
-  console.error("Error creating TF:", error);
-  showSuccessNotification("Произошла ошибка при создании функциональной обязанности");
-}
+      showSuccessNotification(
+        "Функциональная обязанность была успешно создана"
+      );
+    } catch (error) {
+      console.error("Error creating TF:", error);
+      showSuccessNotification(
+        "Произошла ошибка при создании функциональной обязанности"
+      );
+    }
+  };
 
+  const handleFRForDepartmentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await createTFForDepartment(FRFormForDepartment);
+
+      if (!res) {
+        showSuccessNotification(
+          "Произошла ошибка при добавлении функциональной обязанности"
+        );
+        return;
+      }
+
+      showSuccessNotification(
+        "Функциональная обязанность была успешно добавлена"
+      );
+    } catch (error) {
+      console.error("Error creating TF:", error);
+      showSuccessNotification(
+        "Произошла ошибка при добавлении функциональной обязанности"
+      );
+    }
+  };
+
+  const handleFRForJobSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await createTFForPosition(FRFormForPosition);
+
+      if (!res) {
+        showSuccessNotification(
+          "Произошла ошибка при добавлении функциональной обязанности"
+        );
+        return;
+      }
+
+      showSuccessNotification(
+        "Функциональная обязанность была успешно добавлена"
+      );
+    } catch (error) {
+      console.error("Error creating TF:", error);
+      showSuccessNotification(
+        "Произошла ошибка при добавлении функциональной обязанности"
+      );
+    }
+  };
+  const handleFRUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await updateTF(updateFRForm);
+
+      if (!res) {
+        showSuccessNotification(
+          "Произошла ошибка при изменении функциональной обязанности"
+        );
+        return;
+      }
+
+      showSuccessNotification(
+        "Функциональная обязанность была успешно измененна"
+      );
+    } catch (error) {
+      console.error("Error creating TF:", error);
+      showSuccessNotification(
+        "Произошла ошибка при изменении функциональной обязанности"
+      );
+    }
   };
 
   return (
@@ -274,46 +339,51 @@ try {
         <div className="mb-6 flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab("departments")}
-            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "departments"
-              ? "bg-red-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "departments"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
           >
             Управление департаментами
           </button>
           <button
             onClick={() => setActiveTab("positions")}
-            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "positions"
-              ? "bg-red-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "positions"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
           >
             Управление должностями
           </button>
           <button
             onClick={() => setActiveTab("promotion")}
-            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "promotion"
-              ? "bg-red-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "promotion"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
           >
             Повышение сотрудника
           </button>
           <button
             onClick={() => setActiveTab("delete")}
-            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "delete"
-              ? "bg-red-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "delete"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
           >
             Удаление сотрудника
           </button>
           <button
             onClick={() => setActiveTab("excel")}
-            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "excel"
-              ? "bg-red-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "excel"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
           >
             Загрузка Excel файла с задачами
           </button>
@@ -340,12 +410,43 @@ try {
           </button> */}
           <button
             onClick={() => setActiveTab("addFR")}
-            className={`px-4 py-2 rounded-xl transition-colors ${activeTab === "addFR"
-              ? "bg-red-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "addFR"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
           >
-            Добавление функциональной обязанности
+            Добавление функ. обяз.
+          </button>
+          <button
+            onClick={() => setActiveTab("addFRForDepartment")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "addFRForDepartment"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+            Добавление функ. обяз. для отдела
+          </button>
+          <button
+            onClick={() => setActiveTab("addFRPosition")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "addFRPosition"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+            Добавление функ. обяз. для должности
+          </button>
+          <button
+            onClick={() => setActiveTab("updateFR")}
+            className={`px-4 py-2 rounded-xl transition-colors ${
+              activeTab === "updateFR"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            }`}
+          >
+            Изменить функ. обяз.
           </button>
         </div>
 
@@ -499,11 +600,11 @@ try {
                 <textarea
                   id="positionTitle"
                   required
-                  value={FRForm.typicalFunctionDescription}
+                  value={FRForm.tfDescription}
                   onChange={(e) =>
                     setFRForm((prev) => ({
                       ...prev,
-                      typicalFunctionDescription: e.target.value,
+                      tfDescription: e.target.value,
                     }))
                   }
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -513,7 +614,8 @@ try {
 
               <div>
                 <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Врямя выполнения функциональной обязанности (формат: часы,минуты)
+                  Врямя выполнения функциональной обязанности (формат:
+                  часы,минуты)
                 </label>
                 <input
                   id="positionTitle"
@@ -552,12 +654,281 @@ try {
                   <div className="flex justify-center items-center gap-3">
                     <button
                       type="button"
-                      onClick={() => setFRForm((prev) => ({ ...prev, isMain: !prev.isMain }))}
+                      onClick={() =>
+                        setFRForm((prev) => ({ ...prev, isMain: !prev.isMain }))
+                      }
                       className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors"
                     >
                       {FRForm.isMain ? "Основная" : "Дополнительная"}
                     </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
+              >
+                Добавить функциональную обязанность
+              </button>
+            </form>
+          </section>
+        )}
+        {activeTab === "addFRForDepartment" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4 text-white">
+              Добавление функциональной обязанности для отдела
+            </h2>
+            <form className="space-y-4" onSubmit={handleFRForDepartmentSubmit}>
+              <div>
+                <label htmlFor="selectTF" className="labelStyles mb-2">
+                  Выберите функциональную обязанность
+                </label>
+                <select
+                  id="selectTF"
+                  required
+                  value={FRFormForDepartment.tfId}
+                  onChange={(e) =>
+                    setFRFormForDepartment((prev) => ({
+                      ...prev,
+                      tfId: Number(e.target.value),
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите функциональную обязанность</option>
+                  {responsibilities.map((tf) => (
+                    <option
+                      key={tf.tfId}
+                      value={tf.tfId}
+                      className={`${tf.isMain ? "text-red-400" : ""}`}
+                    >
+                      {tf.tfName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="selectTF" className="labelStyles mb-2">
+                  Выберите отдел
+                </label>
+                <select
+                  id="selectDepartment"
+                  required
+                  value={FRFormForDepartment.departmentId}
+                  onChange={(e) => {
+                    setFRFormForDepartment((prev) => ({
+                      ...prev,
+                      departmentId: Number(e.target.value),
+                    }));
+                  }}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите отдел</option>
+                  {deps.map((dept, index) => (
+                    <option key={index} value={dept.departmentId}>
+                      {dept.departmentName}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
+              <button
+                type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
+              >
+                Добавить функциональную обязанность
+              </button>
+            </form>
+          </section>
+        )}
+        {activeTab === "addFRPosition" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4 text-white">
+              Добавление функциональной обязанности для должности
+            </h2>
+            <form className="space-y-4" onSubmit={handleFRForJobSubmit}>
+              <div>
+                <label htmlFor="selectTF" className="labelStyles mb-2">
+                  Выберите функциональную обязанность
+                </label>
+                <select
+                  id="selectTF"
+                  required
+                  value={FRFormForPosition.tfId}
+                  onChange={(e) =>
+                    setFRFormForPosition((prev) => ({
+                      ...prev,
+                      tfId: Number(e.target.value),
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите функциональную обязанность</option>
+                  {responsibilities.map((tf) => (
+                    <option
+                      key={tf.tfId}
+                      value={tf.tfId}
+                      className={`${tf.isMain ? "text-red-400" : ""}`}
+                    >
+                      {tf.tfName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="selectTF" className="labelStyles mb-2">
+                  Выберите должность
+                </label>
+                <select
+                  id="selectDepartment"
+                  required
+                  value={FRFormForPosition.jobId}
+                  onChange={(e) => {
+                    setFRFormForPosition((prev) => ({
+                      ...prev,
+                      jobId: Number(e.target.value),
+                    }));
+                  }}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите должность</option>
+                  {jobs.map((job, index) => (
+                    <option key={index} value={job.jobId}>
+                      {job.jobName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
+              >
+                Добавить функциональную обязанность
+              </button>
+            </form>
+          </section>
+        )}
+
+        {activeTab === "updateFR" && (
+          <section className="bg-gray-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold mb-4 text-white">
+              Добавление функциональной обязанности
+            </h2>
+            <form className="space-y-4" onSubmit={handleFRUpdate}>
+              <div>
+                <label htmlFor="selectTF" className="labelStyles mb-2">
+                  Выберите функциональную обязанность
+                </label>
+                <select
+                  id="selectTF"
+                  required
+                  value={updateFRForm.tfId}
+                  onChange={(e) => {
+                    const selectedTfId = Number(e.target.value);
+                    const selectedTf = responsibilities.find(
+                      (tf) => Number(tf.tfId) === Number(selectedTfId)
+                    );
+
+                    setUpdateFRForm({
+                      tfId: selectedTfId,
+                      tfName: selectedTf ? selectedTf.tfName : "",
+                      tfDescription: selectedTf ? selectedTf.tfDescription : "",
+                      time: selectedTf ? selectedTf.time : 0,
+                      isMain: selectedTf ? selectedTf.isMain : false,
+                    });
+                  }}
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Выберите функциональную обязанность</option>
+                  {responsibilities.map((tf) => (
+                    <option
+                      key={tf.tfId}
+                      value={tf.tfId}
+                      className={`${tf.isMain ? "text-red-400" : ""}`}
+                    >
+                      {tf.tfName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="positionTitle" className="labelStyles mb-2">
+                  Изменение функциональной обязанности
+                </label>
+                <input
+                  id="positionTitle"
+                  type="text"
+                  required
+                  value={updateFRForm.tfName}
+                  onChange={(e) =>
+                    setUpdateFRForm((prev) => ({
+                      ...prev,
+                      tfName: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Введите название функциональной обязанности"
+                />
+              </div>
+              <div>
+                <label htmlFor="positionTitle" className="labelStyles mb-2">
+                  Описание функциональной обязанности
+                </label>
+                <textarea
+                  id="positionTitle"
+                  required
+                  value={updateFRForm.tfDescription}
+                  onChange={(e) =>
+                    setUpdateFRForm((prev) => ({
+                      ...prev,
+                      tfDescription: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Введите описание функциональной обязанности"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="positionTitle" className="labelStyles mb-2">
+                  Врямя выполнения функциональной обязанности (формат:
+                  часы,минуты)
+                </label>
+                <input
+                  id="positionTitle"
+                  type="number"
+                  required
+                  value={updateFRForm.time}
+                  onChange={(e) =>
+                    setUpdateFRForm((prev) => ({
+                      ...prev,
+                      time: Number(e.target.value),
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Введите время выполнения функциональной обязанности (формат: часы,минуты)"
+                />
+              </div>
+
+              <div>
+                <label className="labelStyles mb-4">
+                  Тип: {updateFRForm.isMain ? "Основная" : "Дополнительная"}
+                </label>
+                <div className="flex items-center space-x-4">
+                  <div className="flex justify-center items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setUpdateFRForm((prev) => ({
+                          ...prev,
+                          isMain: !prev.isMain,
+                        }))
+                      }
+                      className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors"
+                    >
+                      {updateFRForm.isMain ? "Основная" : "Дополнительная"}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -617,10 +988,11 @@ try {
                       {[1, 2, 3, 4, 5].map((level) => (
                         <div
                           key={level}
-                          className={`w-2 h-8 rounded ${level <= (selectedEmployee.currentLevel || 1)
-                            ? "bg-red-500"
-                            : "bg-gray-600"
-                            }`}
+                          className={`w-2 h-8 rounded ${
+                            level <= (selectedEmployee.currentLevel || 1)
+                              ? "bg-red-500"
+                              : "bg-gray-600"
+                          }`}
                         />
                       ))}
                     </div>
@@ -679,10 +1051,11 @@ try {
                         onClick={() =>
                           setPromotionForm((prev) => ({ ...prev, level }))
                         }
-                        className={`w-8 h-8 rounded ${level <= promotionForm.level
-                          ? "bg-red-500 hover:bg-red-600"
-                          : "bg-gray-600 hover:bg-gray-500"
-                          } transition-colors`}
+                        className={`w-8 h-8 rounded ${
+                          level <= promotionForm.level
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-gray-600 hover:bg-gray-500"
+                        } transition-colors`}
                       >
                         {level}
                       </button>

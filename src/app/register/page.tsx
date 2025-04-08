@@ -55,7 +55,6 @@ const [sended, setSent] = useState(false);
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    console.log("Submitting:", formData);
 
     if (formData.jobid === 0 || formData.departmentid === 0) {
       setError("Пожалуйста, выберите должность и отдел");

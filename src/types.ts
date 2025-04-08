@@ -14,12 +14,13 @@ comment: string,
 interface TFData {
 tfId: string;
 tfName: string;
+tfDescription: string;
 isMain: boolean;
 time: number;
 }
 interface defaultTF {
   tfName: string;
-  typicalFunctionDescription: string;
+  tfDescription: string;
   time: number;
   isMain: boolean;
 }
