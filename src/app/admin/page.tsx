@@ -513,7 +513,7 @@ export default function AdminPage() {
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   <option value="">Выберите начальника департамента</option>
-                  {employees.map((employee) => (
+                  {Array.isArray(employees) && employees?.map((employee) => (
                     <option
                       key={employee.employeeId}
                       value={employee.employeeId}
@@ -959,8 +959,8 @@ export default function AdminPage() {
                   onChange={handleEmployeeSelect}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  <option value="">Выберите сотрудника</option>
-                  {employees.map((employee) => (
+              <option value="">Выберите начальника департамента</option>
+                  {Array.isArray(employees) && employees?.map((employee) => (
                     <option
                       key={employee.employeeId}
                       value={employee.employeeId}
@@ -969,6 +969,7 @@ export default function AdminPage() {
                       {employee.position})
                     </option>
                   ))}
+    
                 </select>
               </div>
 
