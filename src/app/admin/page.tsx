@@ -43,6 +43,7 @@ export default function AdminPage() {
     | "updateFR"
   >("departments");
   const [showNotification, setShowNotification] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [responsibilities, setResponsibilities] = useState<TFData[]>([]);
@@ -125,8 +126,9 @@ export default function AdminPage() {
   }, [activeTab]);
 
   const router = useRouter();
-  const showSuccessNotification = (message: string) => {
+  const showSuccessNotification = (message: string, isError:boolean = false) => {
     setNotificationMessage(message);
+    setIsError(isError);
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 3000);
   };
@@ -135,7 +137,7 @@ export default function AdminPage() {
     e.preventDefault();
 
     if (!departmentForm.name) {
-      showSuccessNotification("Пожалуйста, заполните имя");
+      showSuccessNotification("Пожалуйста, заполните имя", true);
       return;
     }
 
@@ -154,7 +156,7 @@ export default function AdminPage() {
       const response = await createDepartment(formattedData);
 
       if (!response) {
-        showSuccessNotification("Ошибка при создании департамента");
+        showSuccessNotification("Ошибка при создании департамента", true);
         return;
       }
 
@@ -162,14 +164,14 @@ export default function AdminPage() {
       setDepartmentForm({ name: "", description: "", headId: "" });
     } catch (error) {
       console.error("Ошибка при создании департамента:", error);
-      showSuccessNotification("Произошла ошибка при создании департамента");
+      showSuccessNotification("Произошла ошибка при создании департамента", true);
     }
   };
 
   const handlePositionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!positionForm.title) {
-      showSuccessNotification("Пожалуйста, укажите название должности");
+      showSuccessNotification("Пожалуйста, укажите название должности", true);
       return;
     }
 
@@ -177,21 +179,21 @@ export default function AdminPage() {
       const response = await createJob(positionForm.title);
 
       if (!response) {
-        showSuccessNotification("Ошибка при создании должности");
+        showSuccessNotification("Ошибка при создании должности", true);
         return;
       }
       showSuccessNotification("Должность успешно создана");
       setPositionForm({ title: "", description: "" });
     } catch (error) {
       console.error("Error creating position:", error);
-      showSuccessNotification("Произошла ошибка при создании должности");
+      showSuccessNotification("Произошла ошибка при создании должности", true);
     }
   };
 
   const handlePromotionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedEmployee || !promotionForm.level) {
-      showSuccessNotification("Пожалуйста, заполните все поля для повышения");
+      showSuccessNotification("Пожалуйста, заполните все поля для повышения", true);
       return;
     }
 
@@ -208,14 +210,14 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error("Error promoting employee:", error);
-      showSuccessNotification("Ошибка при повышении сотрудника");
+      showSuccessNotification("Ошибка при повышении сотрудника", true);
     }
   };
 
   const handleEmployeeDelete = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!employeeForDelete.empid) {
-      showSuccessNotification("Пожалуйста, выберите сотрудника");
+      showSuccessNotification("Пожалуйста, выберите сотрудника", true);
       return;
     }
 
@@ -227,7 +229,7 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error("Error promoting employee:", error);
-      showSuccessNotification("Удален");
+      showSuccessNotification("Ошибка при удалении сотрудника", true);
     }
   };
 
@@ -241,15 +243,19 @@ export default function AdminPage() {
       setPromotionForm((prev) => ({ ...prev, empid: employeeId }));
     }
   };
+  
   const handleFRSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("handleFRSubmit invoked with form data:", FRForm);
     try {
       const res = await createTF(FRForm);
+      console.log("Response from createTF:", res);
 
       if (!res) {
         showSuccessNotification(
-          "Произошла ошибка при создании функциональной обязанности"
+          "Произошла ошибка при создании функциональной обязанности", true
         );
+        console.log("Error: No response received from createTF");
         return;
       }
 
@@ -259,7 +265,7 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error creating TF:", error);
       showSuccessNotification(
-        "Произошла ошибка при создании функциональной обязанности"
+        "Произошла ошибка при создании функциональной обязанности", true
       );
     }
   };
@@ -271,7 +277,7 @@ export default function AdminPage() {
 
       if (!res) {
         showSuccessNotification(
-          "Произошла ошибка при добавлении функциональной обязанности"
+          "Произошла ошибка при добавлении функциональной обязанности", true
         );
         return;
       }
@@ -282,7 +288,7 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error creating TF:", error);
       showSuccessNotification(
-        "Произошла ошибка при добавлении функциональной обязанности"
+        "Произошла ошибка при добавлении функциональной обязанности", true
       );
     }
   };
@@ -294,7 +300,7 @@ export default function AdminPage() {
 
       if (!res) {
         showSuccessNotification(
-          "Произошла ошибка при добавлении функциональной обязанности"
+          "Произошла ошибка при добавлении функциональной обязанности", true
         );
         return;
       }
@@ -305,7 +311,7 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error creating TF:", error);
       showSuccessNotification(
-        "Произошла ошибка при добавлении функциональной обязанности"
+        "Произошла ошибка при добавлении функциональной обязанности", true
       );
     }
   };
@@ -316,7 +322,7 @@ export default function AdminPage() {
 
       if (!res) {
         showSuccessNotification(
-          "Произошла ошибка при изменении функциональной обязанности"
+          "Произошла ошибка при изменении функциональной обязанности", true
         );
         return;
       }
@@ -327,7 +333,7 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error creating TF:", error);
       showSuccessNotification(
-        "Произошла ошибка при изменении функциональной обязанности"
+        "Произошла ошибка при изменении функциональной обязанности", true
       );
     }
   };
@@ -576,7 +582,7 @@ export default function AdminPage() {
             <form className="space-y-4" onSubmit={handleFRSubmit}>
               <div>
                 <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Название функциональной обязанности
+                  Название функциональной обязанности (не более 50 символов)
                 </label>
                 <input
                   id="positionTitle"
@@ -591,7 +597,9 @@ export default function AdminPage() {
                   }
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Введите название функциональной обязанности"
+                  maxLength={50}
                 />
+                 <p className="text-gray-500 text-xs my-1">{`символов: ${FRForm.tfName.length}`}</p>
               </div>
               <div>
                 <label htmlFor="positionTitle" className="labelStyles mb-2">
@@ -599,7 +607,6 @@ export default function AdminPage() {
                 </label>
                 <textarea
                   id="positionTitle"
-                  required
                   value={FRForm.tfDescription}
                   onChange={(e) =>
                     setFRForm((prev) => ({
@@ -614,8 +621,8 @@ export default function AdminPage() {
 
               <div>
                 <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Врямя выполнения функциональной обязанности (формат:
-                  часы,минуты)
+                  Время выполнения функциональной обязанности (формат:
+                  часы.минуты)
                 </label>
                 <input
                   id="positionTitle"
@@ -813,7 +820,7 @@ export default function AdminPage() {
         {activeTab === "updateFR" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold mb-4 text-white">
-              Добавление функциональной обязанности
+              Изменение функциональной обязанности
             </h2>
             <form className="space-y-4" onSubmit={handleFRUpdate}>
               <div>
@@ -854,7 +861,7 @@ export default function AdminPage() {
               </div>
               <div>
                 <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Изменение функциональной обязанности
+                  Изменение названия функциональной обязанности (до 50 символов)
                 </label>
                 <input
                   id="positionTitle"
@@ -869,7 +876,9 @@ export default function AdminPage() {
                   }
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Введите название функциональной обязанности"
+                  maxLength={50}
                 />
+                <p className="text-gray-500 text-xs my-1">{`символов: ${updateFRForm.tfName.length}`}</p>
               </div>
               <div>
                 <label htmlFor="positionTitle" className="labelStyles mb-2">
@@ -877,7 +886,6 @@ export default function AdminPage() {
                 </label>
                 <textarea
                   id="positionTitle"
-                  required
                   value={updateFRForm.tfDescription}
                   onChange={(e) =>
                     setUpdateFRForm((prev) => ({
@@ -1132,7 +1140,7 @@ export default function AdminPage() {
         )}
 
         {showNotification && (
-          <div className="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg animate-fade-in">
+          <div className={`fixed bottom-4 right-4 ${isError ? "bg-red-500" : "bg-green-500"} text-white px-6 py-3 rounded-xl shadow-lg animate-fade-in`}>
             {notificationMessage}
           </div>
         )}

@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 async function updateTF(dataTF: any): Promise<any> {
   const cookieStore = cookies();
   const jwt = cookieStore.get("cf-auth-id")?.value;
+  console.log("updateTF: dataTF:", dataTF);
+  console.log("updateTF: jwt:", jwt);
   if (jwt === null || jwt === undefined) {
     throw new Error("No token provided");
   }
@@ -13,6 +15,8 @@ async function updateTF(dataTF: any): Promise<any> {
       throw new Error("No data provided");
     }
     const { tfId, ...dataToSend } = dataTF;
+    console.log("updateTF: tfId:", tfId);
+    console.log("updateTF: dataToSend:", dataToSend);
     
     const response = await fetch(`${host}entities/tf/?id=${tfId}`, {
       method: "PATCH",
@@ -24,14 +28,17 @@ async function updateTF(dataTF: any): Promise<any> {
       body: JSON.stringify(dataToSend),
     });
 
+    console.log("updateTF: response:", response);
     if (!response.ok) {
       const error = new Error(
         `Error updating TFs by department: ${response.statusText}`
       );
+      console.log("updateTF: error:", error);
       throw error;
     }
 
     const data = await response.json();
+    console.log("updateTF: data:", data);
     if (!data) {
       throw new Error("No data returned from server");
     }

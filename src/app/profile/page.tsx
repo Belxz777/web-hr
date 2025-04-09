@@ -176,10 +176,12 @@ export default function ProfilePage() {
                       } rounded-lg p-3`}
                     >
                       <div className="flex justify-between items-center">
-                        <h3 className="font-medium text-base">{item.tfName}</h3>
-                        <div className="flex items-center space-x-2">
+                        <h3 className="font-medium text-base flex-1 min-w-0 pr-4">
+                          {item.tfName}
+                        </h3>
+                        <div className="flex flex-col gap-2 min-w-[100px] sm:flex-row sm:space-x-2 sm:justify-end sm:min-w-0">
                           <span
-                            className={`px-2 py-0.5 rounded-full text-xs ${
+                            className={`px-2 py-0.5 rounded-full text-xs whitespace-nowrap ${
                               item.isMain === false
                                 ? "bg-green-500 text-white"
                                 : "bg-red-500 text-white"
@@ -249,41 +251,41 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="space-y-2">
-                  {[...displayedData]
-                    .sort((a, b) =>
-                      a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1
-                    )
-                    .map((item: TFData) => (
-                      <div
-                        key={item.tfId}
-                        className={`${
-                          theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                        } rounded-lg p-3`}
-                      >
-                        <div className="flex justify-between items-center">
-                          <h3 className="font-medium text-base">
-                            {item.tfName}
-                          </h3>
-                          <div className="flex items-center space-x-2">
-                            <span
-                              className={`px-2 py-0.5 rounded-full text-xs ${
-                                item.isMain === false
-                                  ? "bg-green-500 text-white"
-                                  : "bg-red-500 text-white"
-                              }`}
-                            >
-                              Тип {item.isMain ? "Основная" : "Дополнительная"}
-                            </span>
-                            <span
-                              className={`px-2 py-0.5 rounded-full text-xs bg-blue-500 text-white`}
-                            >
-                              Время {item.time} ч
-                            </span>
-                          </div>
+                {[...displayedData]
+                  .sort((a, b) =>
+                    a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1
+                  )
+                  .map((item: TFData) => (
+                    <div
+                      key={item.tfId}
+                      className={`${
+                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                      } rounded-lg p-3`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium text-base flex-1 min-w-0 pr-4">
+                          {item.tfName}
+                        </h3>
+                        <div className="flex flex-col gap-2 min-w-[100px] sm:flex-row sm:space-x-2 sm:justify-end sm:min-w-0">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs whitespace-nowrap ${
+                              item.isMain === false
+                                ? "bg-green-500 text-white"
+                                : "bg-red-500 text-white"
+                            }`}
+                          >
+                            Тип {item.isMain ? "Основная" : "Дополнительная"}
+                          </span>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs bg-blue-500 text-white whitespace-nowrap`}
+                          >
+                            Время {item.time} ч
+                          </span>
                         </div>
                       </div>
-                    ))}
-                </div>
+                    </div>
+                  ))}
+              </div>
 
                 {!showAllResponsibilities &&
                   responsibilities.length > initialDisplayCount && (
@@ -351,10 +353,12 @@ export default function ProfilePage() {
                       } rounded-lg p-3`}
                     >
                       <div className="flex justify-between items-center">
-                        <h3 className="font-medium text-base">{item.tfName}</h3>
-                        <div className="flex items-center space-x-2">
+                        <h3 className="font-medium text-base flex-1 min-w-0 pr-4">
+                          {item.tfName}
+                        </h3>
+                        <div className="flex flex-col gap-2 min-w-[100px] sm:flex-row sm:space-x-2 sm:justify-end sm:min-w-0">
                           <span
-                            className={`px-2 py-0.5 rounded-full text-xs ${
+                            className={`px-2 py-0.5 rounded-full text-xs whitespace-nowrap ${
                               item.isMain === false
                                 ? "bg-green-500 text-white"
                                 : "bg-red-500 text-white"
@@ -363,7 +367,7 @@ export default function ProfilePage() {
                             Тип {item.isMain ? "Основная" : "Дополнительная"}
                           </span>
                           <span
-                            className={`px-2 py-0.5 rounded-full text-xs bg-blue-500 text-white`}
+                            className={`px-2 py-0.5 rounded-full text-xs bg-blue-500 text-white whitespace-nowrap`}
                           >
                             Время {item.time} ч
                           </span>
