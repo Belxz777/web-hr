@@ -76,7 +76,7 @@ interface changePass {
   old_password:string,
   new_password:string
 }
-const host = process.env.BACKEND_URL || "https://backend-pulse.onrender.com/api/v1/"
+const host = process.env.BACKEND_URL || "https://bba86p099ss03ss9tem5.containers.yandexcloud.net/api/v1/"
 
 
 interface statusType {
