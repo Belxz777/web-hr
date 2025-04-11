@@ -39,7 +39,7 @@ export default function SystemStatusPage() {
   // Функция для получения данных о состоянии бэкенда
   const fetchBackendStatus = async () => {
     try {
-      const response = await fetch("/api/statistics", {
+      const response = await fetch("/api/stats", {
         method: "GET",
         headers: {
           'Content-Type': 'application/json',

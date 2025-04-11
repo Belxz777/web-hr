@@ -6,7 +6,7 @@ import { host } from '@/types';
 export async function GET() {
   try {
 
-    const response = await fetch(`${host}statistics`, {
+    const response = await fetch(`${host}app/statistics`, {
         credentials: 'include',
     }
          );
