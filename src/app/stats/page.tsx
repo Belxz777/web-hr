@@ -186,7 +186,7 @@ export default function SystemStatusPage() {
             <h3 className="font-bold mb-2">Ошибка соединения с бэкендом</h3>
             <p>{error}</p>
             <p className="mt-2 text-sm">
-              Убедитесь, что бэкенд запущен и доступен по адресу: http://127.0.0.1:8000/api/v1/statistics
+              Убедитесь, что бэкенд запущен и доступен по адресу: ${host}
             </p>
           </div>
         ) : backendStatus ? (
