@@ -20,7 +20,7 @@ async function createTFForPosition(dataTF: any): Promise<any> {
         Cookie: `jwt=${jwt}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({typicalfunctions: [dataTF.tfId]}),
+      body: JSON.stringify({tfs: dataTF.tfIds}),
     });
 
     if (!response.ok) {
@@ -31,6 +31,7 @@ async function createTFForPosition(dataTF: any): Promise<any> {
     }
 
     const data = await response.json();
+    
     if (!data) {
       throw new Error("No data returned from server");
     }

@@ -10,24 +10,21 @@ import getEmployees from "@/components/server/emps_get";
 import promotion from "@/components/server/promotion";
 import { deleteUser } from "@/components/server/userdata";
 import { useRouter } from "next/navigation";
-import { DownloadingAllReports } from "@/components/buildIn/DownloadingAllReports";
 import createTF from "@/components/server/createTF";
-import { TFData } from "@/types";
+import { Employee, TFData } from "@/types";
 import allTfByDepartment from "@/components/server/allTfByDepartment";
 import useGetAlldeps from "@/hooks/useDeps";
 import createTFForDepartment from "@/components/server/createTFForDepartment";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 import createTFForPosition from "@/components/server/createTFForPosition";
 import updateTF from "@/components/server/updateTF";
-
-// Types
-type Employee = {
-  employeeId: number;
-  firstName: string;
-  lastName: string;
-  position: string;
-  currentLevel?: number;
-};
+import Departments from "@/components/ui/AdminPageComponents/Departments";
+import Positions from "@/components/ui/AdminPageComponents/Positions";
+import AddFR from "@/components/ui/AdminPageComponents/AddFR";
+import AddFRForDepartment from "@/components/ui/AdminPageComponents/AddFRForDepartment";
+import AddFRPosition from "@/components/ui/AdminPageComponents/AddFRPosition";
+import UpdateFR from "@/components/ui/AdminPageComponents/UpdateFR";
+import Delete from "@/components/ui/AdminPageComponents/Delete";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<
@@ -66,12 +63,19 @@ export default function AdminPage() {
     time: 0,
     isMain: false,
   });
-  const [FRFormForDepartment, setFRFormForDepartment] = useState({
-    tfId: 0,
+  const [FRFormForDepartment, setFRFormForDepartment] = useState<{
+    tfIds: number[];
+    departmentId: number;
+  }>({
+    tfIds: [],
     departmentId: 0,
   });
-  const [FRFormForPosition, setFRFormForPosition] = useState({
-    tfId: 0,
+
+  const [FRFormForPosition, setFRFormForPosition] = useState<{
+    tfIds: number[];
+    jobId: number;
+  }>({
+    tfIds: [],
     jobId: 0,
   });
   const [updateFRForm, setUpdateFRForm] = useState({
@@ -126,7 +130,10 @@ export default function AdminPage() {
   }, [activeTab]);
 
   const router = useRouter();
-  const showSuccessNotification = (message: string, isError:boolean = false) => {
+  const showSuccessNotification = (
+    message: string,
+    isError: boolean = false
+  ) => {
     setNotificationMessage(message);
     setIsError(isError);
     setShowNotification(true);
@@ -164,7 +171,10 @@ export default function AdminPage() {
       setDepartmentForm({ name: "", description: "", headId: "" });
     } catch (error) {
       console.error("Ошибка при создании департамента:", error);
-      showSuccessNotification("Произошла ошибка при создании департамента", true);
+      showSuccessNotification(
+        "Произошла ошибка при создании департамента",
+        true
+      );
     }
   };
 
@@ -193,7 +203,10 @@ export default function AdminPage() {
   const handlePromotionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedEmployee || !promotionForm.level) {
-      showSuccessNotification("Пожалуйста, заполните все поля для повышения", true);
+      showSuccessNotification(
+        "Пожалуйста, заполните все поля для повышения",
+        true
+      );
       return;
     }
 
@@ -243,7 +256,7 @@ export default function AdminPage() {
       setPromotionForm((prev) => ({ ...prev, empid: employeeId }));
     }
   };
-  
+
   const handleFRSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("handleFRSubmit invoked with form data:", FRForm);
@@ -253,7 +266,8 @@ export default function AdminPage() {
 
       if (!res) {
         showSuccessNotification(
-          "Произошла ошибка при создании функциональной обязанности", true
+          "Произошла ошибка при создании функциональной обязанности",
+          true
         );
         console.log("Error: No response received from createTF");
         return;
@@ -265,7 +279,8 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error creating TF:", error);
       showSuccessNotification(
-        "Произошла ошибка при создании функциональной обязанности", true
+        "Произошла ошибка при создании функциональной обязанности",
+        true
       );
     }
   };
@@ -273,11 +288,15 @@ export default function AdminPage() {
   const handleFRForDepartmentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await createTFForDepartment(FRFormForDepartment);
+      const res = await createTFForDepartment({
+        ...FRFormForDepartment,
+        jobsList: jobs.map((job) => job.jobId),
+      });
 
       if (!res) {
         showSuccessNotification(
-          "Произошла ошибка при добавлении функциональной обязанности", true
+          "Произошла ошибка при добавлении функциональной обязанности",
+          true
         );
         return;
       }
@@ -288,7 +307,8 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error creating TF:", error);
       showSuccessNotification(
-        "Произошла ошибка при добавлении функциональной обязанности", true
+        "Произошла ошибка при добавлении функциональной обязанности",
+        true
       );
     }
   };
@@ -300,7 +320,8 @@ export default function AdminPage() {
 
       if (!res) {
         showSuccessNotification(
-          "Произошла ошибка при добавлении функциональной обязанности", true
+          "Произошла ошибка при добавлении функциональной обязанности",
+          true
         );
         return;
       }
@@ -311,7 +332,8 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error creating TF:", error);
       showSuccessNotification(
-        "Произошла ошибка при добавлении функциональной обязанности", true
+        "Произошла ошибка при добавлении функциональной обязанности",
+        true
       );
     }
   };
@@ -322,7 +344,8 @@ export default function AdminPage() {
 
       if (!res) {
         showSuccessNotification(
-          "Произошла ошибка при изменении функциональной обязанности", true
+          "Произошла ошибка при изменении функциональной обязанности",
+          true
         );
         return;
       }
@@ -333,7 +356,8 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error creating TF:", error);
       showSuccessNotification(
-        "Произошла ошибка при изменении функциональной обязанности", true
+        "Произошла ошибка при изменении функциональной обязанности",
+        true
       );
     }
   };
@@ -432,7 +456,7 @@ export default function AdminPage() {
                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
             }`}
           >
-            Добавление функ. обяз. для отдела
+            Назначение функ. обяз. для отдела
           </button>
           <button
             onClick={() => setActiveTab("addFRPosition")}
@@ -442,7 +466,7 @@ export default function AdminPage() {
                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
             }`}
           >
-            Добавление функ. обяз. для должности
+            Назначение функ. обяз. для должности
           </button>
           <button
             onClick={() => setActiveTab("updateFR")}
@@ -455,561 +479,121 @@ export default function AdminPage() {
             Изменить функ. обяз.
           </button>
         </div>
+        <div>
+          {activeTab === "departments" && (
+            <Departments
+              handleDepartmentSubmit={handleDepartmentSubmit}
+              setDepartmentForm={setDepartmentForm}
+              departmentForm={departmentForm}
+              employees={employees}
+            />
+          )}
 
-        {activeTab === "departments" && (
-          <section className="bg-gray-800 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
-              Создание нового департамента
-            </h2>
-            <form onSubmit={handleDepartmentSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="departmentName" className="labelStyles mb-2">
-                  Название департамента
-                </label>
-                <input
-                  id="departmentName"
-                  type="text"
-                  required
-                  value={departmentForm.name}
-                  onChange={(e) =>
-                    setDepartmentForm((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите название департамента"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="departmentDescription"
-                  className="labelStyles mb-2"
-                >
-                  Описание департамента
-                </label>
-                <textarea
-                  id="departmentDescription"
-                  required
-                  value={departmentForm.description}
-                  onChange={(e) =>
-                    setDepartmentForm((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  rows={4}
-                  placeholder="Введите описание департамента"
-                />
-              </div>
-              <div>
-                <label htmlFor="departmentHead" className="labelStyles mb-2">
-                  Начальник департамента
-                </label>
-                <select
-                  id="departmentHead"
-                  value={departmentForm.headId}
-                  onChange={(e) =>
-                    setDepartmentForm((prev) => ({
-                      ...prev,
-                      headId: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="">Выберите начальника департамента</option>
-                  {Array.isArray(employees) && employees?.map((employee) => (
-                    <option
-                      key={employee.employeeId}
-                      value={employee.employeeId}
-                    >
-                      {employee.firstName} {employee.lastName} (поз.{" "}
-                      {employee.position})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
-              >
-                Создать департамент
-              </button>
-            </form>
-          </section>
-        )}
+          {activeTab === "positions" && (
+            <Positions
+              handlePositionSubmit={handlePositionSubmit}
+              setPositionForm={setPositionForm}
+              positionForm={positionForm}
+            />
+          )}
+          {activeTab === "addFR" && (
+            <AddFR
+              handleFRSubmit={handleFRSubmit}
+              FRForm={FRForm}
+              setFRForm={setFRForm}
+              employees={employees}
+            />
+          )}
+          {activeTab === "addFRForDepartment" && (
+            <AddFRForDepartment
+              handleFRForDepartmentSubmit={handleFRForDepartmentSubmit}
+              setFRFormForDepartment={setFRFormForDepartment}
+              FRFormForDepartment={FRFormForDepartment}
+              deps={deps}
+              responsibilities={responsibilities}
+            />
+          )}
+          {activeTab === "addFRPosition" && (
+            <AddFRPosition
+              handleFRForJobSubmit={handleFRForJobSubmit}
+              setFRFormForPosition={setFRFormForPosition}
+              FRFormForPosition={FRFormForPosition}
+              jobs={jobs}
+              responsibilities={responsibilities}
+            />
+          )}
 
-        {activeTab === "positions" && (
-          <section className="bg-gray-800 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
-              Создание новой должности
-            </h2>
-            <form className="space-y-4" onSubmit={handlePositionSubmit}>
-              <div>
-                <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Название должности
-                </label>
-                <input
-                  id="positionTitle"
-                  type="text"
-                  required
-                  value={positionForm.title}
-                  onChange={(e) =>
-                    setPositionForm((prev) => ({
-                      ...prev,
-                      title: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите название должности"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
-              >
-                Создать должность
-              </button>
-            </form>
-          </section>
-        )}
-        {activeTab === "addFR" && (
-          <section className="bg-gray-800 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
-              Добавление функциональной обязанности
-            </h2>
-            <form className="space-y-4" onSubmit={handleFRSubmit}>
-              <div>
-                <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Название функциональной обязанности (не более 50 символов)
-                </label>
-                <input
-                  id="positionTitle"
-                  type="text"
-                  required
-                  value={FRForm.tfName}
-                  onChange={(e) =>
-                    setFRForm((prev) => ({
-                      ...prev,
-                      tfName: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите название функциональной обязанности"
-                  maxLength={50}
-                />
-                 <p className="text-gray-500 text-xs my-1">{`символов: ${FRForm.tfName.length}`}</p>
-              </div>
-              <div>
-                <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Описание функциональной обязанности
-                </label>
-                <textarea
-                  id="positionTitle"
-                  value={FRForm.tfDescription}
-                  onChange={(e) =>
-                    setFRForm((prev) => ({
-                      ...prev,
-                      tfDescription: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите описание функциональной обязанности"
-                />
-              </div>
+          {activeTab === "updateFR" && (
+            <UpdateFR
+              handleFRUpdate={handleFRUpdate}
+              setUpdateFRForm={setUpdateFRForm}
+              updateFRForm={updateFRForm}
+              responsibilities={responsibilities}
+            />
+          )}
 
-              <div>
-                <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Время выполнения функциональной обязанности (формат:
-                  часы.минуты)
-                </label>
-                <input
-                  id="positionTitle"
-                  type="number"
-                  required
-                  value={FRForm.time}
-                  onChange={(e) =>
-                    setFRForm((prev) => ({
-                      ...prev,
-                      time: Number(e.target.value),
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите время выполнения функциональной обязанности (формат: часы,минуты)"
-                />
-              </div>
-
-              <div>
-                <label className="labelStyles mb-4">
-                  Тип: {FRForm.isMain ? "Основная" : "Дополнительная"}
-                </label>
-                <div className="flex items-center space-x-4">
-                  {/* <input
-                    type="range"
-                    min="1"
-                    max="5"
-                    value={FRForm.type}
-                    onChange={(e) =>
-                      setFRForm((prev) => ({
-                        ...prev,
-                        type: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                  /> */}
-                  <div className="flex justify-center items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFRForm((prev) => ({ ...prev, isMain: !prev.isMain }))
-                      }
-                      className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors"
-                    >
-                      {FRForm.isMain ? "Основная" : "Дополнительная"}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
-              >
-                Добавить функциональную обязанность
-              </button>
-            </form>
-          </section>
-        )}
-        {activeTab === "addFRForDepartment" && (
-          <section className="bg-gray-800 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
-              Добавление функциональной обязанности для отдела
-            </h2>
-            <form className="space-y-4" onSubmit={handleFRForDepartmentSubmit}>
-              <div>
-                <label htmlFor="selectTF" className="labelStyles mb-2">
-                  Выберите функциональную обязанность
-                </label>
-                <select
-                  id="selectTF"
-                  required
-                  value={FRFormForDepartment.tfId}
-                  onChange={(e) =>
-                    setFRFormForDepartment((prev) => ({
-                      ...prev,
-                      tfId: Number(e.target.value),
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="">Выберите функциональную обязанность</option>
-                  {responsibilities.map((tf) => (
-                    <option
-                      key={tf.tfId}
-                      value={tf.tfId}
-                      className={`${tf.isMain ? "text-red-400" : ""}`}
-                    >
-                      {tf.tfName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="selectTF" className="labelStyles mb-2">
-                  Выберите отдел
-                </label>
-                <select
-                  id="selectDepartment"
-                  required
-                  value={FRFormForDepartment.departmentId}
-                  onChange={(e) => {
-                    setFRFormForDepartment((prev) => ({
-                      ...prev,
-                      departmentId: Number(e.target.value),
-                    }));
-                  }}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="">Выберите отдел</option>
-                  {deps.map((dept, index) => (
-                    <option key={index} value={dept.departmentId}>
-                      {dept.departmentName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
-              >
-                Добавить функциональную обязанность
-              </button>
-            </form>
-          </section>
-        )}
-        {activeTab === "addFRPosition" && (
-          <section className="bg-gray-800 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
-              Добавление функциональной обязанности для должности
-            </h2>
-            <form className="space-y-4" onSubmit={handleFRForJobSubmit}>
-              <div>
-                <label htmlFor="selectTF" className="labelStyles mb-2">
-                  Выберите функциональную обязанность
-                </label>
-                <select
-                  id="selectTF"
-                  required
-                  value={FRFormForPosition.tfId}
-                  onChange={(e) =>
-                    setFRFormForPosition((prev) => ({
-                      ...prev,
-                      tfId: Number(e.target.value),
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="">Выберите функциональную обязанность</option>
-                  {responsibilities.map((tf) => (
-                    <option
-                      key={tf.tfId}
-                      value={tf.tfId}
-                      className={`${tf.isMain ? "text-red-400" : ""}`}
-                    >
-                      {tf.tfName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="selectTF" className="labelStyles mb-2">
-                  Выберите должность
-                </label>
-                <select
-                  id="selectDepartment"
-                  required
-                  value={FRFormForPosition.jobId}
-                  onChange={(e) => {
-                    setFRFormForPosition((prev) => ({
-                      ...prev,
-                      jobId: Number(e.target.value),
-                    }));
-                  }}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="">Выберите должность</option>
-                  {jobs.map((job, index) => (
-                    <option key={index} value={job.jobId}>
-                      {job.jobName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
-              >
-                Добавить функциональную обязанность
-              </button>
-            </form>
-          </section>
-        )}
-
-        {activeTab === "updateFR" && (
-          <section className="bg-gray-800 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
-              Изменение функциональной обязанности
-            </h2>
-            <form className="space-y-4" onSubmit={handleFRUpdate}>
-              <div>
-                <label htmlFor="selectTF" className="labelStyles mb-2">
-                  Выберите функциональную обязанность
-                </label>
-                <select
-                  id="selectTF"
-                  required
-                  value={updateFRForm.tfId}
-                  onChange={(e) => {
-                    const selectedTfId = Number(e.target.value);
-                    const selectedTf = responsibilities.find(
-                      (tf) => Number(tf.tfId) === Number(selectedTfId)
-                    );
-
-                    setUpdateFRForm({
-                      tfId: selectedTfId,
-                      tfName: selectedTf ? selectedTf.tfName : "",
-                      tfDescription: selectedTf ? selectedTf.tfDescription : "",
-                      time: selectedTf ? selectedTf.time : 0,
-                      isMain: selectedTf ? selectedTf.isMain : false,
-                    });
-                  }}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="">Выберите функциональную обязанность</option>
-                  {responsibilities.map((tf) => (
-                    <option
-                      key={tf.tfId}
-                      value={tf.tfId}
-                      className={`${tf.isMain ? "text-red-400" : ""}`}
-                    >
-                      {tf.tfName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Изменение названия функциональной обязанности (до 50 символов)
-                </label>
-                <input
-                  id="positionTitle"
-                  type="text"
-                  required
-                  value={updateFRForm.tfName}
-                  onChange={(e) =>
-                    setUpdateFRForm((prev) => ({
-                      ...prev,
-                      tfName: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите название функциональной обязанности"
-                  maxLength={50}
-                />
-                <p className="text-gray-500 text-xs my-1">{`символов: ${updateFRForm.tfName.length}`}</p>
-              </div>
-              <div>
-                <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Описание функциональной обязанности
-                </label>
-                <textarea
-                  id="positionTitle"
-                  value={updateFRForm.tfDescription}
-                  onChange={(e) =>
-                    setUpdateFRForm((prev) => ({
-                      ...prev,
-                      tfDescription: e.target.value,
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите описание функциональной обязанности"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="positionTitle" className="labelStyles mb-2">
-                  Врямя выполнения функциональной обязанности (формат:
-                  часы,минуты)
-                </label>
-                <input
-                  id="positionTitle"
-                  type="number"
-                  required
-                  value={updateFRForm.time}
-                  onChange={(e) =>
-                    setUpdateFRForm((prev) => ({
-                      ...prev,
-                      time: Number(e.target.value),
-                    }))
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Введите время выполнения функциональной обязанности (формат: часы,минуты)"
-                />
-              </div>
-
-              <div>
-                <label className="labelStyles mb-4">
-                  Тип: {updateFRForm.isMain ? "Основная" : "Дополнительная"}
-                </label>
-                <div className="flex items-center space-x-4">
-                  <div className="flex justify-center items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setUpdateFRForm((prev) => ({
-                          ...prev,
-                          isMain: !prev.isMain,
-                        }))
-                      }
-                      className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors"
-                    >
-                      {updateFRForm.isMain ? "Основная" : "Дополнительная"}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
-              >
-                Добавить функциональную обязанность
-              </button>
-            </form>
-          </section>
-        )}
-
-        {activeTab === "promotion" && (
-          <section className="bg-gray-800 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
-              Повышение сотрудника
-            </h2>
-            <form onSubmit={handlePromotionSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="employee" className="labelStyles mb-2">
-                  Выберите сотрудника
-                </label>
-                <select
-                  id="employee"
-                  required
-                  value={promotionForm.empid}
-                  onChange={handleEmployeeSelect}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-              <option value="">Выберите начальника департамента</option>
-                  {Array.isArray(employees) && employees?.map((employee) => (
-                    <option
-                      key={employee.employeeId}
-                      value={employee.employeeId}
-                    >
-                      {employee.firstName} {employee.lastName} (поз.{" "}
-                      {employee.position})
-                    </option>
-                  ))}
-    
-                </select>
-              </div>
-
-              {selectedEmployee && (
-                <div className="bg-gray-700 p-4 rounded-xl">
-                  <h3 className="font-medium text-gray-300 mb-2">
-                    Текущая позиция
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-white">{selectedEmployee.position}</p>
-                      <p className="text-sm text-gray-400">
-                        Уровень: {selectedEmployee.currentLevel || 1}
-                      </p>
-                    </div>
-                    <div className="flex space-x-1">
-                      {[1, 2, 3, 4, 5].map((level) => (
-                        <div
-                          key={level}
-                          className={`w-2 h-8 rounded ${
-                            level <= (selectedEmployee.currentLevel || 1)
-                              ? "bg-red-500"
-                              : "bg-gray-600"
-                          }`}
-                        />
+          {activeTab === "promotion" && (
+            <section className="bg-gray-800 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-bold mb-4 text-white">
+                Повышение сотрудника
+              </h2>
+              <form onSubmit={handlePromotionSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="employee" className="labelStyles mb-2">
+                    Выберите сотрудника
+                  </label>
+                  <select
+                    id="employee"
+                    required
+                    value={promotionForm.empid}
+                    onChange={handleEmployeeSelect}
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  >
+                    <option value="">Выберите начальника департамента</option>
+                    {Array.isArray(employees) &&
+                      employees?.map((employee) => (
+                        <option
+                          key={employee.employeeId}
+                          value={employee.employeeId}
+                        >
+                          {employee.firstName} {employee.lastName} (поз.{" "}
+                          {employee.position})
+                        </option>
                       ))}
+                  </select>
+                </div>
+
+                {selectedEmployee && (
+                  <div className="bg-gray-700 p-4 rounded-xl">
+                    <h3 className="font-medium text-gray-300 mb-2">
+                      Текущая позиция
+                    </h3>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white">
+                          {selectedEmployee.position}
+                        </p>
+                        <p className="text-sm text-gray-400">
+                          Уровень: {selectedEmployee.currentLevel || 1}
+                        </p>
+                      </div>
+                      <div className="flex space-x-1">
+                        {[1, 2, 3, 4, 5].map((level) => (
+                          <div
+                            key={level}
+                            className={`w-2 h-8 rounded ${
+                              level <= (selectedEmployee.currentLevel || 1)
+                                ? "bg-red-500"
+                                : "bg-gray-600"
+                            }`}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* <div>
+                {/* <div>
                 <label htmlFor="newPosition" className="labelStyles mb-2">
                   Новая должность
                 </label>
@@ -1034,95 +618,64 @@ export default function AdminPage() {
                 </select>
               </div> */}
 
-              <div>
-                <label className="labelStyles mb-4">
-                  Новый уровень: {promotionForm.level}
-                </label>
-                <div className="flex items-center space-x-4">
-                  <input
-                    type="range"
-                    min="1"
-                    max="5"
-                    value={promotionForm.level}
-                    onChange={(e) =>
-                      setPromotionForm((prev) => ({
-                        ...prev,
-                        level: Number(e.target.value),
-                      }))
-                    }
-                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                  />
-                  <div className="flex space-x-1">
-                    {[1, 2, 3, 4, 5].map((level) => (
-                      <button
-                        key={level}
-                        type="button"
-                        onClick={() =>
-                          setPromotionForm((prev) => ({ ...prev, level }))
-                        }
-                        className={`w-8 h-8 rounded ${
-                          level <= promotionForm.level
-                            ? "bg-red-500 hover:bg-red-600"
-                            : "bg-gray-600 hover:bg-gray-500"
-                        } transition-colors`}
-                      >
-                        {level}
-                      </button>
-                    ))}
+                <div>
+                  <label className="labelStyles mb-4">
+                    Новый уровень: {promotionForm.level}
+                  </label>
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="range"
+                      min="1"
+                      max="5"
+                      value={promotionForm.level}
+                      onChange={(e) =>
+                        setPromotionForm((prev) => ({
+                          ...prev,
+                          level: Number(e.target.value),
+                        }))
+                      }
+                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <div className="flex space-x-1">
+                      {[1, 2, 3, 4, 5].map((level) => (
+                        <button
+                          key={level}
+                          type="button"
+                          onClick={() =>
+                            setPromotionForm((prev) => ({ ...prev, level }))
+                          }
+                          className={`w-8 h-8 rounded ${
+                            level <= promotionForm.level
+                              ? "bg-red-500 hover:bg-red-600"
+                              : "bg-gray-600 hover:bg-gray-500"
+                          } transition-colors`}
+                        >
+                          {level}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
-              >
-                Повысить сотрудника
-              </button>
-            </form>
-          </section>
-        )}
-
-        {activeTab === "delete" && (
-          <section className="bg-gray-800 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
-              Удаление сотрудника
-            </h2>
-            <form className="space-y-4" onSubmit={handleEmployeeDelete}>
-              <div>
-                <label htmlFor="deleteTitle" className="labelStyles mb-2">
-                  Сотрудник
-                </label>
-                <select
-                  id="deleteTitle"
-                  required
-                  value={employeeForDelete.empid}
-                  onChange={(e) => {
-                    setEmployeeForDelete({ empid: Number(e.target.value) });
-                  }}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                <button
+                  type="submit"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
                 >
-                  <option value="">Выберите сотрудника</option>
-                  {employees.map((employee) => (
-                    <option
-                      key={employee.employeeId}
-                      value={employee.employeeId}
-                    >
-                      {employee.firstName} {employee.lastName} (поз.{" "}
-                      {employee.position})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl transition-colors"
-              >
-                Удалить
-              </button>
-            </form>
-          </section>
-        )}
+                  Повысить сотрудника
+                </button>
+              </form>
+            </section>
+          )}
+
+          {activeTab === "delete" && (
+            <Delete
+              handleEmployeeDelete={handleEmployeeDelete}
+              setEmployeeForDelete={setEmployeeForDelete}
+              employeeForDelete={employeeForDelete}
+              employees={employees}
+            />
+          )}
+        </div>
 
         {/* {activeTab === "downloadingAllReports" && (
           <section className="bg-gray-800 rounded-lg p-6 mb-6">
@@ -1140,7 +693,11 @@ export default function AdminPage() {
         )}
 
         {showNotification && (
-          <div className={`fixed bottom-4 right-4 ${isError ? "bg-red-500" : "bg-green-500"} text-white px-6 py-3 rounded-xl shadow-lg animate-fade-in`}>
+          <div
+            className={`fixed bottom-4 right-4 ${
+              isError ? "bg-red-500" : "bg-green-500"
+            } text-white px-6 py-3 rounded-xl shadow-lg animate-fade-in`}
+          >
             {notificationMessage}
           </div>
         )}

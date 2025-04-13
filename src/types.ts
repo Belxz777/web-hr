@@ -18,6 +18,15 @@ tfDescription: string;
 isMain: boolean;
 time: number;
 }
+interface Department {
+  departmentId: string;
+  departmentName: string;
+}
+interface Job {
+  jobId: string;
+  jobName: string;
+  tfs: number[];
+}
 interface defaultTF {
   tfName: string;
   tfDescription: string;
@@ -38,6 +47,13 @@ interface jobTitle {
   id:number,
   name:string
 }
+type Employee = {
+  employeeId: number;
+  firstName: string;
+  lastName: string;
+  position: string;
+  currentLevel?: number;
+};
 interface task {
 taskId: number,
     taskName: string,
@@ -76,7 +92,7 @@ interface changePass {
   old_password:string,
   new_password:string
 }
-const host = process.env.BACKEND_URL || "https://bba86p099ss03ss9tem5.containers.yandexcloud.net/api/v1/"
+const host = process.env.BACKEND_URL || "https://backend-pulse.onrender.com/api/v1/"
 
 
 interface statusType {
@@ -85,4 +101,4 @@ text:string
 }
 
 export { host }
-export type { department, createUser,report,defaultTF, jobTitle, task, changePass, statusType,employee, TFData }
+export type { department, createUser,Job,report,Department,defaultTF,Employee, jobTitle, task, changePass, statusType,employee, TFData }

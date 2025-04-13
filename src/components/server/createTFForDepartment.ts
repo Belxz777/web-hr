@@ -23,18 +23,19 @@ async function createTFForDepartment(dataTF: any): Promise<any> {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ 
-          // jobsList: [dataTF.jobId], 
-          tfs: [dataTF.tfId] }),
+          jobsList: dataTF.jobsList, 
+          tfs: dataTF.tfIds }),
       }
     );
-
+    
+    
     if (!response.ok) {
       const error = new Error(
         `Error creating TFs by department: ${response.statusText}`
       );
       throw error;
     }
-
+    
     const data = await response.json();
     if (!data) {
       console.error("No data returned from server");
