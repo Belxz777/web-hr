@@ -136,7 +136,7 @@ export default function ProfilePage() {
               </h2>
               <div className="flex justify-between items-center flex-col mb-4 w-full">
                 {responsibilities.length == 0 ? (
-                  [1, 2, 3, 4].map((e) => (
+                  [1, 2, 3, 4, 5].map((e) => (
                     <div className="w-full animate-pulse">
                       <div className="h-10 bg-gray-700 rounded w-full mb-4"></div>
                     </div>

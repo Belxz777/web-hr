@@ -11,8 +11,6 @@ export default function DepartmentDataDisplay() {
   const [activeDate, setActiveDate] = useState<any>(null);
   const { employeeData } = useEmployeeData();
 
-  console.log("departmentData:", departmentData);
-
   useEffect(() => {
     const getDepartmentPerformance = async () => {
       if (!employeeData?.departmentid) return;
@@ -43,7 +41,6 @@ export default function DepartmentDataDisplay() {
     );
   }
 
-  // Calculate summary statistics
   const totalEntries = Object.values(departmentData.performance).reduce(
     (sum: any, entries: any) => sum + entries.length,
     0

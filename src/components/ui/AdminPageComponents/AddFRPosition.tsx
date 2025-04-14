@@ -29,7 +29,7 @@ export default function AddFRPosition({
               required
               value={FRFormForPosition.jobId}
               onChange={(e) => {
-                setFRFormForPosition((prev: {jobId: number}) => ({
+                setFRFormForPosition((prev: { jobId: number }) => ({
                   ...prev,
                   jobId: Number(e.target.value),
                 }));
@@ -49,35 +49,41 @@ export default function AddFRPosition({
               Выберите функциональные обязанности
             </label>
             <div className="max-h-60 overflow-y-auto border border-gray-600 rounded-xl bg-gray-700">
-              {responsibilities.map((tf) => (
-                <div key={tf.tfId} className="px-4 py-2 hover:bg-gray-600">
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={FRFormForPosition.tfIds.includes(
-                        Number(tf.tfId)
-                      )}
-                      onChange={(e) => {
-                        const isChecked = e.target.checked;
-                        setFRFormForPosition((prev: {tfIds: number[]}) => ({
-                          ...prev,
-                          tfIds: isChecked
-                            ? [...prev.tfIds, Number(tf.tfId)]
-                            : prev.tfIds.filter((id) => id !== Number(tf.tfId)),
-                        }));
-                      }}
-                      className="form-checkbox h-5 w-5 text-red-500 rounded focus:ring-red-500 bg-gray-700 border-gray-600"
-                    />
-                    <span
-                      className={`text-gray-100 ${
-                        tf.isMain ? "text-red-400 font-medium" : ""
-                      }`}
-                    >
-                      {tf.tfName}
-                    </span>
-                  </label>
-                </div>
-              ))}
+              {responsibilities.length > 0 ? (
+                responsibilities.map((tf) => (
+                  <div key={tf.tfId} className="px-4 py-2 hover:bg-gray-600">
+                    <label className="flex items-center space-x-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={FRFormForPosition.tfIds.includes(
+                          Number(tf.tfId)
+                        )}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          setFRFormForPosition((prev: { tfIds: number[] }) => ({
+                            ...prev,
+                            tfIds: isChecked
+                              ? [...prev.tfIds, Number(tf.tfId)]
+                              : prev.tfIds.filter(
+                                  (id) => id !== Number(tf.tfId)
+                                ),
+                          }));
+                        }}
+                        className="form-checkbox h-5 w-5 text-red-500 rounded focus:ring-red-500 bg-gray-700 border-gray-600"
+                      />
+                      <span
+                        className={`text-gray-100 ${
+                          tf.isMain ? "text-red-400 font-medium" : ""
+                        }`}
+                      >
+                        {tf.tfName}
+                      </span>
+                    </label>
+                  </div>
+                ))
+              ) : (
+                <div className="px-4 py-2 text-gray-100">Нет задач</div>
+              )}
             </div>
             {FRFormForPosition.tfIds.length > 0 && (
               <div className="mt-2 text-sm text-gray-400">
