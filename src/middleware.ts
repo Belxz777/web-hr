@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server';
 
 export function middleware(request: { cookies: { get: (arg0: string) => any; }; nextUrl: { pathname: any; }; url: string | URL | undefined; }) {

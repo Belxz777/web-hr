@@ -183,7 +183,7 @@ export default function SystemStatusPage() {
 
         {error ? (
           <div className="bg-red-600 text-white p-4 rounded-lg mb-6">
-            <h3 className="font-bold mb-2">Ошибка соединения с бэкендом</h3>
+            <h3 className="font-bold mb-2">Ошибка соединения с бэкендом забей нахер</h3>
             <p>{error}</p>
             <p className="mt-2 text-sm">
               Убедитесь, что бэкенд запущен и доступен по адресу: ${host}
