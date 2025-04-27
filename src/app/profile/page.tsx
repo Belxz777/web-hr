@@ -1,21 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import useEmployeeData from "@/hooks/useGetUserData";
 import { useRouter } from "next/navigation";
 import { logout } from "@/components/server/logout";
-import { PulseLogo } from "@/svgs/Logo";
-import { useTasks } from "@/hooks/useTasks";
-import { task, TFData } from "@/types";
-import { TaskList } from "@/components/buildIn/TaskList";
+import {  TFData } from "@/types";
 import { ReportDownload } from "@/components/buildIn/ReportDownload";
-import { ReportUpload } from "@/components/buildIn/ReportUpload";
 import { useEffect, useState } from "react";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { Header } from "@/components/ui/header";
 import { useUserStore } from "@/store/userStore";
 import allTfByDepartment from "@/components/server/allTfByDepartment";
-
+import { EmployeeResponsibilities } from "@/components/ui/ProfilePage/EmployeeResponsibilities";
+import { mockedDataFs, mockedDataGeneral } from "@/components/mockedData/mockedData";
 export default function ProfilePage() {
   const router = useRouter();
   const {
@@ -129,91 +125,12 @@ export default function ProfilePage() {
           </div>
         </section>
         <div>
-          {employeeData?.position === 1 && (
-            <div className="flex flex-col gap-2 taskSectionStyles">
-              <h2 className="text-2xl font-bold">
-                Ваши функциональные обязанности
-              </h2>
-              <div className="flex justify-between items-center flex-col mb-4 w-full">
-                {responsibilities.length == 0 ? (
-                  [1, 2, 3, 4, 5].map((e) => (
-                    <div className="w-full animate-pulse">
-                      <div className="h-10 bg-gray-700 rounded w-full mb-4"></div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="flex justify-between items-end flex-col w-full">
-                    {responsibilities.length > initialDisplayCount && (
-                      <button
-                        onClick={() =>
-                          setShowAllResponsibilities(!showAllResponsibilities)
-                        }
-                        className={`text-sm px-3 py-1 rounded ${
-                          theme === "dark"
-                            ? "bg-red-600 hover:bg-red-700 text-white"
-                            : "bg-red-100 hover:bg-red-200 text-red-800"
-                        }`}
-                      >
-                        {showAllResponsibilities
-                          ? "Скрыть"
-                          : `Показать все (${responsibilities.length})`}
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                {[...displayedData]
-                  .sort((a, b) =>
-                    a.isMain === b.isMain ? 0 : a.isMain ? -1 : 1
-                  )
-                  .map((item: TFData) => (
-                    <div
-                      key={item.tfId}
-                      className={`${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                      } rounded-lg p-3`}
-                    >
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium text-base flex-1 min-w-0 pr-4">
-                          {item.tfName}
-                        </h3>
-                        <div className="flex flex-col gap-2 min-w-[100px] sm:flex-row sm:space-x-2 sm:justify-end sm:min-w-0">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs whitespace-nowrap ${
-                              item.isMain === false
-                                ? "bg-green-500 text-white"
-                                : "bg-red-500 text-white"
-                            }`}
-                          >
-                            Тип {item.isMain ? "Основная" : "Дополнительная"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-
-              {!showAllResponsibilities &&
-                responsibilities.length > initialDisplayCount && (
-                  <div className="mt-2 text-center">
-                    <button
-                      onClick={() => setShowAllResponsibilities(true)}
-                      className={`text-sm ${
-                        theme === "dark"
-                          ? "text-red-400 hover:text-red-300"
-                          : "text-red-600 hover:text-red-700"
-                      }`}
-                    >
-                      Показать еще{" "}
-                      {responsibilities.length - initialDisplayCount}{" "}
-                      обязанностей...
-                    </button>
-                  </div>
-                )}
-            </div>
-          )}
+        <EmployeeResponsibilities
+  employeeId={employeeData?.employeeId || 1}
+  position={employeeData?.position || 1}
+  responsibilitiesFs={mockedDataFs }
+  responsibilitiesGeneral={mockedDataGeneral }
+/>
           {employeeData?.position &&
             employeeData.position >= 2 &&
             employeeData.position <= 4 && (

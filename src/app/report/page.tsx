@@ -36,15 +36,27 @@ export default function ReportPage() {
     >
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        name === "workingHours"
-          ? Number(value).toFixed(2)
-          : name === "tf_id"
-          ? value
-          : value,
-    }));
+    
+    if (name === "workingHours") {
+      const numValue = Number(value);
+      let formattedValue;
+      
+      if (e.target.id === "workingHoursManual") {
+        formattedValue = (numValue / 60).toFixed(2);
+      } else {
+        formattedValue = (numValue / 60).toFixed(2);
+      }
+      
+      setFormData((prev) => ({
+        ...prev,
+        [name]: formattedValue
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -92,10 +104,11 @@ export default function ReportPage() {
     }
   };
 
-  const formatTime = (hours: number) => {
-    const wholeHours = Math.floor(hours);
-    const minutes = Math.round((hours % 1) * 60);
-    return `${wholeHours} ч ${minutes} мин`;
+  const formatTime = (hoursDecimal: number) => {
+    const totalMinutes = Math.round(hoursDecimal * 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours} ч ${minutes} мин`;
   };
 
   return (
@@ -134,23 +147,36 @@ export default function ReportPage() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="workingHours" className="block text-gray-300 mb-2">
-              Количество выполненных часов
-            </label>
-            <input
-              type="number"
-              id="workingHours"
-              name="workingHours"
-              value={Number(formData.workingHours)}
-              onChange={handleChange}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-              required
-              min="0.1"
-              step="0.1"
-            />
-            <div className="text-gray-300 mt-2">
-              {Number(formData.workingHours) > 0 &&
-                formatTime(Number(formData.workingHours))}
+            <label className="block mb-1">Количество выполненных часов</label>
+            <div className="flex flex-col items-center">
+              <input
+                type="range"
+                id="workingHoursSlider"
+                name="workingHours"
+                min="5"
+                max="480"
+                step="5"
+                value={Math.round(Number(formData.workingHours) * 60)}
+                onChange={handleChange}
+                className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer my-2"
+              />
+              <div className="mt-2 text-xl font-bold select-none">
+                {formatTime(Number(formData.workingHours))}
+              </div>
+            </div>
+
+            <div className="flex flex-col ">
+              <label className="block mb-1 items-start">Ввод в ручную (минуты)</label>
+              <input
+                type="number"
+                id="workingHoursManual"
+                name="workingHours"
+                value={Math.round(Number(formData.workingHours) * 60)}
+                min="5"
+                max="480"
+                onChange={handleChange}
+                className="emailInputStyles"
+              />
             </div>
           </div>
 
