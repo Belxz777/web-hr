@@ -1,22 +1,20 @@
-
 interface department {
-  id:number,
-  name:string,
-  head:number
+  id: number;
+  name: string;
+  head: number;
 }
 interface report {
-tf_id: number,
-workingHours: number,  
-comment: string,
-
+  func_id: number;
+  workingHours: number;
+  comment: string;
 }
 
 interface TFData {
-tfId: string;
-tfName: string;
-tfDescription: string;
-isMain: boolean;
-time: number;
+  tfId: string;
+  tfName: string;
+  tfDescription: string;
+  isMain: boolean;
+  time: number;
 }
 interface Department {
   departmentId: string;
@@ -34,18 +32,18 @@ interface defaultTF {
   isMain: boolean;
 }
 interface createUser {
-  job_title_id: number,
-  age: number,
-  first_name: string,
-  last_name: string,
-  father_name: string,
-  login:string,
-  password:string,
-  department_id:number
+  job_title_id: number;
+  age: number;
+  first_name: string;
+  last_name: string;
+  father_name: string;
+  login: string;
+  password: string;
+  department_id: number;
 }
 interface jobTitle {
-  id:number,
-  name:string
+  id: number;
+  name: string;
 }
 type Employee = {
   employeeId: number;
@@ -55,13 +53,13 @@ type Employee = {
   currentLevel?: number;
 };
 interface task {
-taskId: number,
-    taskName: string,
-    taskDescription: string,
-    status: string,
-    hourstodo: number,
-    closeDate: null,
-    isExpired: boolean
+  taskId: number;
+  taskName: string;
+  taskDescription: string;
+  status: string;
+  hourstodo: number;
+  closeDate: null;
+  isExpired: boolean;
   //   {
   //     "taskId": 4,
   //     "taskName": "Описание необходимого комп решения",
@@ -75,30 +73,65 @@ taskId: number,
   //     "isExpired": false
   // },
 }
+// type employee = {
+//   completedTasks: null;
+//   departmentid: number;
+//   employeeId: number;
+//   expiredTasksCount: null;
+//   firstName: string;
+//   jobid: number;
+//   lastName: string;
+//   patronymic: string;
+//   position:number;
+//   tasksCount: null;
+// };
+type Deputy = {
+  deputyId: number;
+  deputyName: string;
+  compulsory: boolean;
+};
 type employee = {
-  completedTasks: null;
-  departmentid: number;
-  employeeId: number;
-  expiredTasksCount: null;
-  firstName: string;
-  jobid: number;
-  lastName: string;
-  patronymic: string;
-  position:number;
-  tasksCount: null;
+  deputy: Deputy[];
+  job: {
+    deputy: number;
+    jobName: string;
+  };
+  user: {
+    employeeId: number;
+    firstName: string;
+    lastName: string;
+    jobid: number;
+    position: number;
+    departmentid: number;
+  };
 };
 
 interface changePass {
-  old_password:string,
-  new_password:string
+  old_password: string;
+  new_password: string;
 }
-const host = process.env.BACKEND_URL || "https://backend-pulse.onrender.com/api/v1/";
-
+const host =
+  process.env.BACKEND_URL || "https://backend-pulse.onrender.com/api/v1/";
 
 interface statusType {
-  code:string | number,
-text:string
+  code: string | number;
+  text: string;
 }
 
-export { host }
-export type { department, createUser,Job,report,Department,defaultTF,Employee, jobTitle, task, changePass, statusType,employee, TFData }
+export { host };
+export type {
+  department,
+  createUser,
+  Job,
+  report,
+  Department,
+  defaultTF,
+  Employee,
+  jobTitle,
+  task,
+  changePass,
+  statusType,
+  employee,
+  Deputy,
+  TFData,
+};

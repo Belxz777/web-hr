@@ -5,23 +5,25 @@ import { useRouter } from "next/navigation";
 import sendReport from "@/components/server/report";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { Header } from "@/components/ui/header";
-import allTfByDepartment from "@/components/server/allTfByDepartment";
 import { TFData } from "@/types";
+import getAllFunctionsForReport from "@/components/server/getAllFunctionsForReport";
 
 export default function ReportPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    tf_id: "",
+    func_id: "",
     workingHours: "0.50",
     comment: "",
   });
-  const [responsibilities, setResponsibilities] = useState<TFData[]>([]);
+  // нужно доделать отправку отчета, в responsibilities хранится массив массивов functions и non-compulsory, также желательно сделать в админке 
+  // добавление deputy, в профиле я сделал вывод фс для пользователя, проект билдится (сорри, пока все, что сделал)
+  const [responsibilities, setResponsibilities] = useState<TFData[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await allTfByDepartment("employee");
+        const data = await getAllFunctionsForReport();
         setResponsibilities(data || []);
       } catch (error) {
         console.error("Failed to fetch responsibilities:", error);
@@ -68,7 +70,7 @@ export default function ReportPage() {
       return;
     }
 
-    if (!formData.tf_id) {
+    if (!formData.func_id) {
       console.log("No task selected");
       alert("Выберите задачу");
       return;
@@ -83,7 +85,7 @@ export default function ReportPage() {
     setLoading(true);
     try {
       const reportData = {
-        tf_id: Number(formData.tf_id),
+        func_id: 1,
         workingHours: Number(formData.workingHours),
         comment: formData.comment,
       };
@@ -123,14 +125,14 @@ export default function ReportPage() {
             Заполнение отчета
           </h1>
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label htmlFor="tf_id" className="block text-gray-300 mb-2">
               Выберите обязанность
             </label>
             <select
               id="tf_id"
               name="tf_id"
-              value={formData.tf_id}
+              value={formData.func_id}
               onChange={handleChange}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
               required
@@ -144,7 +146,7 @@ export default function ReportPage() {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           <div className="mb-4">
             <label className="block mb-1">Количество выполненных часов</label>
@@ -197,7 +199,7 @@ export default function ReportPage() {
 
           <button
             type="submit"
-            disabled={loading || !responsibilities.length}
+            disabled={loading}
             className="w-full py-2 px-4 bg-red-600 text-white rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Отправка..." : "Отправить отчет"}

@@ -32,7 +32,7 @@ export default function CreateTaskPage() {
     }
 
     const data = {
-      forEmployeeId: employeeData.employeeId,
+      forEmployeeId: employeeData.user.employeeId,
       hourstodo: Number((taskDuration / 60).toFixed(1)),
       taskName: taskName,
       taskDescription: taskDescription,

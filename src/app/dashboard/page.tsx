@@ -13,10 +13,10 @@ export default function DepartmentDataDisplay() {
 
   useEffect(() => {
     const getDepartmentPerformance = async () => {
-      if (!employeeData?.departmentid) return;
+      if (!employeeData?.user?.departmentid) return;
       try {
         const data = await getDepartmentPerformanceData(
-          employeeData.departmentid
+          employeeData.user.departmentid
         );
         setDepartmentData(data || null);
         if (data && data.performance) {

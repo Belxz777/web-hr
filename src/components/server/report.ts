@@ -12,7 +12,7 @@ export default async function sendReport(reportData: report) {
     ...reportData,
   };
   const res = await fetch(
-    `${host}fill/progress/?task_id=${Number(parsedReportData.tf_id)}`,
+    `${host}fill/progress/`,
     {
       method: "POST",
       credentials: "include",
