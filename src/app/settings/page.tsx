@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Header } from "@/components/ui/header";
 import useEmployeeData from "@/hooks/useGetUserData";
-import allTfByDepartment from "@/components/server/allTfByDepartment";
 import { TFData } from "@/types";
 
 // Пример данных контактов поддержки
@@ -16,17 +15,7 @@ export default function SettingsPage() {
   const [theme, setTheme] = useState("dark");
   const [showAllResponsibilities, setShowAllResponsibilities] = useState(false);
   const [responsibilities, setResponsibilities] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await allTfByDepartment("employee");
-        setResponsibilities(data || []);
-      } catch (error) {
-        console.error("Failed to fetch responsibilities:", error);
-      }
-    };
-    fetchData();
-  }, []);
+
 
   const initialDisplayCount = 3;
   const displayedData = showAllResponsibilities
