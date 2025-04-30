@@ -7,29 +7,58 @@ import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { Header } from "@/components/ui/header";
 import { TFData } from "@/types";
 import getAllFunctionsForReport from "@/components/server/getAllFunctionsForReport";
+import { set } from "zod";
 
 export default function ReportPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    func_id: "",
+    func_id: 0,
+    deputy_id: 0,
     workingHours: "0.50",
     comment: "",
   });
-  // нужно доделать отправку отчета, в responsibilities хранится массив массивов functions и non-compulsory, также желательно сделать в админке 
-  // добавление deputy, в профиле я сделал вывод фс для пользователя, проект билдится (сорри, пока все, что сделал)
-  const [responsibilities, setResponsibilities] = useState<TFData[]>([])
-
+  const [responsibilities, setResponsibilities] = useState<{
+    length: any;
+    nonCompulsory: {
+      deputyId: number
+      deputyName: string
+    }[],
+    functions: {
+      funcId: number
+      funcName: string
+    }[]
+  }>({
+    length: 0,
+    nonCompulsory: [],
+    functions: [],
+  })
+const [type,settype] = useState<string>("main");
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getAllFunctionsForReport();
         setResponsibilities(data || []);
+        if(data.functions.length === 1) {
+          setFormData(prev => ({
+            ...prev,
+            func_id: data.functions[0].funcId
+          }));
+        }
+        else if(data.nonCompulsory.length === 1) {
+          setFormData(prev => ({
+            ...prev,
+            deputy_id: data.nonCompulsory[0].deputyId
+          }));
+        }
+        console.log(formData,responsibilities.functions.length)
       } catch (error) {
         console.error("Failed to fetch responsibilities:", error);
       }
     };
     fetchData();
+
+
   }, []);
 
   const handleChange = (
@@ -63,16 +92,34 @@ export default function ReportPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!responsibilities.length) {
+    if (responsibilities?.functions?.length === 1){
+      setFormData(
+        {
+          ...formData,
+          func_id: Number(responsibilities.functions[0].funcId),
+        }
+      )
+    }   
+    else if (responsibilities?.nonCompulsory?.length === 1){
+      setFormData(
+        {
+          ...formData,
+          deputy_id: responsibilities.nonCompulsory[0].deputyId,
+        }
+      )
+    }    
+    console.log(formData,responsibilities.functions.length,"then")
+    if (responsibilities?.length) {
       console.log("No tasks available for report");
       alert("Нет доступных задач для отчета");
       return;
     }
 
-    if (!formData.func_id) {
-      console.log("No task selected");
+    if (!formData.func_id && !formData.deputy_id) {
+      
+      console.log("No task selected", formData);
       alert("Выберите задачу");
+      
       return;
     }
 
@@ -84,19 +131,33 @@ export default function ReportPage() {
 
     setLoading(true);
     try {
-      const reportData = {
-        func_id: 1,
-        workingHours: Number(formData.workingHours),
-        comment: formData.comment,
-      };
-
-      const req = await sendReport(reportData);
-
-      if (req) {
-        alert("Успешно");
-        router.push("/profile");
-      } else {
-        alert("Ошибка");
+      if(type === "main"){
+        const reportData = {
+          func_id: formData.func_id,
+          workingHours: Number(formData.workingHours),
+          comment: formData.comment,
+        };
+        const req = await sendReport(reportData);
+        if (req) {
+          alert("Успешно task");
+          router.push("/profile");
+        } else {
+          alert("Ошибка tasj");
+        }
+      }
+      else {
+        const reportData = {
+          deputy_id: formData.deputy_id,
+          workingHours: Number(formData.workingHours),
+          comment: formData.comment,
+        };
+        const req = await sendReport(reportData);
+        if (req) {
+          alert("Успешно dep");
+          router.push("/profile");
+        } else {
+          alert("Ошибка dep ");
+        }
       }
     } catch (error) {
       console.error("Error submitting report:", error);
@@ -125,30 +186,104 @@ export default function ReportPage() {
             Заполнение отчета
           </h1>
 
-          {/* <div className="mb-4">
+          <div className="mb-4">
+            <label htmlFor="type" className="block text-gray-300 mb-2">
+              Выберите Тип
+              </label>
+            <select
+            id="type"
+            value={type}
+            onChange={(e) => {
+              settype(e.target.value);
+              if(e.target.value === "ext" && responsibilities.nonCompulsory.length > 0) {
+                setFormData(prev => ({
+                  ...prev,
+                  deputy_id: responsibilities.nonCompulsory[0].deputyId,
+                  func_id: 0
+                }));
+              } else if(e.target.value === "main" && responsibilities.functions.length > 0) {
+                setFormData(prev => ({
+                  ...prev,
+                  func_id: responsibilities.functions[0].funcId,
+                  deputy_id: 0
+                }));
+              }
+            }}  
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+            required
+            >
+              
+<option value={
+"main"
+}>
+  Основная
+</option>
+<option value={
+  "ext"
+}>
+  Дополнительная
+</option>
+          
+            </select>
             <label htmlFor="tf_id" className="block text-gray-300 mb-2">
               Выберите обязанность
             </label>
-            <select
+            
+              {
+                type === "main" ? 
+                <select
               id="tf_id"
-              name="tf_id"
-              value={formData.func_id}
-              onChange={handleChange}
+              value={formData.func_id || formData.deputy_id || ""}
+              onChange={
+                (e) => {
+              
+                    setFormData({
+                      ...formData,
+                      func_id: Number(e.target.value)
+                    })
+                    console.log(formData)
+                  
+  
+                console.log(formData)
+              }
+            }
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
               required
             >
-              <option value="" className="text-gray-400">
-                -- Выберите обязанность --
-              </option>
-              {responsibilities.map((task: TFData) => (
-                <option key={task.tfId} value={task.tfId} className={`${task.isMain ? "text-red-400" : ""}`}>
-                  {task.tfName}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          <div className="mb-4">
+                <optgroup label="Основные функции" className="bg-red-500">
+                {responsibilities?.functions?.map((func) => (
+                  <option key={func.funcName} value={func.funcId}>
+                    {func.funcName}
+                  </option>
+                ))}
+              </optgroup>
+              </select>
+              :
+              <select
+              id="tf_id"
+              value={ formData.deputy_id }
+              onChange={(e)=>{
+                setFormData((prev) => ({
+                  ...prev,
+                  deputy_id: Number(e.target.value)
+                }));
+                console.log(formData,'dep')
+              }}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+              required
+            >
+                <optgroup label="Дополнительные обязанности" className="bg-green-500">
+                {responsibilities?.nonCompulsory?.map((duty: { deputyId: number; deputyName: string; }) => (
+                  <option key={duty.deputyId} value={duty.deputyId}>
+                    {duty.deputyName}
+                  </option>
+                ))}
+              </optgroup>
+              </select>
+              }
+             
+          
+          </div>          <div className="mb-4">
             <label className="block mb-1">Количество выполненных часов</label>
             <div className="flex flex-col items-center">
               <input
@@ -167,7 +302,7 @@ export default function ReportPage() {
               </div>
             </div>
 
-            <div className="flex flex-col ">
+            {/* <div className="flex flex-col ">
               <label className="block mb-1 items-start">Ввод в ручную (минуты)</label>
               <input
                 type="number"
@@ -179,7 +314,7 @@ export default function ReportPage() {
                 onChange={handleChange}
                 className="emailInputStyles"
               />
-            </div>
+            </div> */}
           </div>
 
           <div className="mb-6">

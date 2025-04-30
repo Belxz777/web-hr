@@ -43,6 +43,9 @@ export default function ProfilePage() {
               </h2>
               <p className="text-gray-400 select-none">{title}</p>
               <p className="text-gray-400 select-none">
+               {employeeData.job.jobName}
+              </p>
+              <p className="text-gray-400 select-none">
                 Отдел № {employeeData.user.departmentid}
               </p>
               <div className="flex gap-4 justify-between my-2">

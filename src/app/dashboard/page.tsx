@@ -228,9 +228,7 @@ export default function DepartmentDataDisplay() {
                       <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
                         Норма
                       </th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
-                        Эффективность
-                      </th>
+                  
                     </tr>
                   </thead>
                   <tbody>
@@ -249,7 +247,7 @@ export default function DepartmentDataDisplay() {
                           {item.departmentId}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-200">
-                          {item.tf_id}
+                          {item.functionId  ? item.functionId : item.deputyId}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-200">
                           {item.worked_hours}
@@ -257,21 +255,7 @@ export default function DepartmentDataDisplay() {
                         <td className="px-4 py-3 text-sm text-gray-200">
                           {item.normal_hours}
                         </td>
-                        <td className="px-4 py-3 text-sm">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              item.worked_hours >= item.normal_hours
-                                ? "bg-green-900 text-green-100"
-                                : "bg-red-900 text-red-100"
-                            }`}
-                          >
-                            {(
-                              (item.worked_hours / item.normal_hours) *
-                              100
-                            ).toFixed(0)}
-                            %
-                          </span>
-                        </td>
+            
                       </tr>
                     ))}
                   </tbody>
@@ -303,21 +287,7 @@ export default function DepartmentDataDisplay() {
                     ).toFixed(1)}
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-400">Средняя эффективность</p>
-                  <p className="text-xl font-semibold text-gray-100">
-                    {(
-                      (departmentData.performance[activeDate].reduce(
-                        (sum: any, item: any) =>
-                          sum + item.worked_hours / item.normal_hours,
-                        0
-                      ) /
-                        departmentData.performance[activeDate].length) *
-                      100
-                    ).toFixed(0)}
-                    %
-                  </p>
-                </div>
+         
               </div>
             </div>
           </div>

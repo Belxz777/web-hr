@@ -4,17 +4,21 @@ interface department {
   head: number;
 }
 interface report {
-  func_id: number;
+  func_id?: number;
+  deputy_id?: number | null;  
   workingHours: number;
   comment: string;
 }
 
 interface TFData {
-  tfId: string;
-  tfName: string;
-  tfDescription: string;
-  isMain: boolean;
-  time: number;
+  nonCompulsory: {
+    deputyId: number;
+    deputyName: string;
+  };
+  functions: {
+    funcName: string;
+  };
+
 }
 interface Department {
   departmentId: string;
@@ -110,9 +114,7 @@ interface changePass {
   old_password: string;
   new_password: string;
 }
-const host =
-  process.env.BACKEND_URL || "https://backend-pulse.onrender.com/api/v1/";
-
+const host ="http://127.0.0.1:8000/api/v1/";
 interface statusType {
   code: string | number;
   text: string;

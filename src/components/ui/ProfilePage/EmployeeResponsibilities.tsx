@@ -81,7 +81,7 @@ export function EmployeeResponsibilities({
                   </h3>
                   <div className="flex flex-col gap-2 min-w-[100px] sm:flex-row sm:space-x-2 sm:justify-end sm:min-w-0">
                     <span className={`px-2 py-0.5 rounded-full text-center text-xs whitespace-nowrap ${item.compulsory ? "bg-red-600 text-white" : "bg-green-600 text-gray-300"}`} >
-                      {item.compulsory ? "Обязательная" : "Необязательная"}
+                      {item.compulsory ? "Основная обязанность" : "Необязательная обязанность"}
                     </span>
                   </div>
                 </div>
