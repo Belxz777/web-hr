@@ -139,10 +139,10 @@ const [type,settype] = useState<string>("main");
         };
         const req = await sendReport(reportData);
         if (req) {
-          alert("Успешно task");
+          alert("Успешно ");
           router.push("/profile");
         } else {
-          alert("Ошибка tasj");
+          alert("Ошибка ");
         }
       }
       else {
@@ -153,10 +153,10 @@ const [type,settype] = useState<string>("main");
         };
         const req = await sendReport(reportData);
         if (req) {
-          alert("Успешно dep");
+          alert("Успешно");
           router.push("/profile");
         } else {
-          alert("Ошибка dep ");
+          alert("Ошибка ");
         }
       }
     } catch (error) {
