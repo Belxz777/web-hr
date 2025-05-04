@@ -71,6 +71,7 @@ export default function CreateTaskPage() {
     setTaskDuration(Math.floor(Math.random() * 144 + 3) * 10);
   };
 
+
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;

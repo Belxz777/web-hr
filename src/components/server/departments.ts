@@ -1,9 +1,7 @@
-"use server";
+"use server"
 import { host } from "@/types";
-import { cookies } from "next/headers";
-import { FunctionComponent } from "react";
 
-async function getAllDepartments(): Promise<any> {
+async function getAllDepartments() {
   try {
     const response = await fetch(
       `${host}entities/departments/overall/`,
