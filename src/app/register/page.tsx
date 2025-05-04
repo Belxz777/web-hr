@@ -70,7 +70,7 @@ const [sended, setSent] = useState(false);
     } catch (err) {
       console.error("Submit error:", err);
       setError(
-        err instanceof Error ? err.message : "Произошла ошибка при регистрации"
+         "Произошла ошибка при регистрации"
       );
     } finally {
       setIsLoading(false);

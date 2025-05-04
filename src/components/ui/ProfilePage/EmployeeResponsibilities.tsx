@@ -34,7 +34,7 @@ export function EmployeeResponsibilities({ responsibilitiesFs = [], position }: 
   return (
     <div className="space-y-8 taskSectionStyles">
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold">{"Ваша функциональная обязанность и необязательные обязанности:"}</h2>
+        <h2 className="text-2xl font-bold">{"Ваши задачи:"}</h2>
 
         {loading ? (
           <div className="w-full">
