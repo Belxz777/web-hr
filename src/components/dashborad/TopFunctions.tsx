@@ -1,6 +1,8 @@
 import { CircularProgress } from "./CircularProgress";
 
 export function TopFunctions({ data }: any) {
+    const byFunctions = data?.by_functions || { typical: [], non_typical: [] };
+    const functions = [...byFunctions.typical, ...byFunctions.non_typical].sort((a, b) => b.percent - a.percent).slice(0, 3);
     return (
       <div className="bg-gray-800 rounded-2xl p-5 mb-6 shadow-lg m-3">
         <div className="flex justify-between items-center mb-4">
@@ -8,17 +10,14 @@ export function TopFunctions({ data }: any) {
         </div>
   
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[...data.by_functions.typical, ...data.by_functions.non_typical]
-            .sort((a, b) => b.percent - a.percent)
-            .slice(0, 3)
-            .map((func, index) => (
+          {functions.map((func, index) => (
               <div
                 key={func.function_id}
                 className="bg-gray-700 rounded-2xl p-4 shadow"
               >
                 <div className="flex justify-center mb-3">
                   <CircularProgress
-                    percentage={func.percent}
+                    percentage={func?.percent}
                     color={
                       index % 3 === 0
                         ? "rgb(20, 184, 166)"

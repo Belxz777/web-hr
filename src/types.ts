@@ -175,9 +175,118 @@ interface CircularProgressProps {
   children?: React.ReactNode;
 }
 
+type EmployeeSummary = {
+  employee: {
+    employee_id: string;
+    employee_name: string;
+    employee_patronymic: string;
+    employee_surname: string;
+  };
+  summary: {
+    total_hours: number;
+    function_hours: number;
+    deputy_hours: number;
+    compulsory_hours: number;
+    non_compulsory_hours: number;
+  };
+  reports: Array<{
+    laborCostId: number;
+    departmentId: number;
+    function: number | null;
+    deputy: number | null;
+    compulsory: boolean;
+    worked_hours: number;
+    comment: string;
+    date: string;
+  }>;
+  reports_count: number;
+  query_params: {
+    date: string;
+    start_date: string | null;
+    end_date: string | null;
+  };
+};
+
+type EmployeeDistribution = {
+  employee: {
+    employee_id: string;
+    employee_name: string;
+    employee_surname: string;
+    employee_patronymic: string;
+  };
+  time_period: {
+    type: string;
+    date: string;
+    start_date: string | null;
+    end_date: string | null;
+    days_count: number;
+  };
+  total_hours: number;
+  total_entries: number;
+  distribution: {
+    by_category: {
+      compulsory: { hours: number; percent: number };
+      free: { hours: number; percent: number };
+      functions: { hours: number; percent: number };
+      deputies: { hours: number; percent: number };
+      typical: { hours: number; percent: number };
+      non_typical: { hours: number; percent: number };
+    };
+    by_functions: {
+      typical: Array<{
+        function_id: number;
+        function_name: string;
+        hours: number;
+        percent: number;
+        entries_count: number;
+      }>;
+      non_typical: Array<{
+        function_id: number;
+        function_name: string;
+        hours: number;
+        percent: number;
+        entries_count: number;
+      }>;
+    };
+    extra: Array<{
+      type: string;
+      deputy_id: number;
+      deputy_name: string;
+      hours: number;
+      percent: number;
+      entries_count: number;
+    }>;
+    by_department: Array<{
+      department_id: number;
+      department_name: string;
+      hours: number;
+      percent: number;
+    }>;
+  };
+  performance_metrics: {
+    avg_hours_per_day: number;
+    avg_hours_per_reports: number;
+  };
+};
+
+type EmployeeInfo = {
+  employeeId: number
+  firstName: string
+  lastName: string
+  patronymic: string
+  login: string
+  password: string
+  jobid: number
+  departmentid: number
+  position: number
+}
+
 export { host };
 export type {
   department,
+  EmployeeInfo,
+  EmployeeDistribution,
+  EmployeeSummary,
   createUser,
   DailyStats,
   Job,

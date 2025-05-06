@@ -9,27 +9,27 @@ export const DepartmentStatsInDayPer = ({ data }: any) => {
         <div className="flex flex-col space-y-4">
           <ProgressBar
             label="Функции"
-            value={data.by_type.typical.percent}
+            value={data.by_type?.typical?.percent ?? 0}
             color="bg-teal-500"
-            hours={data.by_type.typical.hours}
+            hours={data.by_type?.typical?.hours ?? 0}
           />
           <ProgressBar
             label="Нетипичные"
-            value={data.by_type.non_typical.percent}
+            value={data.by_type?.non_typical?.percent ?? 0}
             color="bg-pink-500"
-            hours={data.by_type.non_typical.hours}
+            hours={data.by_type?.non_typical?.hours ?? 0}
           />
           <ProgressBar
             label="Функциональные обязанности"
-            value={data.by_type.compulsory.percent}
+            value={data.by_type?.compulsory?.percent ?? 0}
             color="bg-indigo-500"
-            hours={data.by_type.compulsory.hours}
+            hours={data.by_type?.compulsory?.hours ?? 0}
           />
           <ProgressBar
             label="Дополнительные"
-            value={data.by_type.non_compulsory.percent}
+            value={data.by_type?.non_compulsory?.percent ?? 0}
             color="bg-orange-500"
-            hours={data.by_type.non_compulsory.hours}
+            hours={data.by_type?.non_compulsory?.hours ?? 0}
           />
         </div>
       </div>

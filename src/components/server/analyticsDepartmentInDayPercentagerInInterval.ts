@@ -2,14 +2,14 @@
 import { host } from "@/types";
 import { cookies } from "next/headers";
 
-async function analyticsDepartmentInDayPercentagerInInterval(startDate: string, endDate: string) {
+async function analyticsDepartmentInDayPercentagerInInterval(depId: number, startDate: string, endDate: string) {
   const cookieStore = cookies();
   const jwt = cookieStore.get("cf-auth-id")?.value;
   if (!jwt) {
     throw new Error("No token provided");
   }
   try {
-    const response = await fetch(`${host}analytics/department/percentage/?start_date=${startDate}&end_date=${endDate}`, {
+    const response = await fetch(`${host}analytics/department/percentage/?department_id=${depId}&start_date=${startDate}&end_date=${endDate}`, {
       method: "GET",
       credentials: "include",
       headers: {

@@ -3,10 +3,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/ui/header";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
-import getAllFunctionsForReport from "@/components/server/analyticsDepartmentInDay";
 import Link from "next/link";
-import analyticsDepartmentInDay from "@/components/server/analyticsDepartmentInDay";
-import analyticsDepartmentInDayPercentager from "@/components/server/analyticsDepartmentInDayPercentager";
 import getAllDepartments from "@/components/server/departments";
 import { DailyStats, Department } from "@/types";
 import analyticsDepartmentInDayPercentagerInInterval from "@/components/server/analyticsDepartmentInDayPercentagerInInterval";
@@ -23,6 +20,7 @@ const getCurrentDate = () => {
   const day = String(now.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
+
 
 export default function InInterval() {
   const [dataInDay, setDataInDay] = useState<DailyStats | null>(null);
@@ -61,6 +59,7 @@ export default function InInterval() {
         endDate
       );
       const dataPer = await analyticsDepartmentInDayPercentagerInInterval(
+        selectedDep,
         startDate,
         endDate
       );

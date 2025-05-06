@@ -24,11 +24,11 @@ export default function DepartmentDataDisplay() {
           </button>
 
           <button
-            // onClick={() => router.push("/analytics/employees")}
+            onClick={() => router.push("/dashboard/employees")}
             className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-12 px-6 rounded-xl shadow-lg transition-all 
                       transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-300 text-xl"
           >
-            Статистика сотрудников (в разработке)
+            Статистика сотрудников
           </button>
         </div>
       </div>

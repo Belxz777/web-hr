@@ -53,7 +53,7 @@ export default function PerDay() {
       setLoading(true);
       setError(null);
       const data = await analyticsDepartmentInDay(selectedDep, selectedDate);
-      const dataPer = await analyticsDepartmentInDayPercentager(selectedDate);
+      const dataPer = await analyticsDepartmentInDayPercentager(selectedDate, selectedDep);
       setDataInDay(data);
       setDataInDayPer(dataPer);
     } catch (err) {

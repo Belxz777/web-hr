@@ -2,14 +2,14 @@
 import { host } from "@/types";
 import { cookies } from "next/headers";
 
-async function analyticsDepartmentInDayPercentager(date: string, depId: number) {
+async function analyticsEmployeeInIntervalPercentager(empId: number, startDate:string, endDate: string) {
   const cookieStore = cookies();
   const jwt = cookieStore.get("cf-auth-id")?.value;
   if (!jwt) {
     throw new Error("No token provided");
   }
   try {
-    const response = await fetch(`${host}analytics/department/percentage/?date=${date}&department_id=${depId}`, {
+    const response = await fetch(`${host}analytics/employee/percentage/?employee_id=${empId}&start_date=${startDate}&end_date=${endDate}`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -30,7 +30,7 @@ async function analyticsDepartmentInDayPercentager(date: string, depId: number) 
     }
   } catch (error) {
     console.error(error);
-    throw new Error("Error occurred in getting  employees");
+    throw new Error("Error occurred in getting employee info");
   }
 }
-export default analyticsDepartmentInDayPercentager;
+export default analyticsEmployeeInIntervalPercentager;
