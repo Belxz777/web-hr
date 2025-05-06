@@ -120,8 +120,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           >
             <div className="text-gray-300 text-sm font-medium px-3 py-1">
               {type === "main"
-                ? "Основная обязанность"
-                : "Дополнительная обязанность"}
+                ? "Основные обязанности"
+                : "Дополнительные обязанности"}
             </div>
             {type === "main"
               ? filteredFunctions?.map((func) => (
