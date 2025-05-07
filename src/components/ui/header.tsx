@@ -57,7 +57,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
         <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
           {position !== null && position >= 2 && (
             <>
-              <MenuItem
+              {/* <MenuItem
                 href="/department/report/download"
                 icon={
                   <svg
@@ -77,10 +77,10 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
                 }
               >
                 Скачивание подробного отчета
-              </MenuItem>
+              </MenuItem> */}
 
               <MenuItem
-                href="/dashboard"
+                href="/dashboard/department/perDay"
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -99,12 +99,12 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
                   </svg>
                 }
               >
-                Анализ отдела
+               Статистика отдела
               </MenuItem>
 {
   position >=4 && (
     <MenuItem
-    href="/admin"
+    href="/stats"
     icon={
       <svg
         className="w-6 h-6  dark:text-white"
@@ -127,7 +127,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
       </svg>
     }
   >
-    Панель администрации
+    Статус работы приложения
   </MenuItem>
   )
 }
