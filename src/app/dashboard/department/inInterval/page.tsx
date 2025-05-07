@@ -161,7 +161,7 @@ export default function InInterval() {
         <button
           onClick={handleApply}
           disabled={loading}
-          className={`bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg w-full transition-colors ${
+          className={`bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-xl w-full transition-colors ${
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >

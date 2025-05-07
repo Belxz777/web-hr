@@ -24,7 +24,7 @@ export const CircularDiagram = ({ data, title }: { data: any[]; title: string })
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center flex-col">
-              <span className="text-lg font-bold text-gray-300">0</span>
+              <span className="text-xl font-bold text-gray-300">0</span>
               <span className="text-xs text-gray-400">часов</span>
             </div>
           </div>
@@ -71,10 +71,12 @@ export const CircularDiagram = ({ data, title }: { data: any[]; title: string })
             <circle cx="50" cy="50" r="25" fill="#1F2937" />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center flex-col">
-            <span className="text-lg font-bold text-gray-200">
-              {total.toFixed(1)}
+            <span className="text-3xl font-bold text-gray-200">
+          
+              {Math.floor(total)} ч.  {Math.round((total % 1) * 60)} м.
             </span>
-            <span className="text-xs text-gray-400">часов</span>
+        
+            
           </div>
         </div>
         <div className="mt-4 w-full">

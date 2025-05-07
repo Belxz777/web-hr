@@ -84,20 +84,39 @@ export default function EmployeeDailyStats() {
     ) || 0;
 
   const hourDistributionData = [
-    { label: "Функции", value: typicalHours, color: "#3B82F6" },
-    { label: "Нетипичные", value: nonTypicalHours, color: "#10B981" },
+   // { label: "Функции", value: typicalHours, color: "#3B82F6" },
+   // { label: "Нетипичные", value: nonTypicalHours, color: "#10B981" },
     {
-      label: "Функциональные обязанности",
-      value: deputyHours,
-      color: "#F59E0B",
+      label: "Основные",
+      value: employeeSummary.summary.compulsory_hours || 0,
+      color: "#32CD32",
     },
     {
       label: "Дополнительные",
       value: employeeSummary.summary.non_compulsory_hours || 0,
-      color: "#8B5CF6",
+      color: "#FFD700",
     },
   ];
-
+  const hourDistributionDataType = [
+    // { label: "Функции", value: typicalHours, color: "#3B82F6" },
+    // { label: "Нетипичные", value: nonTypicalHours, color: "#10B981" },
+     {
+       label: "Тпичиные для сотрудника",
+       value: typicalHours || 0,
+       color: "#008000",
+     },
+     {
+       label: "Нетипичные для сотрудника",
+       value: nonTypicalHours|| 0,
+       color: "#DC143C",
+     },
+     {
+       label: "Дополнительные",
+       value: deputyHours || 0,
+       color: "#DAA520",
+     }
+   ];
+ 
   const avgHoursPerDay = employeeSummary.summary.total_hours || 0;
   const avgHoursPerReport =
     employeeSummary.reports_count > 0
@@ -162,27 +181,25 @@ export default function EmployeeDailyStats() {
             <div className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-gray-700 rounded-xl p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
-                    Общее количество часов
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                    Общее отработанное время
                   </h3>
                   <div className="text-3xl font-bold text-red-400">
-                    {employeeSummary.summary.total_hours.toFixed(1)}
+             
+                    {Math.floor(employeeSummary.summary.total_hours)} ч.  {Math.round((employeeSummary.summary.total_hours % 1) * 60)} м.
+
                   </div>
+               
                   <div className="text-sm text-gray-400 mt-1">
-                    Отчетов: {employeeSummary.reports_count}
+                    Количество отправленных отчетов: {employeeSummary.reports_count}
                   </div>
                 </div>
                 <div className="bg-gray-700 rounded-xl p-4 text-center">
                   <h3 className="text-lg font-semibold text-gray-300 mb-2">
                     Средние показатели
                   </h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <div className="text-xl font-bold text-red-400">
-                        {avgHoursPerDay.toFixed(1)}
-                      </div>
-                      <div className="text-xs text-gray-400">часов в день</div>
-                    </div>
+                  <div className="grid  gap-2">
+                
                     <div>
                       <div className="text-xl font-bold text-red-400">
                         {avgHoursPerReport.toFixed(1)}
@@ -216,8 +233,9 @@ export default function EmployeeDailyStats() {
                 Распределение часов
               </h3>
             </div>
-            <div className="p-6 flex justify-center">
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-4 p-4">
               <CircularDiagram data={hourDistributionData} title="" />
+              <CircularDiagram data={hourDistributionDataType} title="" />
             </div>
           </div>
 
@@ -266,7 +284,7 @@ export default function EmployeeDailyStats() {
                             <tr key={`typical-${func.function_id}`}>
                               <td className="px-4 py-3 whitespace-nowrap">
                                 <div className="flex items-center">
-                                  <div className="w-2 h-2 bg-red-600 rounded-full mr-2"></div>
+                                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
                                   <span className="text-gray-300">
                                     {func.function_name}
                                   </span>
@@ -289,7 +307,7 @@ export default function EmployeeDailyStats() {
                             <tr key={`non-typical-${func.function_id}`}>
                               <td className="px-4 py-3 whitespace-nowrap">
                                 <div className="flex items-center">
-                                  <div className="w-2 h-2 bg-red-300 rounded-full mr-2"></div>
+                                  <div className="w-2 h-2 bg-red-600 rounded-full mr-2"></div>
                                   <span className="text-gray-300">
                                     {func.function_name}
                                   </span>
@@ -307,6 +325,31 @@ export default function EmployeeDailyStats() {
                             </tr>
                           )
                         )}
+                        {
+                          employeeDistribution.distribution.extra.map(
+                            (extra) => (
+                              <tr key={`extra-${extra.deputy_id}`}>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
+                                    <span className="text-gray-300">
+                                      {extra.deputy_name}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {extra.hours.toFixed(1)}ч
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {extra.percent.toFixed(1)}%
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {extra.entries_count}
+                                </td>
+                              </tr>
+                          )
+                        )
+                        }
                       </>
                     )}
                   </tbody>
