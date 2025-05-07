@@ -1,6 +1,7 @@
 import { useUserStore } from "@/store/userStore";
 import { PulseLogo } from "@/svgs/Logo";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const MenuItem: React.FC<{
@@ -80,7 +81,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
               </MenuItem> */}
 
               <MenuItem
-                href="/dashboard/department/perDay"
+                href="/dashboard/department/daily"
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -213,17 +214,37 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
     </div>
   );
 };
-const Header: React.FC<{ title: string; position?: number | null; showPanel: boolean }> = ({ title, position = null, showPanel }) => {  
+
+const Header: React.FC<{ title: string; position?: number | null; showPanel: boolean;buttons?:boolean }> = ({ title, position = null, showPanel,buttons = false }) => {  
+  const router = useRouter()
   return (
     <header className="bg-gray-800 p-4 flex justify-between items-center">
-      <Link href="/profile" prefetch={false}>
-        <div className="inline-flex items-center">
-          <PulseLogo className="pulseLogo animate-pulse" />
+     
+        <div className="inline-flex items-center w-full sm:w-auto">
+          
+        <Link href={
+          '/profile'
+        }> <PulseLogo className="pulseLogo animate-pulse" /></Link> 
           <h1 className="text-2xl pl-4 font-bold">
             {title || "Тестовое название"}
           </h1>
+          {
+          buttons && (
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-end mr-5">
+          <Link href="/dashboard/department/period" className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700">
+                  
+                  Статистика  за промежуток времени
+                </Link>
+                <Link href="/dashboard/employees" className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700">
+                      
+                      Статистика по сотрудникам
+                    </Link>
+            </div>
+          )
+        }
         </div>
-      </Link>
+      
+
     {showPanel &&  <HeaderMenu  position={position}/>} 
     </header>
   );

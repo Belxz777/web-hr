@@ -96,22 +96,9 @@ export default function InInterval() {
 
   return (
     <div className="mainProfileDiv">
-      <Header title="Аналитика за промежуток времени" showPanel={false} />
+      <Header title="Аналитика за промежуток времени" showPanel={false} buttons/>
 
-      <div className="bg-gray-800 rounded-2xl p-4 m-2 space-y-4 flex justify-around items-center">
-        <div className="bg-gray-900 rounded-2xl">
-          <Link href="/dashboard/department/perDay">
-            <h2 className="text-xl font-bold m-3">Статистика отдела за день</h2>
-          </Link>
-        </div>
-        <div className="bg-gray-700 rounded-2xl cursor-pointer">
-          <Link href="/dashboard/department/inInterval">
-            <h2 className="text-xl font-bold m-3">
-              Статистика отдела за промежуток времени
-            </h2>
-          </Link>
-        </div>
-      </div>
+  
 
       <div className="bg-gray-800 rounded-2xl p-4 m-2 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -120,7 +107,10 @@ export default function InInterval() {
             <input
               type="date"
               value={startDate}
-              onChange={handleStartDateChange}
+              onChange={(e) => {
+                handleStartDateChange(e)
+                fetchData()
+              }}
               className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
             />
             <div className="text-gray-400 mt-2 text-sm">
@@ -133,7 +123,10 @@ export default function InInterval() {
             <input
               type="date"
               value={endDate}
-              onChange={handleEndDateChange}
+              onChange={(e) => {
+                handleEndDateChange(e)
+                fetchData()
+              }}
               min={startDate}
               className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
             />
@@ -147,7 +140,10 @@ export default function InInterval() {
           <div className="text-white font-medium mb-2">Выбор департамента</div>
           <select
             value={selectedDep || ""}
-            onChange={handleDepChange}
+            onChange={(e) => {
+              handleDepChange(e)
+              fetchData()
+            }}
             className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
           >
             {deps.map((dep) => (
@@ -157,18 +153,7 @@ export default function InInterval() {
             ))}
           </select>
         </div>
-
-        <button
-          onClick={handleApply}
-          disabled={loading}
-          className={`bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-xl w-full transition-colors ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {loading ? "Загрузка..." : "Применить"}
-        </button>
       </div>
-
       <main className="my-8 space-y-8">
         {loading ? (
           <div>Загрузка данных...</div>

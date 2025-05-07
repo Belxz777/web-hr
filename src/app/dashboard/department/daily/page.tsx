@@ -89,31 +89,19 @@ export default function PerDay() {
 
   return (
     <div className="mainProfileDiv">
-      <Header title="Аналитика за день" showPanel={false} />
+      <Header title="Аналитика за день" showPanel={false} buttons/>
 
       {/* Navigation tabs */}
    
 
       {/* Quick navigation buttons */}
-      <div className="flex gap-4 m-2">
-      <div className="bg-gray-900 cursor-pointer rounded-2xl">
-        <Link href="/dashboard/employees" className="flex-1">
-   
-        <h2 className="text-xl font-bold m-3">Статистика по сотрудникам</h2>
 
-        </Link>
-        </div>
-        <div className="bg-gray-900 cursor-pointer rounded-2xl">
-          <Link href="/dashboard/department/inInterval">
-            <h2 className="text-xl font-bold m-3">Статистика отдела за промежуток времени</h2>
-          </Link>
-        </div>
-      </div>
 
       <h2 className="text-xl font-bold m-3">Статистика отдела за {formatDisplayDate(selectedDate)}</h2>
 
       {/* Filters */}
       <div className="bg-gray-800 rounded-2xl p-4 m-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+          
         <div className="bg-gray-700 rounded-xl p-4">
           <div className="text-white font-medium mb-2">Выбор дня</div>
           <input
