@@ -8,29 +8,24 @@ export const DepartmentStatsInDayPer = ({ data }: any) => {
         <h2 className="text-xl font-bold mb-4">Распределение по типам</h2>
         <div className="flex flex-col space-y-4">
           <ProgressBar
-            label="Функции"
+            label="Типичные для сотруднкиков"
             value={data.by_type?.typical?.percent ?? 0}
             color="bg-teal-500"
             hours={data.by_type?.typical?.hours ?? 0}
           />
           <ProgressBar
-            label="Нетипичные"
+            label="Нетипичные для сотруднкиков"
             value={data.by_type?.non_typical?.percent ?? 0}
             color="bg-pink-500"
             hours={data.by_type?.non_typical?.hours ?? 0}
           />
           <ProgressBar
-            label="Функциональные обязанности"
+            label="Дополнительные"
             value={data.by_type?.compulsory?.percent ?? 0}
             color="bg-indigo-500"
             hours={data.by_type?.compulsory?.hours ?? 0}
           />
-          <ProgressBar
-            label="Дополнительные"
-            value={data.by_type?.non_compulsory?.percent ?? 0}
-            color="bg-orange-500"
-            hours={data.by_type?.non_compulsory?.hours ?? 0}
-          />
+  
         </div>
       </div>
     );
