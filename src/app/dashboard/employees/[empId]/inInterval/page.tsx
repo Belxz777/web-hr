@@ -9,6 +9,7 @@ import { CircularDiagram } from "@/components/dashborad/CircularDiagram";
 import analyticsEmployeeInInterval from "@/components/server/analyticsEmployeeInInterval";
 import analyticsEmployeeInIntervalPercentager from "@/components/server/analyticsEmployeeInIntervalPercentager";
 import Link from "next/link";
+import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -88,45 +89,45 @@ export default function EmployeeDailyStatsInInterval() {
       0
     ) || 0;
 
- 
-    const hourDistributionData = [
-      // { label: "Функции", value: typicalHours, color: "#3B82F6" },
-      // { label: "Нетипичные", value: nonTypicalHours, color: "#10B981" },
-       {
-         label: "Основные",
-         value: employeeSummary.summary.compulsory_hours || 0,
-         color: "#32CD32",
-       },
-       {
-         label: "Дополнительные",
-         value: employeeSummary.summary.non_compulsory_hours || 0,
-         color: "#FFD700",
-       },
-     ];
-     const hourDistributionDataType = [
-       // { label: "Функции", value: typicalHours, color: "#3B82F6" },
-       // { label: "Нетипичные", value: nonTypicalHours, color: "#10B981" },
-        {
-          label: "Тпичиные для сотрудника",
-          value: typicalHours || 0,
-          color: "#008000",
-        },
-        {
-          label: "Нетипичные для сотрудника",
-          value: nonTypicalHours|| 0,
-          color: "#DC143C",
-        },
-        {
-          label: "Дополнительные",
-          value: deputyHours || 0,
-          color: "#DAA520",
-        }
-      ];
+  const hourDistributionData = [
+    {
+      label: "Основные",
+      value: employeeSummary.summary.compulsory_hours || 0,
+      color: "#32CD32",
+    },
+    {
+      label: "Дополнительные",
+      value: employeeSummary.summary.non_compulsory_hours || 0,
+      color: "#FFD700",
+    },
+  ];
+  const hourDistributionDataType = [
+    {
+      label: "Типичные для сотрудника",
+      value: typicalHours || 0,
+      color: "#008000",
+    },
+    {
+      label: "Нетипичные для сотрудника",
+      value: nonTypicalHours || 0,
+      color: "#DC143C",
+    },
+    {
+      label: "Дополнительные",
+      value: deputyHours || 0,
+      color: "#DAA520",
+    },
+  ];
+
   const avgHoursPerDay = employeeSummary.summary.total_hours || 0;
   const avgHoursPerReport =
     employeeSummary.reports_count > 0
       ? employeeSummary.summary.total_hours / employeeSummary.reports_count
       : 0;
+
+  const totalTime = convertDataToNormalTime(employeeSummary.summary.total_hours || 0);
+  const avgTimePerDay = convertDataToNormalTime(avgHoursPerDay || 0);
+  const avgTimePerReport = convertDataToNormalTime(avgHoursPerReport || 0);
 
   return (
     <div className="mainProfileDiv bg-gray-900">
@@ -168,14 +169,14 @@ export default function EmployeeDailyStatsInInterval() {
             <div className="p-4 border-b border-gray-700">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-200">
-                  Статистика за день
+                  Статистика за период
                 </h2>
                 <div className="flex items-center">
-                  <label htmlFor="date-select" className="mr-2 text-gray-300">
+                  <label htmlFor="start-date-select" className="mr-2 text-gray-300">
                     Начальная дата:
                   </label>
                   <input
-                    id="date-select"
+                    id="start-date-select"
                     type="date"
                     value={selectedStartDate}
                     onChange={(e) => setSelectedStartDate(e.target.value)}
@@ -183,11 +184,11 @@ export default function EmployeeDailyStatsInInterval() {
                   />
                 </div>
                 <div className="flex items-center">
-                  <label htmlFor="date-select" className="mr-2 text-gray-300">
+                  <label htmlFor="end-date-select" className="mr-2 text-gray-300">
                     Конечная дата:
                   </label>
                   <input
-                    id="date-select"
+                    id="end-date-select"
                     type="date"
                     value={selectedEndDate}
                     onChange={(e) => setSelectedEndDate(e.target.value)}
@@ -204,9 +205,7 @@ export default function EmployeeDailyStatsInInterval() {
                     Общее отработанное время
                   </h3>
                   <div className="text-3xl font-bold text-red-400">
-             
-                    {Math.floor(employeeSummary.summary.total_hours)} ч.  {Math.round((employeeSummary.summary.total_hours % 1) * 60)} м.
-
+                    {totalTime}
                   </div>
                   <div className="text-sm text-gray-400 mt-1">
                     Отчетов: {employeeSummary.reports_count}
@@ -219,13 +218,13 @@ export default function EmployeeDailyStatsInInterval() {
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <div className="text-xl font-bold text-red-400">
-                        {avgHoursPerDay.toFixed(1)}
+                        {avgTimePerDay}
                       </div>
                       <div className="text-xs text-gray-400">часов в день</div>
                     </div>
                     <div>
                       <div className="text-xl font-bold text-red-400">
-                        {avgHoursPerReport.toFixed(1)}
+                        {avgTimePerReport}
                       </div>
                       <div className="text-xs text-gray-400">
                         средний отчет
@@ -247,7 +246,6 @@ export default function EmployeeDailyStatsInInterval() {
                       employeeDistribution.time_period.end_date || ""
                     )}
                   </div>
-                    
                 </div>
               </div>
             </div>
@@ -276,10 +274,8 @@ export default function EmployeeDailyStatsInInterval() {
               style={{ maxHeight: "calc(100vh - 400px)", overflowY: "scroll" }}
             >
               <div className="overflow-x-auto">
-           
                 <table className="min-w-full divide-y divide-gray-700">
                   <thead>
-          
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                         Функция
@@ -311,54 +307,61 @@ export default function EmployeeDailyStatsInInterval() {
                     ) : (
                       <>
                         {employeeDistribution.distribution.by_functions.typical.map(
-                          (func) => (
-                            <tr key={`typical-${func.function_id}`}>
-                              <td className="px-4 py-3 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                                  <span className="text-gray-300">
-                                    {func.function_name}
-                                  </span>
-                                </div>
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {func.hours.toFixed(1)}ч
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {func.percent.toFixed(1)}%
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {func.entries_count}
-                              </td>
-                            </tr>
-                          )
+                          (func) => {
+                            const hoursByEveryFunc = convertDataToNormalTime(func.hours);
+                            return (
+                              <tr key={`typical-${func.function_id}`}>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                                    <span className="text-gray-300">
+                                      {func.function_name}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {hoursByEveryFunc}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {func.percent.toFixed(1)}%
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {func.entries_count}
+                                </td>
+                              </tr>
+                            );
+                          }
                         )}
                         {employeeDistribution.distribution.by_functions.non_typical.map(
-                          (func) => (
-                            <tr key={`non-typical-${func.function_id}`}>
-                              <td className="px-4 py-3 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="w-2 h-2 bg-red-600 rounded-full mr-2"></div>
-                                  <span className="text-gray-300">
-                                    {func.function_name}
-                                  </span>
-                                </div>
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {func.hours.toFixed(1)}ч
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {func.percent.toFixed(1)}%
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {func.entries_count}
-                              </td>
-                            </tr>
-                          )
+                          (func) => {
+                            const hoursByEveryFunc = convertDataToNormalTime(func.hours);
+                            return (
+                              <tr key={`non-typical-${func.function_id}`}>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 bg-red-600 rounded-full mr-2"></div>
+                                    <span className="text-gray-300">
+                                      {func.function_name}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {hoursByEveryFunc}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {func.percent.toFixed(1)}%
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                  {func.entries_count}
+                                </td>
+                              </tr>
+                            );
+                          }
                         )}
-                        {
-                          employeeDistribution.distribution.extra.map(
-                            (extra) => (
+                        {employeeDistribution.distribution.extra.map(
+                          (extra) => {
+                            const hoursByEveryFunc = convertDataToNormalTime(extra.hours);
+                            return (
                               <tr key={`extra-${extra.deputy_id}`}>
                                 <td className="px-4 py-3 whitespace-nowrap">
                                   <div className="flex items-center">
@@ -369,18 +372,18 @@ export default function EmployeeDailyStatsInInterval() {
                                   </div>
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                  {extra.hours.toFixed(1)}ч
+                                  {hoursByEveryFunc}
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap text-gray-300">
                                   {extra.percent.toFixed(1)}%
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                  {extra.entries_count}
+                                  { extra.entries_count}
                                 </td>
                               </tr>
-                          )
-                        )
-                        }
+                            );
+                          }
+                        )}
                       </>
                     )}
                   </tbody>
@@ -434,36 +437,39 @@ export default function EmployeeDailyStatsInInterval() {
                       </tr>
                     ) : (
                       (employeeSummary as EmployeeSummary).reports.map(
-                        (report: any) => (
-                          <tr key={report.laborCostId}>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {report.laborCostId}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {report.function || report.deputy || "N/A"}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {report.worked_hours.toFixed(1)}ч
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap">
-                              {report.compulsory ? (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-900 text-red-200">
-                                  Да
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
-                                  Нет
-                                </span>
-                              )}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {report.comment}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {new Date(report.date).toLocaleString("ru-RU")}
-                            </td>
-                          </tr>
-                        )
+                        (report: any) => {
+                          const workedHours = convertDataToNormalTime(report.worked_hours);
+                          return (
+                            <tr key={report.laborCostId}>
+                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                {report.laborCostId}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                {report.function || report.deputy || "N/A"}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                {workedHours}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap">
+                                {report.compulsory ? (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-900 text-red-200">
+                                    Да
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                                    Нет
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                {report.comment}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                                {new Date(report.date).toLocaleString("ru-RU")}
+                              </td>
+                            </tr>
+                          );
+                        }
                       )
                     )}
                   </tbody>

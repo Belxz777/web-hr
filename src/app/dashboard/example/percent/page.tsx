@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Link from "next/link"
 
-// Типы данных для статистики распределения времени
 type TimePeriod = {
   type: "single_day" | "date_range" | "month" | "year"
   date: string | null
@@ -59,7 +58,6 @@ type TimeDistribution = {
   distribution: Distribution
 }
 
-// Имитация данных
 const timeDistributionData: TimeDistribution = {
   time_period: {
     type: "single_day",
@@ -135,7 +133,6 @@ const timeDistributionData: TimeDistribution = {
   },
 }
 
-// Компонент круговой диаграммы
 const PieChart = ({ data }: { data: { label: string; value: number; percent: number; color: string }[] }) => {
   const total = data.reduce((sum, item) => sum + item.value, 0)
   let currentAngle = 0
@@ -169,7 +166,6 @@ const PieChart = ({ data }: { data: { label: string; value: number; percent: num
   )
 }
 
-// Компонент горизонтальной столбчатой диаграммы с процентами
 const HorizontalBarChart = ({
   data,
 }: {
@@ -204,7 +200,6 @@ const HorizontalBarChart = ({
   )
 }
 
-// Компонент для отображения процентного индикатора
 const PercentageBar = ({ percent, color }: { percent: number; color: string }) => {
   return (
     <div className="w-full bg-gray-700 rounded-full h-2.5">
@@ -217,7 +212,6 @@ export default function TimeDistributionPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<"overview" | "functions" | "deputies" | "json">("overview")
 
-  // Форматирование даты
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "Не указана"
     return new Date(dateString).toLocaleDateString("ru-RU", {
@@ -227,7 +221,6 @@ export default function TimeDistributionPage() {
     })
   }
 
-  // Подготовка данных для круговой диаграммы по типам
   const getTypesPieChartData = () => [
     {
       label: "Функциональные",
@@ -243,7 +236,6 @@ export default function TimeDistributionPage() {
     },
   ]
 
-  // Подготовка данных для круговой диаграммы по обязательности
   const getCompulsoryPieChartData = () => [
     {
       label: "Обязательные",
@@ -259,7 +251,6 @@ export default function TimeDistributionPage() {
     },
   ]
 
-  // Подготовка данных для круговой диаграммы по типичности
   const getTypicalPieChartData = () => [
     {
       label: "Типичные",
@@ -275,7 +266,6 @@ export default function TimeDistributionPage() {
     },
   ]
 
-  // Подготовка данных для горизонтальной диаграммы функций
   const getFunctionsBarChartData = () => {
     const typicalFunctions = timeDistributionData.distribution.by_functions.typical.map((func) => ({
       label: func.function_name,
@@ -294,7 +284,6 @@ export default function TimeDistributionPage() {
     return [...typicalFunctions, ...nonTypicalFunctions].sort((a, b) => b.percent - a.percent)
   }
 
-  // Подготовка данных для горизонтальной диаграммы заместителей
   const getDeputiesBarChartData = () => {
     return timeDistributionData.distribution.by_deputies.map((deputy) => ({
       label: deputy.deputy_name,

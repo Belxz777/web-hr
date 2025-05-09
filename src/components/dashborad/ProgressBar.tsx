@@ -1,3 +1,5 @@
+import { convertDataToNormalTime } from "../utils/convertDataToNormalTime";
+
 export function ProgressBar({
     label,
     value,
@@ -9,12 +11,15 @@ export function ProgressBar({
     color: string;
     hours: number;
   }) {
+
+    const progressTime = convertDataToNormalTime(hours);
+
     return (
       <div>
         <div className="flex justify-between mb-1">
           <div>{label}</div>
           <div>
-            {hours.toFixed(2)} ч ({value.toFixed(1)}%)
+            {progressTime} ({value.toFixed(1)}%)
           </div>
         </div>
         <div className="w-full bg-gray-700 rounded-full h-2.5">
