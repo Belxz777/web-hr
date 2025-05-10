@@ -100,39 +100,36 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
                   </svg>
                 }
               >
-               Статистика отдела
+                Статистика отдела
               </MenuItem>
-{
-  position >=4 && (
-    <MenuItem
-    href="/stats"
-    icon={
-      <svg
-        className="w-6 h-6  dark:text-white"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 2L3 5v6c0 5.5 3.5 10.75 9 12 5.5-1.25 9-6.5 9-12V5l-9-3z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9 12l2 2 4-4"
-        />
-      </svg>
-    }
-  >
-    Статус работы приложения
-  </MenuItem>
-  )
-}
-            
+              {position >= 4 && (
+                <MenuItem
+                  href="/stats"
+                  icon={
+                    <svg
+                      className="w-6 h-6  dark:text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 2L3 5v6c0 5.5 3.5 10.75 9 12 5.5-1.25 9-6.5 9-12V5l-9-3z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 12l2 2 4-4"
+                      />
+                    </svg>
+                  }
+                >
+                  Статус работы приложения
+                </MenuItem>
+              )}
             </>
           )}
           <MenuItem
@@ -215,37 +212,42 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
   );
 };
 
-const Header: React.FC<{ title: string; position?: number | null; showPanel: boolean;buttons?:boolean }> = ({ title, position = null, showPanel,buttons = false }) => {  
-  const router = useRouter()
+const Header: React.FC<{
+  title: string;
+  position?: number | null;
+  showPanel: boolean;
+  buttons?: boolean;
+}> = ({ title, position = null, showPanel, buttons = false }) => {
+  const router = useRouter();
   return (
     <header className="bg-gray-800 p-4 flex justify-between items-center">
-     
-        <div className="inline-flex items-center w-full sm:w-auto">
-          
-        <Link href={
-          '/profile'
-        }> <PulseLogo className="pulseLogo animate-pulse" /></Link> 
-          <h1 className="text-2xl pl-4 font-bold">
-            {title || "Тестовое название"}
-          </h1>
-          {
-          buttons && (
-            <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-end mr-5">
-          <Link href="/dashboard/department/period" className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700">
-                  
-                  Статистика  за промежуток времени
-                </Link>
-                <Link href="/dashboard/employees" className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700">
-                      
-                      Статистика по сотрудникам
-                    </Link>
-            </div>
-          )
-        }
-        </div>
-      
+      <div className="inline-flex items-center w-full sm:w-auto">
+        <Link href={"/profile"}>
+          {" "}
+          <PulseLogo className="pulseLogo animate-pulse" />
+        </Link>
+        <h1 className="text-2xl pl-4 font-bold">
+          {title || "Тестовое название"}
+        </h1>
+        {buttons && (
+          <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-end mr-5">
+            <Link
+              href="/dashboard/department/period"
+              className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700"
+            >
+              Статистика за промежуток времени
+            </Link>
+            <Link
+              href="/dashboard/employees"
+              className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700"
+            >
+              Статистика по сотрудникам
+            </Link>
+          </div>
+        )}
+      </div>
 
-    {showPanel &&  <HeaderMenu  position={position}/>} 
+      {showPanel && <HeaderMenu position={position} />}
     </header>
   );
 };

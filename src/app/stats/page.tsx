@@ -47,7 +47,6 @@ export default function SystemStatusPage() {
         credentials: 'include',
         mode: 'no-cors',
       })
-      console.log(response)
       if (!response.ok) {
         throw new Error(`Ошибка: ${response.status}`)
       }

@@ -51,7 +51,6 @@ export default function ReportPage() {
             deputy_id: data.nonCompulsory[0].deputyId,
           }));
         }
-        console.log(formData, responsibilities.functions.length);
       } catch (error) {
         console.error("Failed to fetch responsibilities:", error);
       }
@@ -101,7 +100,6 @@ export default function ReportPage() {
         deputy_id: responsibilities.nonCompulsory[0].deputyId,
       });
     }
-    console.log(formData, responsibilities.functions.length, "then");
     if (responsibilities?.length) {
       console.log("No tasks available for report");
       alert("Нет доступных задач для отчета");

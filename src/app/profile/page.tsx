@@ -16,7 +16,6 @@ export default function ProfilePage() {
     loadingEmp,
     error: employeeError,
   } = useEmployeeData();
-  console.log(employeeData?.deputy.filter((e) => e.compulsory));
   const { isBoss } = useUserStore();
   
   // доп - это не компалсари, а functions - это под. функции для фс
