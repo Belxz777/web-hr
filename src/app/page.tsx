@@ -1,11 +1,13 @@
 'use client';
 
 import { PulseLogo } from '@/svgs/Logo'
+import { host } from '@/types';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 
 export default function HomePage() {
+  console.log(host,process.env.HOST)
   const router  = useRouter()
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900   flex flex-col items-center justify-center p-4 rounded-lg">
