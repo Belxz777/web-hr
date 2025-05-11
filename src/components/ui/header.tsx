@@ -243,6 +243,12 @@ const Header: React.FC<{
             >
               Статистика по сотрудникам
             </Link>
+            <Link
+              href="/dashboard/departments"
+              className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700"
+            >
+              Статистика по всем департаментам
+            </Link>
           </div>
         )}
       </div>

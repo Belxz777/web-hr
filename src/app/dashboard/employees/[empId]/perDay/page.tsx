@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import analyticsEmployeeInDay from "@/components/server/analyticsEmployeeInDay";
 import analyticsEmployeeInDayPercentager from "@/components/server/analyticsEmployeeInDayPercentager";
 import { EmployeeDistribution, EmployeeSummary } from "@/types";
-import { CircularDiagram } from "@/components/dashborad/CircularDiagram";
+import { CircularDiagram } from "@/components/dashboard/CircularDiagram";
 import Link from "next/link";
 import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime";
 

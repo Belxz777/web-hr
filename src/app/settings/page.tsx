@@ -7,7 +7,7 @@ import { TFData } from "@/types";
 
 // Пример данных контактов поддержки
 const supportContacts = [
-  { name: "Техническая поддержка", email: "@belxz999 (TELEGRAM" },
+  { name: "Техническая поддержка", email: "@belxz999 (TELEGRAM)" },
   { name: "Сообщить об ошибке", email: "@belxz999 (TELEGRAM)" },
 ];
 

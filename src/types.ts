@@ -281,10 +281,45 @@ type EmployeeInfo = {
   position: number
 }
 
+
+type TimePeriod = {
+  type: string;
+  date: string;
+  start_date: string | null;
+  end_date: string | null;
+};
+
+type DepartmentStats = {
+  total_hours: number;
+  function_hours: number;
+  deputy_hours: number;
+  employee_count: number;
+};
+
+type EmployeeStats = Array<any>;
+
+type DepartmentForStats = {
+  department_id: number;
+  department_name: string;
+  time_period: TimePeriod;
+  department_stats: DepartmentStats;
+  employee_stats: EmployeeStats;
+};
+
+type DepartmentsData = {
+  departments: DepartmentForStats[];
+  total_departments: number;
+};
+
 export { host };
 export type {
   department,
   EmployeeInfo,
+  DepartmentStats,
+  EmployeeStats,
+  DepartmentForStats,
+  DepartmentsData,
+  TimePeriod,
   EmployeeDistribution,
   EmployeeSummary,
   createUser,

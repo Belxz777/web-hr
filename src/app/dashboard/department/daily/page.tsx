@@ -10,10 +10,10 @@ import analyticsDepartmentInDay from "@/components/server/analyticsDepartmentInD
 import analyticsDepartmentInDayPercentager from "@/components/server/analyticsDepartmentInDayPercentager"
 import getAllDepartments from "@/components/server/departments"
 import type { DailyStats, Department } from "@/types"
-import { DepartmentStatsInDay } from "@/components/dashborad/DepartmentStatsInDay"
-import { DepartmentStatsInDayPer } from "@/components/dashborad/DepartmentStatsInDayPer"
-import { EmployeeStats } from "@/components/dashborad/EmployeeStats"
-import { TopFunctions } from "@/components/dashborad/TopFunctions"
+import { DepartmentStatsInDay } from "@/components/dashboard/DepartmentStatsInDay"
+import { DepartmentStatsInDayPer } from "@/components/dashboard/DepartmentStatsInDayPer"
+import { EmployeeStats } from "@/components/dashboard/EmployeeStats"
+import { TopFunctions } from "@/components/dashboard/TopFunctions"
 
 
 const getCurrentDate = () => {
@@ -33,7 +33,6 @@ export default function PerDay() {
   const [selectedDate, setSelectedDate] = useState(getCurrentDate())
   const [selectedDep, setSelectedDep] = useState<number | null>(null)
 
-  // Fetch departments and set the first one as selected
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -51,7 +50,6 @@ export default function PerDay() {
     fetchDepartments()
   }, [])
 
-  // Fetch data whenever selectedDep or selectedDate changes
   useEffect(() => {
     const fetchData = async () => {
       if (!selectedDep) return
@@ -91,15 +89,9 @@ export default function PerDay() {
     <div className="mainProfileDiv">
       <Header title="Аналитика за день" showPanel={false} buttons/>
 
-      {/* Navigation tabs */}
-   
-
-      {/* Quick navigation buttons */}
-
 
       <h2 className="text-xl font-bold m-3">Статистика отдела за {formatDisplayDate(selectedDate)}</h2>
 
-      {/* Filters */}
       <div className="bg-gray-800 rounded-2xl p-4 m-2 grid grid-cols-1 md:grid-cols-2 gap-4">
           
         <div className="bg-gray-700 rounded-xl p-4">
@@ -129,7 +121,6 @@ export default function PerDay() {
         </div>
       </div>
 
-      {/* Statistics display */}
       <main className="my-8 space-y-8">
         {loading ? (
           <div className="flex justify-center items-center p-8">

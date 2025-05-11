@@ -8,10 +8,10 @@ import getAllDepartments from "@/components/server/departments";
 import { DailyStats, Department } from "@/types";
 import analyticsDepartmentInDayPercentagerInInterval from "@/components/server/analyticsDepartmentInDayPercentagerInInterval";
 import analyticsDepartmentInInterval from "@/components/server/analyticsDepartmentInInterval";
-import { DepartmentStatsInDay } from "@/components/dashborad/DepartmentStatsInDay";
-import { DepartmentStatsInDayPer } from "@/components/dashborad/DepartmentStatsInDayPer";
-import { EmployeeStats } from "@/components/dashborad/EmployeeStats";
-import { TopFunctions } from "@/components/dashborad/TopFunctions";
+import { DepartmentStatsInDay } from "@/components/dashboard/DepartmentStatsInDay";
+import { DepartmentStatsInDayPer } from "@/components/dashboard/DepartmentStatsInDayPer";
+import { EmployeeStats } from "@/components/dashboard/EmployeeStats";
+import { TopFunctions } from "@/components/dashboard/TopFunctions";
 
 const getCurrentDate = () => {
   const now = new Date();

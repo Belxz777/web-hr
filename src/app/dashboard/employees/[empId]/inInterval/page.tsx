@@ -5,7 +5,7 @@ import { Header } from "@/components/ui/header";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { useParams } from "next/navigation";
 import { EmployeeDistribution, EmployeeSummary } from "@/types";
-import { CircularDiagram } from "@/components/dashborad/CircularDiagram";
+import { CircularDiagram } from "@/components/dashboard/CircularDiagram";
 import analyticsEmployeeInInterval from "@/components/server/analyticsEmployeeInInterval";
 import analyticsEmployeeInIntervalPercentager from "@/components/server/analyticsEmployeeInIntervalPercentager";
 import Link from "next/link";
