@@ -20,10 +20,10 @@ async function analyticsDepartments(params: {
     if (params.date) {
       // Режим analyticsDepartmentsInDay
       console.log(params.date);
-      url = `${host}analytics/department?department_id=${params.depId}&date=${params.date}`;
+      url = `${host}analytics/department/?department_id=${params.depId}&date=${params.date}`;
     } else if (params.depId && params.startDate && params.endDate) {
       // Режим analyticsDepartmentInInterval
-      url = `${host}analytics/department?department_id=${params.depId}&start_date=${params.startDate}&end_date=${params.endDate}`;
+      url = `${host}analytics/department/?department_id=${params.depId}&start_date=${params.startDate}&end_date=${params.endDate}`;
     } else {
       throw new Error("Invalid parameters provided");
     }

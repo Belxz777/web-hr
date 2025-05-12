@@ -96,7 +96,7 @@ export default function AnalyticsDashboard() {
       setDataInDay(data)
       setDataInDayPer(dataPer)
     } catch (err) {
-      setError("Ошибка при загрузке данных")
+      setError(`Ошибка при загрузке данных для ${activeTab} error ${err}`)
       console.error(err)
     } finally {
       setLoading(false)
