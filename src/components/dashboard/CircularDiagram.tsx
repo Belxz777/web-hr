@@ -69,8 +69,8 @@ export const CircularDiagram = ({
 
           const midAngle = (startAngle + endAngle) / 2;
           const midRad = ((midAngle - 90) * Math.PI) / 180;
-          const textX = 50 + 30 * Math.cos(midRad);
-          const textY = 50 + 30 * Math.sin(midRad);
+          const textX = 48 + 30 * Math.cos(midRad);
+          const textY = 55 + 30 * Math.sin(midRad);
 
           return (
             <g key={index}>
@@ -78,14 +78,15 @@ export const CircularDiagram = ({
                 d={pathData}
                 fill={item.color}
                 stroke="#1F2937"
-                strokeWidth="1"
+                strokeWidth="4"
               />
               {item.percentage > 5 && (
                 <text
                   x={textX}
                   y={textY}
-                  fill="white"
+                  fill="black"
                   fontSize="5"
+                  fontWeight={"bold"}
                   textAnchor="middle"
                   dominantBaseline="middle"
                 >
@@ -95,10 +96,10 @@ export const CircularDiagram = ({
             </g>
           );
         })}
-        <circle cx="50" cy="50" r="25" fill="#1F2937" />
+        <circle cx="50" cy="50" r="20" fill="#1F2937" />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center flex-col">
-        <span className="text-3xl font-bold text-gray-200">
+        <span className="text-2xl font-bold text-gray-200 z-10 bg-[#1F2937] px-2 rounded">
           {funcsTotalTime}
         </span>
       </div>

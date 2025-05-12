@@ -5,7 +5,7 @@ export function TopFunctions({ data }: any) {
   const byFunctions = data?.by_functions || { typical: [], non_typical: [] };
   const functions = [...byFunctions.typical, ...byFunctions.non_typical]
     .sort((a, b) => b.percent - a.percent)
-    .slice(0, 3);
+    .slice(0, 6);
 
   return (
     <div className="bg-gray-800 rounded-2xl p-5 mb-6 shadow-lg m-3">

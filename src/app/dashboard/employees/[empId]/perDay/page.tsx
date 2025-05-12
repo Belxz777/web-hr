@@ -195,11 +195,6 @@ export default function EmployeeDailyStats() {
                   <div className="text-3xl font-bold text-red-400">
                     {totalTime}
                   </div>
-
-                  <div className="text-sm text-gray-400 mt-1">
-                    Количество отправленных отчетов:{" "}
-                    {employeeSummary.reports_count}
-                  </div>
                 </div>
                 <div className="bg-gray-700 rounded-xl p-4 text-center">
                   <h3 className="text-lg font-semibold text-gray-300 mb-2">
