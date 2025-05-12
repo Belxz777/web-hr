@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import changePassword from '@/components/server/passchange'
+import changePassword from '@/components/server/auth/passchange'
 import { useRouter } from 'next/navigation'
 import { changePass } from '@/types'
 import { PulseLogo } from '@/svgs/Logo'

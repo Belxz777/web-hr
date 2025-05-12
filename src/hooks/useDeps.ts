@@ -1,4 +1,4 @@
-import getAllDepartments from "@/components/server/departments";
+import getAllDepartments from "@/components/server/admin/departments";
 import { useEffect, useState } from "react";
 
 const useGetAlldeps = () => {

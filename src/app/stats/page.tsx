@@ -105,7 +105,7 @@ export default function SystemStatusPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
-        <div className="bg-gray-800 p-8 rounded-lg shadow-xl text-center max-w-md w-full mx-4">
+        <div className="bg-gray-800 p-8 rounded-xl shadow-xl text-center max-w-md w-full mx-4">
           {/* Улучшенный лоадер с плавной анимацией */}
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-500 mx-auto mb-6"></div>
           
@@ -127,7 +127,7 @@ export default function SystemStatusPage() {
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
       <Header title="Состояние системы" position={5} showPanel={false} />
       <div className="flex w-full">
-        <button onClick={() => router.back()} className="flex m-3 items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{`<- Вернуться к админ-панели`}</button>
+        <button onClick={() => router.back()} className="flex m-3 items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{`<- Вернуться к админ-панели`}</button>
       </div>
       <main className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
@@ -145,7 +145,7 @@ export default function SystemStatusPage() {
           <button
             onClick={refreshData}
             disabled={isRefreshing}
-            className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isRefreshing ? (
               <>
@@ -181,8 +181,8 @@ export default function SystemStatusPage() {
         </div>
 
         {error ? (
-          <div className="bg-red-600 text-white p-4 rounded-lg mb-6">
-            <h3 className="font-bold mb-2">Ошибка соединения с бэкендом забей нахер</h3>
+          <div className="bg-red-600 text-white p-4 rounded-xl mb-6">
+            <h3 className="font-bold mb-2">Ошибка соединения с бэкендом </h3>
             <p>{error}</p>
             <p className="mt-2 text-sm">
               Убедитесь, что бэкенд запущен и доступен по адресу: ${host}
@@ -191,7 +191,7 @@ export default function SystemStatusPage() {
         ) : backendStatus ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Статус бэкенда */}
-            <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
               <h3 className="text-lg font-semibold mb-4 flex items-center">
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -240,7 +240,7 @@ export default function SystemStatusPage() {
             </div>
 
             {/* Системные метрики */}
-            <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
               <h3 className="text-lg font-semibold mb-4 flex items-center">
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -280,7 +280,7 @@ export default function SystemStatusPage() {
 
         {/* JSON представление данных */}
         {backendStatus && (
-          <div className="bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
+          <div className="bg-gray-800 rounded-xl p-6 shadow-lg mb-8">
             <h3 className="text-lg font-semibold mb-4 flex items-center">
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path

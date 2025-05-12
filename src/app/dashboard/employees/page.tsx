@@ -1,6 +1,6 @@
 "use client";
 
-import getEmployees from "@/components/server/emps_get";
+import getEmployees from "@/components/server/admin/emps_get";
 import { EmployeeSelectInput } from "@/components/ui/CustomSelectForChooseEmp";
 import { Header } from "@/components/ui/header";
 import { useRouter } from "next/navigation";

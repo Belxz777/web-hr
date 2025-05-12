@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import getEmployeeId from "@/components/server/fetchuserbyid"
+import getEmployeeId from "@/components/server/useless/fetchuserbyid"
 import { Header } from "@/components/ui/header"
 
 // Тип данных сотрудника согласно требованиям

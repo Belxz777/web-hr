@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import sendUserLoginData from "@/components/server/login";
+import sendUserLoginData from "@/components/server/auth/login";
 import { useState } from "react";
 import "@/app/globals.css";
 import { PulseLogo } from "@/svgs/Logo";
@@ -111,12 +111,12 @@ export default function Home() {
               />
               <button
                 type="button"
-                className="redButtonStyles"
+                className="absolute inset-y-0 right-0 px-3 flex items-center bg-red-600 hover:bg-red-700 text-white rounded-r-xl"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
               >
                 <svg
-                  className="svgStyles"
+                  className="h-5 w-5"
                   fill="#fff"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 640 512"
@@ -139,8 +139,7 @@ export default function Home() {
                   )}
                 </svg>
               </button>
-            </div>
-          </div>
+            </div>          </div>
           <div>
             <button
               type="submit"

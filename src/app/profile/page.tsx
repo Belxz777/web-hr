@@ -2,8 +2,8 @@
 
 import useEmployeeData from "@/hooks/useGetUserData";
 import { useRouter } from "next/navigation";
-import { logout } from "@/components/server/logout";
-import { ReportDownload } from "@/components/buildIn/ReportDownload";
+import { logout } from "@/components/server/auth/logout";
+import {  RoutesBoss } from "@/components/buildIn/ReportDownload";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { Header } from "@/components/ui/header";
 import { useUserStore } from "@/store/userStore";
@@ -40,12 +40,11 @@ export default function ProfilePage() {
               <h2 className="text-2xl font-bold mb-2 select-none">
                 {employeeData.user.firstName} {employeeData.user.lastName}
               </h2>
-              <p className="text-gray-400 select-none">{title}</p>
-              <p className="text-gray-400 select-none">
-               {employeeData.job.jobName}
+                            <p className="text-gray-400 select-none">
+                            Должность: <span className="font-extrabold">  {employeeData.job.jobName} </span>
               </p>
               <p className="text-gray-400 select-none">
-                Отдел № {employeeData.user.departmentid}
+                Отдел: <span className="font-extrabold">{employeeData.department}</span>
               </p>
               <div className="flex gap-4 justify-between my-2">
                 <button
@@ -108,10 +107,8 @@ export default function ProfilePage() {
           )} */}
         </div>
         {(employeeData?.user.position !== 1 || isBoss) && employeeData ? (
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
-            {/* <ReportUpload /> */}
-            <ReportDownload />
-          </section>
+   <RoutesBoss />
+                   
         ) : null}
       </main>
       <UniversalFooter />

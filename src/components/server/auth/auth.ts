@@ -1,7 +1,32 @@
 "use server"
 import { cookies } from 'next/headers';
 import { host } from '@/types';
-async function authUser(): Promise<any> {
+interface Deputy {
+    deputyId: number
+    deputyName: string
+    compulsory: boolean
+}
+
+interface Job {
+    jobName: string
+    deputy: number
+}
+
+interface User {
+    employeeId: number
+    firstName: string
+    lastName: string
+    position: number
+}
+
+interface AuthResponse {
+    user: User
+    job: Job,
+    department: string,
+    deputy: Deputy[]
+}
+
+async function authUser(): Promise<AuthResponse> {
     const cookieStore = cookies();
     const jwt = cookieStore.get('cf-auth-id')?.value;
     if (!jwt) {

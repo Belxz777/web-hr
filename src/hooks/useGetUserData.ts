@@ -1,11 +1,37 @@
 // hooks/useEmployeeData.js
-import authUser from '@/components/server/auth';
-import { fetchTitle } from '@/components/server/jobtitle';
+import authUser from '@/components/server/auth/auth';
+// import { fetchTitle } from '@/components/server/userdata/jobtitle';
 import { employee } from '@/types';
 import { useState, useEffect } from 'react';
+interface Deputy {
+  deputyId: number
+  deputyName: string
+  compulsory: boolean
+}
 
+interface Job {
+  jobName: string
+  deputy: number
+}
+
+interface User {
+  employeeId: number
+  firstName: string
+  lastName: string
+  position: number
+}
+
+interface AuthResponse {
+  user: User
+  job: Job,
+  department:string,
+  deputy: Deputy[]
+}
+interface Department {
+  departmentName: string
+}
 const useEmployeeData = () => {
-  const [employeeData, setData] = useState<employee | null >(null);
+  const [employeeData, setData] = useState<AuthResponse | null >(null);
   const [title, setTitle] = useState<string>('');
   const [loadingEmp, setLoading] = useState(true);
   const [error, setError] = useState({
@@ -19,10 +45,7 @@ const useEmployeeData = () => {
         setLoading(true);
         const response = await authUser();
         setData(response);
-        if (response?.jobid) {
-          const jobTitle = await fetchTitle(response.jobid);
-          setTitle(jobTitle);
-        }
+        setTitle(response?.job.jobName || '');
       } catch (err) {
         if (err instanceof Error) {
           setError({

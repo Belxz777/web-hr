@@ -1,5 +1,5 @@
-import getEmployees from "@/components/server/emps_get";
-import {getAllJobs} from "@/components/server/jobs";
+import getEmployees from "@/components/server/admin/emps_get";
+import {getAllJobs} from "@/components/server/admin/jobs";
 import { useEffect, useState } from "react";
 
 const useGetAllJobs = () => {

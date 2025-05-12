@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { Header } from "@/components/ui/header";
-import getEmployees from "@/components/server/emps_get";
+import getEmployees from "@/components/server/admin/emps_get";
 import { host } from "@/types";
 import useEmployeeData from "@/hooks/useGetUserData";
 import { useEmployees } from "@/hooks/useEmployees";

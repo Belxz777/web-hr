@@ -2,91 +2,110 @@ import { useUserStore } from "@/store/userStore";
 import { PulseLogo } from "@/svgs/Logo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const MenuItem: React.FC<{
-  href: string;
-  icon: JSX.Element;
-  children: React.ReactNode;
-}> = ({ href, icon, children }) => {
-  if (!href) {
-    throw new Error("Missing required prop 'href' in MenuItem");
-  }
+interface MenuItemProps {
+  href: string
+  icon: React.ReactNode
+  children: React.ReactNode
+}
 
-  if (!children) {
-    throw new Error("Missing required prop 'children' in MenuItem");
-  }
-
+const MenuItem: React.FC<MenuItemProps> = ({ href, icon, children }) => {
   return (
     <li>
       <Link
         href={href}
-        className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
+        className="flex items-center px-4 py-3 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-300 rounded-md group overflow-hidden"
       >
-        {icon && <span className="w-5 h-5 mr-3">{icon}</span>}
-        {children}
+        <span className="mr-3 text-gray-400 group-hover:text-white transition-colors duration-200 flex-shrink-0">
+          {icon}
+        </span>
+        <span className="font-medium transform translate-x-1 group-hover:translate-x-0 transition-transform duration-300">
+          {children}
+        </span>
       </Link>
     </li>
-  );
-};
+  )
+}
+
 const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString())
+
+  // Update time every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="p-2 text-gray-300 hover:text-white focus:outline-none"
+        className="p-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors duration-200 w-10 h-10 flex items-center justify-center"
+        aria-expanded={isMenuOpen}
+        aria-label="Открыть меню"
       >
-        <span className="sr-only">Открыть меню</span>
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 6h16M4 12h16m-7 6h7"
+        <div className="w-6 h-6 relative flex items-center justify-center">
+          {/* Top line */}
+          <span
+            className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+              isMenuOpen ? "rotate-45" : "-translate-y-2"
+            }`}
           />
-        </svg>
+
+          {/* Middle line */}
+          <span
+            className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+              isMenuOpen ? "opacity-0" : "opacity-100"
+            }`}
+          />
+
+          {/* Bottom line */}
+          <span
+            className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+              isMenuOpen ? "-rotate-45" : "translate-y-2"
+            }`}
+          />
+        </div>
       </button>
-      {isMenuOpen && (
-        <ul className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg py-1">
+
+      <div
+        className={`
+          absolute right-0 mt-2 w-72 bg-gray-800 rounded-lg shadow-xl py-2 
+          transform origin-top-right transition-all duration-300 ease-in-out z-50
+          border border-gray-700
+          ${isMenuOpen ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"}
+        `}
+      >
+        <ul className="py-1 space-y-1">
           {position !== null && position >= 2 && (
             <>
-              {/* <MenuItem
-                href="/department/report/download"
-                icon={
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                    />
-                  </svg>
-                }
-              >
-                Скачивание подробного отчета
-              </MenuItem> */}
-
               <MenuItem
-                href="/dashboard/department/daily"
+                href="/dashboard/department/"
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
+                    width="20"
+                    height="20"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
@@ -102,12 +121,13 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
               >
                 Статистика отдела
               </MenuItem>
+
               {position >= 4 && (
                 <MenuItem
                   href="/stats"
                   icon={
                     <svg
-                      className="w-6 h-6  dark:text-white"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -119,11 +139,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
                         strokeLinejoin="round"
                         d="M12 2L3 5v6c0 5.5 3.5 10.75 9 12 5.5-1.25 9-6.5 9-12V5l-9-3z"
                       />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 12l2 2 4-4"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
                     </svg>
                   }
                 >
@@ -132,13 +148,14 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
               )}
             </>
           )}
+
           <MenuItem
             href="/report"
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -153,6 +170,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
           >
             Заполнение отчета
           </MenuItem>
+
           <MenuItem
             href="/settings"
             icon={
@@ -180,37 +198,24 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
           >
             Настройки
           </MenuItem>
-          {/* <MenuItem
-            href="/createTask"
-            icon={
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-            }
-          >
-            Создать задачу
-          </MenuItem> */}
-          <li>
-            <div className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-red-600 select-none">
-              <span className="mr-3">{new Date().toLocaleTimeString()}</span>
+
+          <li className="mt-2 pt-2 border-t border-gray-700">
+            <div className="flex items-center justify-between px-4 py-2 text-sm">
+              <span className="text-gray-400">Время:</span>
+              <span className="text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded-md">{currentTime}</span>
+            </div>
+            <div className="flex items-center justify-between px-4 py-2 text-sm">
+              <span className="text-gray-400">День недели:</span>
+              <span className="text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded-md">{new Date().toLocaleString('ru-RU', {weekday: 'long'})}</span>
             </div>
           </li>
         </ul>
-      )}
+      </div>
     </div>
-  );
-};
+  )
+}
+
+export default HeaderMenu
 
 const Header: React.FC<{
   title: string;

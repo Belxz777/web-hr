@@ -2,17 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import sendReport from "@/components/server/report";
+import sendReport from "@/components/server/userdata/report";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { Header } from "@/components/ui/header";
 import { TFData } from "@/types";
-import getAllFunctionsForReport from "@/components/server/getAllFunctionsForReport";
+import getAllFunctionsForReport from "@/components/server/userdata/getAllFunctionsForReport";
 import { set } from "zod";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 
 export default function ReportPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [error, setError] = useState<{ status: boolean; text: string ,success:boolean}>({
+    status: false,
+    success:false,
+    text: "",
+  });
   const [formData, setFormData] = useState({
     func_id: 0,
     deputy_id: 0,
@@ -108,14 +115,22 @@ export default function ReportPage() {
 
     if (!formData.func_id && !formData.deputy_id) {
       console.log("No task selected", formData);
-      alert("Выберите задачу");
+      setError({
+        status: true,
+        text: "Выберите обязанность",
+        success:false,
+      });
 
       return;
     }
 
     if (Number(formData.workingHours) <= 0) {
       console.log("Invalid working hours:", formData.workingHours);
-      alert("Укажите корректное количество часов");
+      setError({
+        status: true,
+        text: "Укажите корректное количество часов",
+        success:false,
+      });
       return;
     }
 
@@ -129,10 +144,21 @@ export default function ReportPage() {
         };
         const req = await sendReport(reportData);
         if (req) {
-          alert("Успешно ");
-          router.push("/profile");
+          setError({
+            status: true,
+            text: "Успешно",
+            success:true,
+          });
+          setTimeout(() => {
+             router.push("/profile");
+          }, 1000);
+         
         } else {
-          alert("Ошибка ");
+          setError({
+            status: true,
+            text: "Ошибка",
+            success:false,
+          });
         }
       } else {
         const reportData = {
@@ -142,8 +168,15 @@ export default function ReportPage() {
         };
         const req = await sendReport(reportData);
         if (req) {
-          alert("Успешно");
-          router.push("/profile");
+          setError({
+            status: true,
+            text: "Успешно",
+            success:true,
+          });
+          setTimeout(() => {
+             router.push("/profile");
+          }, 1000);
+         
         } else {
           alert("Ошибка ");
         }
@@ -165,7 +198,7 @@ export default function ReportPage() {
 
   return (
     <div className="mainProfileDiv">
-      <Header title="Заполнение отчета" showPanel={false} />
+      <Header title="Заполнение отчета" showPanel={false} position={1} />
       <main className="container mx-auto p-4 flex-grow">
         <form
           onSubmit={handleSubmit}
@@ -233,20 +266,6 @@ export default function ReportPage() {
                 {formatTime(Number(formData.workingHours))}
               </div>
             </div>
-
-            {/* <div className="flex flex-col ">
-              <label className="block mb-1 items-start">Ввод в ручную (минуты)</label>
-              <input
-                type="number"
-                id="workingHoursManual"
-                name="workingHours"
-                value={Math.round(Number(formData.workingHours) * 60)}
-                min="5"
-                max="480"
-                onChange={handleChange}
-                className="emailInputStyles"
-              />
-            </div> */}
           </div>
           <div className="mb-6">
             <label htmlFor="comment" className="block text-gray-300 mb-2">
@@ -272,6 +291,52 @@ export default function ReportPage() {
         </form>
       </main>
       <UniversalFooter />
+      {error.status && (
+        <div
+          className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50`}
+        >
+          <div
+            className={`bg-gray-800 p-6 rounded-xl shadow-xl transform transition-all duration-300 ease-in-out`}
+          >
+        {
+          !error.success && <h1 className="svgStyles">{error.text}</h1>
+        }   
+            
+                        {error.success && (
+                          <div className="flex items-center justify-center flex-col">
+                            <h1 className="text-2xl font-bold">Успешно</h1>
+                            <svg
+                              className="w-16 h-16 text-green-500 animate-[checkmark_0.4s_ease-in-out_forwards]"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M5 13l4 4L19 7"
+                                className="animate-[checkmark-path_0.4s_ease-in-out_forwards]"
+                              />
+                            </svg>
+                          </div>
+                        )}
+            
+            {
+              !error.success &&  <button
+              onClick={() => {
+                setError({ status: false, text: "",success:false });
+              }}
+              className="closePopUpStyles"
+            >
+              Закрыть
+            </button>
+            }
+          
+          </div>
+        </div>
+      )}
     </div>
   );
 }

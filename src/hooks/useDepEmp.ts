@@ -1,5 +1,5 @@
 
-import getEmployees from '@/components/server/emps_get';
+import getEmployees from '@/components/server/admin/emps_get';
 import { useEffect, useState } from 'react';
 
 
