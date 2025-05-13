@@ -13,8 +13,6 @@ type BackendStatus = {
   memory_usage: number
   cpu_usage: number
   active_connections: number
-  error_count: number
-  requests_per_minute: number
   last_updated: string
 }
 
@@ -222,16 +220,8 @@ export default function SystemStatusPage() {
                   <span className="text-gray-400">Активные соединения:</span>
                   <span>{backendStatus.active_connections}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Количество ошибок:</span>
-                  <span className={backendStatus.error_count > 0 ? "text-red-500" : "text-green-500"}>
-                    {backendStatus.error_count}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Запросов в минуту:</span>
-                  <span>{backendStatus.requests_per_minute}</span>
-                </div>
+               
+               
                 <div className="flex justify-between">
                   <span className="text-gray-400">Последнее обновление:</span>
                   <span>{new Date(backendStatus.last_updated).toLocaleString()}</span>
@@ -260,7 +250,7 @@ export default function SystemStatusPage() {
                   <h4 className="font-medium mb-2">Сводка</h4>
                   <p className="text-sm text-gray-300">
                     Бэкенд работает стабильно{" "}
-                    {backendStatus.error_count === 0 ? "без ошибок" : `с ${backendStatus.error_count} ошибками`}.
+
                     {backendStatus.memory_usage > 80
                       ? " Высокое использование памяти!"
                       : backendStatus.memory_usage > 60

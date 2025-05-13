@@ -8,6 +8,13 @@ export async function GET() {
 
     const response = await fetch(`${host}app/statistics`, {
         credentials: 'include',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        
     }
          );
 

@@ -13,7 +13,7 @@ import { TopFunctions } from "@/components/dashboard/TopFunctions"
 import { analyticsDepartments, analyticsDepartmentPercentage } from "@/components/server/analysis/departmentanalysis"
 import getAllDepartments from "@/components/server/admin/departments"
 
-const getCurrentDate = () => {
+export const getCurrentDate = () => {
   const now = new Date()
   const year = now.getFullYear()
   const month = String(now.getMonth() + 1).padStart(2, "0")
@@ -29,7 +29,7 @@ export default function AnalyticsDashboard() {
   const [error, setError] = useState<string | null>(null)
 
   // Date states
-  const [selectedDate, setSelectedDate] = useState(getCurrentDate())
+const [selectedDate, setSelectedDate] = useState(getCurrentDate())
   const [startDate, setStartDate] = useState(getCurrentDate())
   const [endDate, setEndDate] = useState(getCurrentDate())
   const [   selectedDep, setSelectedDep] = useState<number | null>(null)

@@ -16,7 +16,6 @@ async function analyticsDepartments(params: {
 
   try {
     let url = "";
-    
     if (params.date) {
       // Режим analyticsDepartmentsInDay
       console.log(params.date);
@@ -38,6 +37,7 @@ async function analyticsDepartments(params: {
     });
     
     const data = await response.json();
+    
 
     if (response.ok) {
       return data;
