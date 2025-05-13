@@ -10,7 +10,6 @@ import type { EmployeeDistribution, EmployeeSummary } from "@/types"
 import { CircularDiagram } from "@/components/dashboard/CircularDiagram"
 import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
 import getEmployeeAnalytics from "@/components/server/analysis/employee"
-import { getCurrentDate } from "@/app/dashboard/department/page"
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
@@ -22,6 +21,13 @@ const formatDate = (dateString: string) => {
   }).format(date)
 }
 
+ const getCurrentDate = () => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, "0")
+  const day = String(now.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
 export default function EmployeeDailyStats() {
   const [selectedDate, setSelectedDate] = useState(getCurrentDate())
   const [startDate, setStartDate] = useState(getCurrentDate())

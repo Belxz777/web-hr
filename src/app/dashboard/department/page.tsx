@@ -13,7 +13,7 @@ import { TopFunctions } from "@/components/dashboard/TopFunctions"
 import { analyticsDepartments, analyticsDepartmentPercentage } from "@/components/server/analysis/departmentanalysis"
 import getAllDepartments from "@/components/server/admin/departments"
 
-export const getCurrentDate = () => {
+ const getCurrentDate = () => {
   const now = new Date()
   const year = now.getFullYear()
   const month = String(now.getMonth() + 1).padStart(2, "0")
