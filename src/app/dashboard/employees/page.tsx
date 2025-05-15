@@ -70,7 +70,7 @@ export default function EmployeeSelect() {
           <EmployeeSelectInput
             employees={emps}
             onSelect={(employeeId: number) =>
-              router.push(`/dashboard/employees/${employeeId}/perDay`)
+              router.push(`/dashboard/employees/${employeeId}`)
             }
           />
         ) : (

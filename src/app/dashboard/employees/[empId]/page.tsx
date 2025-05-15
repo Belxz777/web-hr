@@ -185,7 +185,7 @@ export default function EmployeeDailyStats() {
             За период
           </button>
         </div>
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto mt-4">
           <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6">
             <div className="bg-gray-700 p-4">
               <div className="flex items-center justify-between">
@@ -262,10 +262,10 @@ export default function EmployeeDailyStats() {
                     </>
                   )}
 
-                  <div className="flex justify-end">
+                  <div className="flex justify-end items-center">
                     <button
                       onClick={fetchData}
-                      className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-xl transition-colors"
+                      className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 max-h-10 rounded-xl transition-colors"
                     >
                       Обновить данные
                     </button>
@@ -311,7 +311,6 @@ export default function EmployeeDailyStats() {
               <CircularDiagram data={hourDistributionDataType} title="" />
             </div>
           </div>
-          EmployeeInDay
           <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6">
             <div className="p-4 border-b border-gray-700">
               <h3 className="text-xl font-bold text-gray-200">Детализация по функциям</h3>

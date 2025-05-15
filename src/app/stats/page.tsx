@@ -124,9 +124,9 @@ export default function SystemStatusPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
       <Header title="Состояние системы" position={5} showPanel={false} />
-      <div className="flex w-full">
+      {/* <div className="flex w-full">
         <button onClick={() => router.back()} className="flex m-3 items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{`<- Вернуться к админ-панели`}</button>
-      </div>
+      </div> */}
       <main className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">

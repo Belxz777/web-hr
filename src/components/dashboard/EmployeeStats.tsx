@@ -44,7 +44,7 @@ export const EmployeeStats = (departmentData: any) => {
                     <td className="py-2">{timeOnDuty}</td>
                     <td className="py-2">
                       <Link
-                        href={`/dashboard/employees/${employee.employee_id}/perDay`}
+                        href={`/dashboard/employees/${employee.employee_id}`}
                       >
                         <button
                           type="button"

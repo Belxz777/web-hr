@@ -16,7 +16,7 @@ export default function DepartmentDataDisplay() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
           <button
-            onClick={() => router.push("/dashboard/department/perDay")}
+            onClick={() => router.push("/dashboard/department/")}
             className="bg-red-700 hover:bg-red-800 text-white font-bold py-12 px-6 rounded-xl shadow-lg transition-all 
                       transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-400 text-xl"
           >
