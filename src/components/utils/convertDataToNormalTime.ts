@@ -1,4 +1,4 @@
-const hoursByEveryFunc = (func: { hours: number }) => {
+export const hoursByEveryFunc = (func: { hours: number }) => {
   // Проверка на валидность входных данных
   if (typeof func?.hours !== 'number' || isNaN(func.hours)) {
     return 'Некорректное значение';
