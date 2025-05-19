@@ -1,6 +1,6 @@
 import { DepartmentForStats } from "@/types";
-import { CircularDiagramForDeps } from "./CircularDiagramForDeps";
-import { convertDataToNormalTime } from "../utils/convertDataToNormalTime";
+import { CircularDiagramForDeps } from "../CircularDiagramForDeps";
+import { convertDataToNormalTime } from "../../utils/convertDataToNormalTime";
 
 export const DepartmentCard = ({ department }: { department: DepartmentForStats }) => {
   const { department_name, department_stats, employee_stats } = department;

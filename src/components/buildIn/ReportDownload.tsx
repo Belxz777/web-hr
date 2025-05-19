@@ -80,7 +80,7 @@ export function RoutesBoss() {
       {/* Third button */}
       <div className="transform hover:-translate-y-2 transition-all duration-300 w-full">
         <button
-          onClick={() => router.push("/analytics/tasks")}
+          onClick={() => router.push("/dashboard/general")}
           className="group flex items-center gap-3 bg-gray-700 border border-slate-200 shadow-lg hover:shadow-xl hover:border-teal-200 rounded-xl px-5 py-4 transition-all duration-300 w-full"
         >
           <div className="flex items-center justify-center w-12 h-12 bg-teal-100 rounded-full group-hover:bg-teal-200 transition-colors">

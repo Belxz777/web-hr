@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 async function analyticsDepartments(params: {
   date?: string;
-  depId: number;
+  depId?: number;
   startDate?: string;
   endDate?: string;
 }) {
@@ -16,14 +16,21 @@ async function analyticsDepartments(params: {
 
   try {
     let url = "";
-    if (params.date) {
-      // Режим analyticsDepartmentsInDay
-      console.log(params.date);
-      url = `${host}analytics/department/?department_id=${params.depId}&date=${params.date}`;
-    } else if (params.depId && params.startDate && params.endDate) {
-      // Режим analyticsDepartmentInInterval
-      url = `${host}analytics/department/?department_id=${params.depId}&start_date=${params.startDate}&end_date=${params.endDate}`;
-    } else {
+    const { date, depId, startDate, endDate } = params;
+
+    // Режим analyticsDepartmentsInDay
+    if (date && depId) {
+      url = `${host}analytics/department/?department_id=${depId}&date=${date}`;
+    }
+    // Режим analyticsDepartmentInInterval
+    else if (depId && startDate && endDate) {
+      url = `${host}analytics/department/?department_id=${depId}&start_date=${startDate}&end_date=${endDate}`;
+    }
+    // Режим analyticsDepartmentsGeneral
+    else if (date && !depId && !startDate && !endDate) {
+      url = `${host}common/departments/?date=${date}`;
+    }
+    else {
       throw new Error("Invalid parameters provided");
     }
 
@@ -35,21 +42,16 @@ async function analyticsDepartments(params: {
         "Content-Type": "application/json",
       },
     });
-    
+
     const data = await response.json();
-    
 
     if (response.ok) {
       return data;
     } else {
-      if (data.error) {
-        throw new Error(data.error);
-      } else {
-        throw new Error("Unknown error occurred");
-      }
+      throw new Error(data.error || "Unknown error occurred");
     }
   } catch (error: any) {
-    console.error(error);
+    console.error("Error fetching analytics data:", error);
     throw new Error(error.message || "Error occurred in getting analytics data");
   }
 }
@@ -100,5 +102,6 @@ async function analyticsDepartmentPercentage(params: {
     throw new Error(error.message || "Error occurred in getting department analytics");
   }
 }
+
 
 export { analyticsDepartments, analyticsDepartmentPercentage };

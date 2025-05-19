@@ -37,6 +37,7 @@ export default function EmployeeDailyStats() {
   const [employeeDistribution, setEmployeeDistribution] = useState<EmployeeDistribution>()
   const { empId } = useParams()
   const [isLoading, setIsLoading] = useState(false)
+console.log(employeeDistribution);
 
   const totalTime = convertDataToNormalTime(employeeSummary?.summary?.total_hours || 0)
 
@@ -306,12 +307,14 @@ export default function EmployeeDailyStats() {
             <div className="p-4 border-b border-gray-700">
               <h3 className="text-xl font-bold text-gray-200">Распределение часов</h3>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-4 p-4">
+            <div className="grid justify-center gap-4 p-4">
               <CircularDiagram data={hourDistributionData} title="" />
-              <CircularDiagram data={hourDistributionDataType} title="" />
+              {/* Такая же тема с employeeDistribution?.distribution, либо я что-то делаю не так, либо нет distribution */}
+              {/* <CircularDiagram data={hourDistributionDataType} title="" /> */}
             </div>
           </div>
-          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6">
+          {/* Надо доделать, ты изменял роут для получения статистики сотрудников? employeeDistribution?.distribution нет  */}
+          {/* <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6">
             <div className="p-4 border-b border-gray-700">
               <h3 className="text-xl font-bold text-gray-200">Детализация по функциям</h3>
             </div>
@@ -407,7 +410,7 @@ export default function EmployeeDailyStats() {
                 </table>
               </div>
             </div>
-          </div>
+          </div> */}
           <div
             className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6"
             style={{ maxHeight: "calc(100vh - 400px)", overflowY: "scroll" }}
