@@ -211,61 +211,29 @@ type EmployeeDistribution = {
   employee: {
     employee_id: string;
     employee_name: string;
-    employee_surname: string;
     employee_patronymic: string;
+    employee_surname: string;
   };
-  time_period: {
-    type: string;
+  query_params: {
     date: string;
-    start_date: string | null;
     end_date: string | null;
+    start_date: string | null;
     days_count: number;
   };
-  total_hours: number;
-  total_entries: number;
-  distribution: {
-    by_category: {
-      compulsory: { hours: number; percent: number };
-      free: { hours: number; percent: number };
-      functions: { hours: number; percent: number };
-      deputies: { hours: number; percent: number };
-      typical: { hours: number; percent: number };
-      non_typical: { hours: number; percent: number };
-    };
-    by_functions: {
-      typical: Array<{
-        function_id: number;
-        function_name: string;
-        hours: number;
-        percent: number;
-        entries_count: number;
-      }>;
-      non_typical: Array<{
-        function_id: number;
-        function_name: string;
-        hours: number;
-        percent: number;
-        entries_count: number;
-      }>;
-    };
-    extra: Array<{
-      type: string;
-      deputy_id: number;
-      deputy_name: string;
-      hours: number;
-      percent: number;
-      entries_count: number;
-    }>;
-    by_department: Array<{
-      department_id: number;
-      department_name: string;
-      hours: number;
-      percent: number;
-    }>;
-  };
-  performance_metrics: {
-    avg_hours_per_day: number;
-    avg_hours_per_reports: number;
+  reports: Array<{
+    laborCostId: number;
+    department: number;
+    function: number | null;
+    deputy: number | null;
+    compulsory: boolean;
+  }>;
+  reports_count: number;
+  summary: {
+    compulsory_hours: number;
+    deputy_hours: number;
+    function_hours: number;
+    non_compulsory_hours: number;
+    total_hours: number;
   };
 };
 

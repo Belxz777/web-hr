@@ -1,53 +1,56 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Header } from "@/components/ui/header"
-import UniversalFooter from "@/components/buildIn/UniversalFooter"
-import { useParams } from "next/navigation"
-import type { EmployeeDistribution, EmployeeSummary } from "@/types"
-import { CircularDiagram } from "@/components/dashboard/CircularDiagram"
-import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
-import getEmployeeAnalytics from "@/components/server/analysis/employee"
+import { useState, useEffect } from "react";
+import { Header } from "@/components/ui/header";
+import UniversalFooter from "@/components/buildIn/UniversalFooter";
+import { useParams } from "next/navigation";
+import type { EmployeeDistribution, EmployeeSummary } from "@/types";
+import { CircularDiagram } from "@/components/dashboard/CircularDiagram";
+import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime";
+import getEmployeeAnalytics from "@/components/server/analysis/employee";
 
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  if (isNaN(date.getTime())) return "Invalid date"
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "Invalid date";
   return new Intl.DateTimeFormat("ru-RU", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(date)
-}
+  }).format(date);
+};
 
- const getCurrentDate = () => {
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = String(now.getMonth() + 1).padStart(2, "0")
-  const day = String(now.getDate()).padStart(2, "0")
-  return `${year}-${month}-${day}`
-}
+const getCurrentDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 export default function EmployeeDailyStats() {
-  const [selectedDate, setSelectedDate] = useState(getCurrentDate())
-  const [startDate, setStartDate] = useState(getCurrentDate())
-  const [endDate, setEndDate] = useState(getCurrentDate())
-  const [employeeSummary, setEmployeeSummary] = useState<EmployeeSummary>()
-  const [activeTab, setActiveTab] = useState("day")
-  const [employeeDistribution, setEmployeeDistribution] = useState<EmployeeDistribution>()
-  const { empId } = useParams()
-  const [isLoading, setIsLoading] = useState(false)
-console.log(employeeDistribution);
+  const [selectedDate, setSelectedDate] = useState(getCurrentDate());
+  const [startDate, setStartDate] = useState(getCurrentDate());
+  const [endDate, setEndDate] = useState(getCurrentDate());
+  const [employeeSummary, setEmployeeSummary] = useState<EmployeeSummary>();
+  const [activeTab, setActiveTab] = useState("day");
+  const [employeeDistribution, setEmployeeDistribution] =
+    useState<EmployeeDistribution>();
+  const { empId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  console.log(employeeDistribution);
 
-  const totalTime = convertDataToNormalTime(employeeSummary?.summary?.total_hours || 0)
+  const totalTime = convertDataToNormalTime(
+    employeeSummary?.summary?.total_hours || 0
+  );
 
   useEffect(() => {
-    fetchData()
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [empId, activeTab])
+  }, [empId, activeTab]);
 
   const fetchData = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       if (activeTab === "interval") {
         const [summary, distribution] = await Promise.all([
@@ -59,9 +62,9 @@ console.log(employeeDistribution);
             startDate: startDate,
             endDate: endDate,
           }),
-        ])
-        setEmployeeSummary(summary)
-        setEmployeeDistribution(distribution)
+        ]);
+        setEmployeeSummary(summary);
+        setEmployeeDistribution(distribution);
       } else {
         const [summary, distribution] = await Promise.all([
           getEmployeeAnalytics(Number(empId), "default", "day", {
@@ -70,16 +73,16 @@ console.log(employeeDistribution);
           getEmployeeAnalytics(Number(empId), "percentage", "day", {
             date: selectedDate,
           }),
-        ])
-        setEmployeeSummary(summary)
-        setEmployeeDistribution(distribution)
+        ]);
+        setEmployeeSummary(summary);
+        setEmployeeDistribution(distribution);
       }
     } catch (error) {
-      console.error("Failed to fetch employee data:", error)
+      console.error("Failed to fetch employee data:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
   if (!employeeSummary || !employeeDistribution) {
     return (
       <div className="mainProfileDiv bg-gray-900">
@@ -92,24 +95,25 @@ console.log(employeeDistribution);
         </main>
         <UniversalFooter />
       </div>
-    )
+    );
   }
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(e.target.value)
-  }
+    setSelectedDate(e.target.value);
+  };
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStartDate(e.target.value)
-  }
+    setStartDate(e.target.value);
+  };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndDate(e.target.value)
-  }
-  const typicalHours =
-    employeeDistribution?.distribution?.by_functions?.typical?.reduce((sum, func) => sum + func.hours, 0) || 0
+    setEndDate(e.target.value);
+  };
+  const typicalHours = employeeDistribution?.summary?.compulsory_hours || 0;
   const nonTypicalHours =
-    employeeDistribution?.distribution?.by_functions?.non_typical?.reduce((sum, func) => sum + func.hours, 0) || 0
-  const deputyHours = employeeDistribution?.distribution?.extra?.reduce((sum, entry) => sum + entry.hours, 0) || 0
+    employeeDistribution?.summary?.non_compulsory_hours || 0;
+  const deputyHours = employeeDistribution?.summary?.deputy_hours || 0;
+  // const functionsHours = employeeDistribution?.summary?.function_hours || 0
+
   const hourDistributionData = [
     // { label: "Функции", value: typicalHours, color: "#3B82F6" },
     // { label: "Нетипичные", value: nonTypicalHours, color: "#10B981" },
@@ -123,10 +127,8 @@ console.log(employeeDistribution);
       value: employeeSummary.summary.non_compulsory_hours || 0,
       color: "#FFD700",
     },
-  ]
+  ];
   const hourDistributionDataType = [
-    // { label: "Функции", value: typicalHours, color: "#3B82F6" },
-    // { label: "Нетипичные", value: nonTypicalHours, color: "#10B981" },
     {
       label: "Типичные для сотрудника",
       value: typicalHours || 0,
@@ -142,31 +144,37 @@ console.log(employeeDistribution);
       value: deputyHours || 0,
       color: "#DAA520",
     },
-  ]
+    // {
+    //   label: "Функции",
+    //   value: functionsHours || 0,
+    //   color: "#BAE222",
+    // },
+  ];
 
   const avgHoursPerReport =
     (employeeSummary?.reports_count || 0) > 0
-      ? (employeeSummary?.summary?.total_hours || 0) / (employeeSummary?.reports_count || 1)
-      : 0
+      ? (employeeSummary?.summary?.total_hours || 0) /
+        (employeeSummary?.reports_count || 1)
+      : 0;
 
-  const avgTime = convertDataToNormalTime(avgHoursPerReport || 0)
+  const avgTime = convertDataToNormalTime(avgHoursPerReport || 0);
 
   const handleTabChange = (tab: string) => {
-    setActiveTab(tab)
+    setActiveTab(tab);
     // Reset dates when switching tabs
     if (tab === "day") {
-      setSelectedDate(getCurrentDate())
+      setSelectedDate(getCurrentDate());
     } else {
-      setStartDate(getCurrentDate())
-      setEndDate(getCurrentDate())
+      setStartDate(getCurrentDate());
+      setEndDate(getCurrentDate());
     }
     // We'll fetch data after state updates
-    setTimeout(fetchData, 0)
-  }
+    setTimeout(fetchData, 0);
+  };
   const formatDisplayDate = (dateString: string) => {
-    const [year, month, day] = dateString.split("-")
-    return `${day}.${month}.${year}`
-  }
+    const [year, month, day] = dateString.split("-");
+    return `${day}.${month}.${year}`;
+  };
 
   return (
     <div className="mainProfileDiv bg-gray-900">
@@ -175,13 +183,21 @@ console.log(employeeDistribution);
         <div className="grid w-full grid-cols-2 bg-gray-700 rounded-xl overflow-hidden">
           <button
             onClick={() => handleTabChange("day")}
-            className={`py-2 px-4 text-center transition-colors ${activeTab === "day" ? "bg-gray-600 font-medium" : "hover:bg-gray-600/50"}`}
+            className={`py-2 px-4 text-center transition-colors ${
+              activeTab === "day"
+                ? "bg-gray-600 font-medium"
+                : "hover:bg-gray-600/50"
+            }`}
           >
             За день
           </button>
           <button
             onClick={() => handleTabChange("interval")}
-            className={`py-2 px-4 text-center transition-colors ${activeTab === "interval" ? "bg-gray-600 font-medium" : "hover:bg-gray-600/50"}`}
+            className={`py-2 px-4 text-center transition-colors ${
+              activeTab === "interval"
+                ? "bg-gray-600 font-medium"
+                : "hover:bg-gray-600/50"
+            }`}
           >
             За период
           </button>
@@ -192,65 +208,58 @@ console.log(employeeDistribution);
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-2xl font-bold text-white">
-                    {employeeSummary?.employee?.employee_surname || ""} {employeeSummary?.employee?.employee_name || ""}{" "}
+                    {employeeSummary?.employee?.employee_surname || ""}{" "}
+                    {employeeSummary?.employee?.employee_name || ""}{" "}
                     {employeeSummary?.employee?.employee_patronymic || ""}
                   </h1>
-                  <p className="text-red-100">ID: {employeeSummary?.employee?.employee_id || ""}</p>
+                  <p className="text-red-100">
+                    ID: {employeeSummary?.employee?.employee_id || ""}
+                  </p>
                 </div>
               </div>
             </div>
-            {/* 
-            <div className="p-4 border-b border-gray-700">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-200">
-                  Статистика за день
-                </h2>
-                <div className="flex items-center">
-                  <label htmlFor="date-select" className="mr-2 text-gray-300">
-                    Дата:
-                  </label>
-                  <input
-                    id="date-select"
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  />
-                </div>
-              </div>
-            </div> */}
 
             <div className="bg-gray-800 border border-gray-700 rounded-lg mt-4">
               <div className="p-4 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {activeTab === "day" && (
                     <div className="bg-gray-700 rounded-xl p-4">
-                      <div className="text-white font-medium mb-2">Выбор дня</div>
+                      <div className="text-white font-medium mb-2">
+                        Выбор дня
+                      </div>
                       <input
                         type="date"
                         value={selectedDate}
                         onChange={handleDateChange}
                         className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                       />
-                      <div className="text-gray-400 mt-2 text-sm">Выбрано: {formatDisplayDate(selectedDate)}</div>
+                      <div className="text-gray-400 mt-2 text-sm">
+                        Выбрано: {formatDisplayDate(selectedDate)}
+                      </div>
                     </div>
                   )}
 
                   {activeTab === "interval" && (
                     <>
                       <div className="bg-gray-700 rounded-xl p-4">
-                        <div className="text-white font-medium mb-2">Начальная дата</div>
+                        <div className="text-white font-medium mb-2">
+                          Начальная дата
+                        </div>
                         <input
                           type="date"
                           value={startDate}
                           onChange={handleStartDateChange}
                           className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
-                        <div className="text-gray-400 mt-2 text-sm">Выбрано: {formatDisplayDate(startDate)}</div>
+                        <div className="text-gray-400 mt-2 text-sm">
+                          Выбрано: {formatDisplayDate(startDate)}
+                        </div>
                       </div>
 
                       <div className="bg-gray-700 rounded-xl p-4">
-                        <div className="text-white font-medium mb-2">Конечная дата</div>
+                        <div className="text-white font-medium mb-2">
+                          Конечная дата
+                        </div>
                         <input
                           type="date"
                           value={endDate}
@@ -258,7 +267,9 @@ console.log(employeeDistribution);
                           min={startDate}
                           className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         />
-                        <div className="text-gray-400 mt-2 text-sm">Выбрано: {formatDisplayDate(endDate)}</div>
+                        <div className="text-gray-400 mt-2 text-sm">
+                          Выбрано: {formatDisplayDate(endDate)}
+                        </div>
                       </div>
                     </>
                   )}
@@ -277,40 +288,60 @@ console.log(employeeDistribution);
             <div className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-gray-700 rounded-xl p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">Общее отработанное время</h3>
-                  <div className="text-3xl font-bold text-red-400">{totalTime}</div>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                    Общее отработанное время
+                  </h3>
+                  <div className="text-3xl font-bold text-red-400">
+                    {totalTime}
+                  </div>
                 </div>
                 <div className="bg-gray-700 rounded-xl p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">Средние показатели</h3>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                    Средние показатели
+                  </h3>
                   <div className="grid  gap-2">
                     <div>
-                      <div className="text-xl font-bold text-red-400">{avgTime}</div>
-                      <div className="text-xs text-gray-400">часов на отчет</div>
+                      <div className="text-xl font-bold text-red-400">
+                        {avgTime}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        часов на отчет
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div className="bg-gray-700 rounded-xl p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">Период</h3>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                    Период
+                  </h3>
                   <div className="text-xl font-bold text-red-400">
-                    {employeeDistribution?.time_period?.date
-                      ? formatDate(employeeDistribution.time_period.date)
-                      : "-"}{" "}
+                    {/* {employeeDistribution?.query_params?.start_date? formatDate(employeeDistribution.query_params.date)
+                      : "-"}{" "} */}
+                    {employeeDistribution.query_params.date
+                      ? formatDate(employeeDistribution.query_params.date)
+                      : `${formatDate(
+                          employeeDistribution.query_params.start_date || ""
+                        )} - ${formatDate(
+                          employeeDistribution.query_params.end_date || ""
+                        )}`}
                   </div>
-                  <div className="text-sm text-gray-400 mt-1">
-                    {employeeDistribution?.time_period?.type === "single_day" ? "Один день" : "Период"}
-                  </div>
+                  {/* <div className="text-sm text-gray-400 mt-1">
+                    {employeeDistribution?.query_params?.days_count ? "Период" : "Один день"}
+                  </div> */}
                 </div>
               </div>
             </div>
           </div>
           <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6">
             <div className="p-4 border-b border-gray-700">
-              <h3 className="text-xl font-bold text-gray-200">Распределение часов</h3>
+              <h3 className="text-xl font-bold text-gray-200">
+                Распределение часов
+              </h3>
             </div>
             <div className="grid justify-center gap-4 p-4">
               <CircularDiagram data={hourDistributionData} title="" />
-              {/* Такая же тема с employeeDistribution?.distribution, либо я что-то делаю не так, либо нет distribution */}
               {/* <CircularDiagram data={hourDistributionDataType} title="" /> */}
+              {/* я сделал, но выводит как будто неправильные данные, так как Дополнительные и  Нетипичные для сотрудника - одинаковое кол-во часов, хотя, может, я ошибаюсь. В общем, пока закомментировал */}
             </div>
           </div>
           {/* Надо доделать, ты изменял роут для получения статистики сотрудников? employeeDistribution?.distribution нет  */}
@@ -446,21 +477,30 @@ console.log(employeeDistribution);
                   <tbody className="divide-y divide-gray-700">
                     {(employeeSummary?.reports?.length || 0) === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-4 py-4 text-center text-gray-500">
+                        <td
+                          colSpan={6}
+                          className="px-4 py-4 text-center text-gray-500"
+                        >
                           Нет отчетов за выбранный период
                         </td>
                       </tr>
                     ) : (
                       (employeeSummary?.reports || []).map((report: any) => {
-                        const workedHours = convertDataToNormalTime(report.worked_hours || 0)
+                        const workedHours = convertDataToNormalTime(
+                          report.worked_hours || 0
+                        );
 
                         return (
                           <tr key={report.laborCostId}>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">{report.laborCostId || "N/A"}</td>
+                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                              {report.laborCostId || "N/A"}
+                            </td>
                             <td className="px-4 py-3 whitespace-nowrap text-gray-300">
                               {report.function || report.deputy || "N/A"}
                             </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">{workedHours}</td>
+                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                              {workedHours}
+                            </td>
                             <td className="px-4 py-3 whitespace-nowrap">
                               {report.compulsory ? (
                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-900 text-red-200">
@@ -472,12 +512,16 @@ console.log(employeeDistribution);
                                 </span>
                               )}
                             </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">{report.comment || ""}</td>
                             <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {report.date ? new Date(report.date).toLocaleString("ru-RU") : "N/A"}
+                              {report.comment || ""}
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                              {report.date
+                                ? new Date(report.date).toLocaleString("ru-RU")
+                                : "N/A"}
                             </td>
                           </tr>
-                        )
+                        );
                       })
                     )}
                   </tbody>
@@ -505,5 +549,5 @@ console.log(employeeDistribution);
         </div>
       )}
     </div>
-  )
+  );
 }

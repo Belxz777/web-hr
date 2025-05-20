@@ -65,6 +65,17 @@ export default function ReportPage() {
     fetchData();
   }, []);
 
+  const formatReportDate = (date: Date) => {
+    const daysOfWeek = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+    const dayName = daysOfWeek[date.getDay()];
+    const formattedDate = date.toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+    return `${formattedDate}, ${dayName}`;
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
@@ -207,6 +218,10 @@ export default function ReportPage() {
           <h1 className="text-center text-gray-300 text-2xl font-bold mb-6">
             Заполнение отчета
           </h1>
+            {/* Добавленная строка с датой отчета */}
+          <div className="mb-4 text-center text-gray-300 text-lg font-semibold">
+            Отчет за: {formatReportDate(new Date())}
+          </div>
           <div className="mb-4">
             <label htmlFor="type" className="block text-gray-300 mb-2">
               Выберите Тип

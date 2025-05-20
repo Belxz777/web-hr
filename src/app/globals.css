@@ -2,7 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+input, select {
+  @apply text-black dark:text-white; /* Черный текст в светлой теме, белый в темной */
+  @apply bg-white dark:bg-gray-800; /* Белый фон в светлой, темный в темной */
+}
+
+/* :root {
   --foreground-rgb: 0, 0, 0;
   --background-main-color: bg-gradient-to-br from-red-600 to-gray-900; 
   --background-start-rgb: 214, 219, 220;
@@ -59,11 +64,7 @@
   --text-invers:#272727;
   --text-reg:#787878;
 
-}
-body{
-  background-color: var(--background);
-
-}
+} */
 
 .pulseLogo {
   @apply w-16 h-16 text-red-600 cursor-pointer;
