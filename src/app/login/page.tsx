@@ -208,7 +208,7 @@ export default function LoginPage() {
 
       {showPopup && (
         <div
-          className={`fixed inset-0 bg-black transition-opacity duration-300 ease-in-out ${w
+          className={`fixed inset-0 bg-black transition-opacity duration-300 ease-in-out ${
             isPopupVisible ? "bg-opacity-50" : "bg-opacity-0"
           } flex items-center justify-center z-50`}
         >
