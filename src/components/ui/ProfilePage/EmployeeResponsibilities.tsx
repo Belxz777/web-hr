@@ -11,7 +11,7 @@ interface EmployeeResponsibilitiesProps {
 export function EmployeeResponsibilities({ responsibilitiesFs = [], position }: EmployeeResponsibilitiesProps) {
   const [loading, setLoading] = useState(!responsibilitiesFs || responsibilitiesFs.length === 0)
   const [showMainResponsibilities, setShowMainResponsibilities] = useState(true)
-  const [showAdditionalResponsibilities, setShowAdditionalResponsibilities] = useState(false)
+  const [showAdditionalResponsibilities, setShowAdditionalResponsibilities] = useState(true)
   const [functionalData, setFunctionalData] = useState<Deputy[]>(responsibilitiesFs)
 
   // Separate responsibilities by type
@@ -32,86 +32,86 @@ export function EmployeeResponsibilities({ responsibilitiesFs = [], position }: 
   }
 
   return (
-    <div className="space-y-8 taskSectionStyles">
-      <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold">{"Ваши задачи:"}</h2>
+    <div className="mb-8">
+      <h2 className="text-2xl font-bold mb-4 text-[#000000]">Функциональные обязанности</h2>
 
-        {loading ? (
-          <div className="w-full">
-            {[1, 2, 3, 4, 5].map((e) => (
-              <div key={e} className="w-full animate-pulse">
-                <div className="h-10 bg-red-100 rounded w-full mb-4"></div>
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="animate-pulse bg-gray-200 rounded-xl h-48"></div>
+          <div className="animate-pulse bg-gray-200 rounded-xl h-48"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Основные обязанности */}
+          <div className="bg-[#249BA2] rounded-xl p-6 text-white shadow-sm">
+            <div className="flex justify-between items-center mb-4 border-b border-white/30 pb-2">
+              <h3 className="text-xl font-bold">Основная</h3>
+              <button
+                onClick={() => setShowMainResponsibilities(!showMainResponsibilities)}
+                className="px-3 py-1 bg-white text-[#249BA2] rounded-xl hover:bg-gray-100 transition-colors text-sm font-medium flex items-center"
+              >
+                {showMainResponsibilities ? "Скрыть" : `Показать (${mainResponsibilities.length})`}
+              </button>
+            </div>
+
+            {showMainResponsibilities && (
+              <div className="space-y-3">
+                {mainResponsibilities.length > 0 ? (
+                  mainResponsibilities.map((item) => (
+                    <div
+                      key={item.deputyId}
+                      className="bg-white text-[#249BA2] rounded-xl px-4 py-3 block w-full hover:shadow-md transition-all duration-200"
+                    >
+                      {item.deputyName}
+                    </div>
+                  ))
+                ) : (
+                  <div className="bg-white text-[#249BA2] rounded-xl px-4 py-3 block w-full">
+                    Основная обязанность не назначена
+                  </div>
+                )}
               </div>
-            ))}
+            )}
           </div>
-        ) : (
-          <>
-            {/* Main Responsibilities Section */}
-            {mainResponsibilities.length > 0 && (
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-semibold">Основные обязанности</h3>
-                  <button
-                    onClick={() => setShowMainResponsibilities(!showMainResponsibilities)}
-                    className="buttonRedirectStyles"
-                  >
-                    {showMainResponsibilities ? "Скрыть" : `Показать все (${mainResponsibilities.length})`}
-                  </button>
-                </div>
 
-                {showMainResponsibilities && (
-                  <div className="space-y-2">
-                    {mainResponsibilities.map((item) => (
-                      <div key={item.deputyId} className="bg-gray-700 rounded-xl border border-gray-600 p-3">
-                        <div className="flex justify-between items-center">
-                          <h3 className="font-medium text-base flex-1 min-w-0 pr-4">{item.deputyName}</h3>
-                          <div className="flex flex-col gap-2 min-w-[100px] sm:flex-row sm:space-x-2 sm:justify-end sm:min-w-0">
-                            <span className="px-2 py-0.5 rounded-full text-center text-base   whitespace-nowrap bg-red-600 text-white font-bold">
-                              Основная обязанность
-                            </span>
-                          </div>
+          {/* Дополнительные обязанности */}
+          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex justify-between items-center mb-4 border-b border-gray-200 pb-2">
+              <h3 className="text-xl font-bold text-[#000000]">Дополнительные</h3>
+              <button
+                onClick={() => setShowAdditionalResponsibilities(!showAdditionalResponsibilities)}
+                className="px-3 py-1 bg-[#249BA2] text-white rounded-xl hover:bg-[#1e8a90] transition-colors text-sm font-medium flex items-center"
+              >
+                {showAdditionalResponsibilities ? "Скрыть" : `Показать (${additionalResponsibilities.length})`}
+              </button>
+            </div>
+
+            {showAdditionalResponsibilities && (
+              <div>
+                {additionalResponsibilities.length > 0 ? (
+                  <ul className="space-y-3">
+                    {additionalResponsibilities.map((item, index) => (
+                      <li
+                        key={item.deputyId}
+                        className="text-[#249BA2] px-4 py-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all duration-200"
+                      >
+                        <div className="flex items-center">
+                          <span className="mr-2 bg-[#249BA2] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
+                            {index + 1}
+                          </span>
+                          {item.deputyName}
                         </div>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
+                ) : (
+                  <p className="text-[#249BA2] px-4 py-3 border border-gray-100 rounded-xl">Дополнительных задач нет</p>
                 )}
               </div>
             )}
-
-            {/* Additional Responsibilities Section */}
-            {additionalResponsibilities.length > 0 && (
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-semibold">Дополнительные обязанности</h3>
-                  <button
-                    onClick={() => setShowAdditionalResponsibilities(!showAdditionalResponsibilities)}
-                    className="buttonLogoutStyles"
-                  >
-                    {showAdditionalResponsibilities ? "Скрыть" : `Показать все (${additionalResponsibilities.length})`}
-                  </button>
-                </div>
-
-                {showAdditionalResponsibilities && (
-                  <div className="space-y-2">
-                    {additionalResponsibilities.map((item) => (
-                      <div key={item.deputyId} className="bg-gray-700/40 rounded-xl border border-gray-600 p-3">
-                        <div className="flex justify-between items-center">
-                          <h3 className="font-medium text-base flex-1 min-w-0 pr-4">{item.deputyName}</h3>
-                          <div className="flex flex-col gap-2 min-w-[100px] sm:flex-row sm:space-x-2 sm:justify-end sm:min-w-0">
-                            <span className="px-2 py-0.5 rounded-full text-center text-base whitespace-nowrap bg-green-600 text-gray-300 text-bold">
-                              Дополнительная обязанность
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

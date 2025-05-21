@@ -1,8 +1,8 @@
-import { useUserStore } from "@/store/userStore";
-import { PulseLogo } from "@/svgs/Logo";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+"use client"
+
+import type React from "react"
+import Link from "next/link"
+import { useEffect, useRef, useState } from "react"
 
 interface MenuItemProps {
   href: string
@@ -15,9 +15,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ href, icon, children }) => {
     <li>
       <Link
         href={href}
-        className="flex items-center px-4 py-3 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-300 rounded-md group overflow-hidden"
+        className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#249BA2] transition-all duration-300 rounded-md group overflow-hidden"
       >
-        <span className="mr-3 text-gray-400 group-hover:text-white transition-colors duration-200 flex-shrink-0">
+        <span className="mr-3 text-gray-500 group-hover:text-[#249BA2] transition-colors duration-200 flex-shrink-0">
           {icon}
         </span>
         <span className="font-medium transform translate-x-1 group-hover:translate-x-0 transition-transform duration-300">
@@ -33,7 +33,6 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
   const menuRef = useRef<HTMLDivElement>(null)
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString())
 
-  // Update time every second
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString())
@@ -42,7 +41,6 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
     return () => clearInterval(timer)
   }, [])
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -60,28 +58,25 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="p-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors duration-200 w-10 h-10 flex items-center justify-center"
+        className="p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#249BA2] transition-colors duration-200 w-10 h-10 flex items-center justify-center"
         aria-expanded={isMenuOpen}
         aria-label="Открыть меню"
       >
         <div className="w-6 h-6 relative flex items-center justify-center">
-          {/* Top line */}
           <span
-            className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+            className={`absolute h-0.5 w-6 bg-gray-700 transform transition-all duration-300 ease-in-out ${
               isMenuOpen ? "rotate-45" : "-translate-y-2"
             }`}
           />
 
-          {/* Middle line */}
           <span
-            className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+            className={`absolute h-0.5 w-6 bg-gray-700 transform transition-all duration-300 ease-in-out ${
               isMenuOpen ? "opacity-0" : "opacity-100"
             }`}
           />
 
-          {/* Bottom line */}
           <span
-            className={`absolute h-0.5 w-6 bg-white transform transition-all duration-300 ease-in-out ${
+            className={`absolute h-0.5 w-6 bg-gray-700 transform transition-all duration-300 ease-in-out ${
               isMenuOpen ? "-rotate-45" : "translate-y-2"
             }`}
           />
@@ -90,9 +85,9 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
 
       <div
         className={`
-          absolute right-0 mt-2 w-72 bg-gray-800 rounded-lg shadow-xl py-2 
+          absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl py-2 
           transform origin-top-right transition-all duration-300 ease-in-out z-50
-          border border-gray-700
+          border border-gray-200
           ${isMenuOpen ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"}
         `}
       >
@@ -199,14 +194,16 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
             Настройки
           </MenuItem>
 
-          <li className="mt-2 pt-2 border-t border-gray-700">
+          <li className="mt-2 pt-2 border-t border-gray-200">
             <div className="flex items-center justify-between px-4 py-2 text-sm">
-              <span className="text-gray-400">Время:</span>
-              <span className="text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded-md">{currentTime}</span>
+              <span className="text-gray-500">Время:</span>
+              <span className="text-gray-700 font-mono bg-gray-100 px-2 py-1 rounded-xl">{currentTime}</span>
             </div>
             <div className="flex items-center justify-between px-4 py-2 text-sm">
-              <span className="text-gray-400">День недели:</span>
-              <span className="text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded-md">{new Date().toLocaleString('ru-RU', {weekday: 'long'})}</span>
+              <span className="text-gray-500">День недели:</span>
+              <span className="text-gray-700 font-mono bg-gray-100 px-2 py-1 rounded-xl">
+                {new Date().toLocaleString("ru-RU", { weekday: "long" })}
+              </span>
             </div>
           </li>
         </ul>
@@ -217,49 +214,69 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
 
 export default HeaderMenu
 
-const Header: React.FC<{
-  title: string;
-  position?: number | null;
-  showPanel: boolean;
-  buttons?: boolean;
-}> = ({ title, position = null, showPanel, buttons = false }) => {
-  const router = useRouter();
+const CompanyLogos = () => {
   return (
-    <header className="bg-gray-800 p-4 flex justify-between items-center">
-      <div className="inline-flex items-center w-full sm:w-auto">
-        <Link href={"/profile"}>
-          {" "}
-          <PulseLogo className="pulseLogo animate-pulse" />
-        </Link>
-        <h1 className="text-2xl pl-4 font-bold">
-          {title || "Тестовое название"}
-        </h1>
-        {buttons && (
-          <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-end mr-5">
-            <Link
-              href="/dashboard/department/period"
-              className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700"
-            >
-              Статистика за промежуток времени
-            </Link>
-            <Link
-              href="/dashboard/employees"
-              className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700"
-            >
-              Статистика по сотрудникам
-            </Link>
-            <Link
-              href="/dashboard/departments"
-              className="px-3 py-1.5 text-sm transition-colors bg-red-600 rounded-xl hover:bg-red-700"
-            >
-              Статистика по всем департаментам
-            </Link>
-          </div>
-        )}
+    <div className="flex items-center space-x-4">
+      <Link href="/profile">
+      <img src="/info.png" alt="Info" className="w-auto h-16" />
+      </Link>
+    </div>
+  )
+}
+
+const NavLinks = () => {
+  return (
+    <nav className="hidden md:flex items-center space-x-8">
+      <Link href="/report" className="text-gray-700 hover:text-[#249BA2] font-medium">
+        Заполнение отчета
+      </Link>
+      <Link href="/settings" className="text-gray-700 hover:text-[#249BA2] font-medium">
+        Настройки
+      </Link>
+    </nav>
+  )
+}
+
+export const Header: React.FC<{
+  title?: string
+  position?: number | null
+  showPanel: boolean
+  buttons?: boolean
+}> = ({ title, position = null, showPanel, buttons = false }) => {
+  return (
+    <header className="bg-white border-b border-gray-200 py-2 px-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <CompanyLogos />
+
+        <div className="flex items-center space-x-4">
+          <NavLinks />
+
+          {showPanel && <HeaderMenu position={position} />}
+        </div>
       </div>
 
-      {showPanel && <HeaderMenu position={position} />}
+      {buttons && (
+        <div className="container mx-auto mt-2 flex flex-wrap gap-2 justify-end">
+          <Link
+            href="/dashboard/department"
+            className="px-3 py-1.5 text-sm transition-colors bg-[#249BA2] text-white rounded-xl"
+          >
+            Статистика за промежуток времени
+          </Link>
+          <Link
+            href="/dashboard/employees"
+            className="px-3 py-1.5 text-sm transition-colors bg-[#249BA2] text-white rounded-xl"
+          >
+            Статистика по сотрудникам
+          </Link>
+          <Link
+            href="/dashboard/general"
+            className="px-3 py-1.5 text-sm transition-colors bg-[#249BA2] text-white rounded-xl"
+          >
+            Статистика по всем департаментам
+          </Link>
+        </div>
+      )}
     </header>
-  );
-};
-export { Header };
+  )
+}
