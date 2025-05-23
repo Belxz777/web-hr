@@ -1,5 +1,6 @@
 // hooks/useEmployeeData.js
 import authUser from '@/components/server/auth/auth';
+import { checkAndClearStorage } from '@/components/utils/checktime';
 // import { fetchTitle } from '@/components/server/userdata/jobtitle';
 import { employee } from '@/types';
 import { useState, useEffect } from 'react';
@@ -40,6 +41,9 @@ const useEmployeeData = () => {
 });
   const abortController = new AbortController();
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      checkAndClearStorage();      
+    }
     const fetchEmployeeData = async () => {
       try {
         setLoading(true);

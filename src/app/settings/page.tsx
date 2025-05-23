@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Header } from "@/components/ui/header";
-import useEmployeeData from "@/hooks/useGetUserData";
-import { TFData } from "@/types";
+
 
 // Пример данных контактов поддержки
 const supportContacts = [
@@ -24,19 +23,13 @@ export default function SettingsPage() {
 
   return (
     <div
-      className={`min-h-screen ${
-        theme === "dark"
-          ? "bg-gradient-to-br from-red-600 to-gray-900 text-gray-100"
-          : "bg-gradient-to-br from-red-100 to-gray-100 text-gray-900"
-      }`}
+      className={`min-h-screen bg-gradient-to-br from-secondary to-primary`}
     >
       <Header title="Настройки" showPanel={false} />
 
       <main className="container mx-auto p-4">
         <section
-          className={`mb-8 ${
-            theme === "dark" ? "bg-gray-800" : "bg-white"
-          } rounded-xl p-6`}
+          className={`mb-8  bg-card rounded-xl p-6`}
         >
           <h2 className="text-2xl font-bold mb-4 text-center">
             Контакты поддержки
@@ -45,15 +38,11 @@ export default function SettingsPage() {
             {supportContacts.map((contact, index) => (
               <li
                 key={index}
-                className={`${
-                  theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                } rounded-lg p-3`}
+                className={` rounded-lg p-3`}
               >
                 <h3 className="font-medium">{contact.name}</h3>
                 <p
-                  className={`text-sm ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-600"
-                  }`}
+                  className={`text-sm `}
                 >
                   Писать: {contact.email}
                 </p>

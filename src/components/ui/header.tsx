@@ -31,9 +31,10 @@ const MenuItem: React.FC<MenuItemProps> = ({ href, icon, children }) => {
 const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString())
+  const [currentTime, setCurrentTime] = useState("")
 
   useEffect(() => {
+    setCurrentTime(new Date().toLocaleTimeString())
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString())
     }, 1000)
