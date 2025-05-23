@@ -1,4 +1,7 @@
+
 "use client"
+export const dynamic = "force-dynamic"
+
 
 import type React from "react"
 
@@ -188,14 +191,16 @@ export default function ReportPage() {
           alert("Ошибка ")
         }
       }
-      if(localStorage.getItem('hourstoday')){
-  let hours = Number(localStorage.getItem("hourstoday")) + Number(formData.workingHours)
- localStorage.setItem('hourstoday', hours.toString())
-      }
-      else {
-        localStorage.setItem('hourstoday', formData.workingHours.toString())
+//           if (typeof window !== 'undefined' && window.localStorage) {
+//       if(localStorage.getItem('hourstoday')){
+//   let hours = Number(localStorage.getItem("hourstoday")) + Number(formData.workingHours)
+//  localStorage.setItem('hourstoday', hours.toString())
+//       }
+//       else {
+//         localStorage.setItem('hourstoday', formData.workingHours.toString())
 
-      }
+//       }
+//     }
 
     } catch (error) {
       console.error("Error submitting report:", error)
@@ -221,11 +226,7 @@ export default function ReportPage() {
           <div className="mb-4 text-center text-foreground text-lg font-semibold">
             Отчет за: {formatReportDate(new Date())}
           </div>
-              <div className="mb-4 text-center text-foreground text-lg font-semibold">
-            Сегодня отработано:  {Math.floor(Number(localStorage.getItem("hourstoday")))} ч{" "}
-                      {Math.round((Number(localStorage.getItem("hourstoday")) % 1) * 60)} мин
-          </div>
-          
+             
           <div className="mb-4">
             <label htmlFor="type" className="block text-foreground mb-2">
               Выберите Тип
