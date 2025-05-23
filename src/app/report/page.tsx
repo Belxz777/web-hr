@@ -12,6 +12,7 @@ import UniversalFooter from "@/components/buildIn/UniversalFooter"
 import { Header } from "@/components/ui/header"
 import getAllFunctionsForReport from "@/components/server/userdata/getAllFunctionsForReport"
 import { CustomSelect } from "@/components/ui/CustomSelect"
+import { useLocalStorage } from "@/hooks/useLocalstorage"
 
 export default function ReportPage() {
   const router = useRouter()
@@ -191,16 +192,11 @@ export default function ReportPage() {
           alert("Ошибка ")
         }
       }
-//           if (typeof window !== 'undefined' && window.localStorage) {
-//       if(localStorage.getItem('hourstoday')){
-//   let hours = Number(localStorage.getItem("hourstoday")) + Number(formData.workingHours)
-//  localStorage.setItem('hourstoday', hours.toString())
-//       }
-//       else {
-//         localStorage.setItem('hourstoday', formData.workingHours.toString())
+          if (typeof window !== 'undefined' && window.localStorage) {
 
-//       }
-//     }
+  let hours = Number(localStorage.getItem("hourstoday")) + Number(formData.workingHours)
+localStorage.setItem('hourstoday',hours.toString())
+}
 
     } catch (error) {
       console.error("Error submitting report:", error)

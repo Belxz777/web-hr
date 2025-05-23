@@ -1,13 +1,14 @@
 "use client";
 
 import useEmployeeData from "@/hooks/useGetUserData";
-import { useRouter } from "next/navigation";
+
 import { logout } from "@/components/server/auth/logout";
 import { RoutesBoss } from "@/components/buildIn/ReportDownload";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { Header } from "@/components/ui/header";
 import { useUserStore } from "@/store/userStore";
 import { EmployeeResponsibilities } from "@/components/ui/ProfilePage/EmployeeResponsibilities";
+import { useRouter } from 'next/navigation'
 export default function ProfilePage() {
   const router = useRouter();
   const {
@@ -29,35 +30,38 @@ export default function ProfilePage() {
       />
       <main className="container mx-auto p-4">
         <section className="sectionStyles">
-          {loadingEmp ? (
-            <div className="w-1/2 animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-4/6 mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-2/5"></div>
-            </div>
-          ) : employeeData ? (
-            <div className="mb-4 md:mb-0 cursor-pointer">
-              <h2 className="text-2xl text-[#434343] font-bold mb-2 select-none">
-                {employeeData.user.firstName} <br />{" "}
-                {employeeData.user.lastName}
-              </h2>
-              <p className="text-gray-400 select-none">
-                Должность:{" "}
-                <span className="font-extrabold">
-                  {" "}
-                  {employeeData.job.jobName}{" "}
-                </span>
-              </p>
-              <p className="text-gray-400 select-none">
-                Отдел:{" "}
-                <span className="font-extrabold">
-                  {employeeData.department}
-                </span>
-              </p>
-            </div>
-          ) : (
-            <h1>{!loadingEmp && employeeError.text}</h1>
-          )}
+        <div className="min-h-[160px] bg-gray-50 w-fit">
+            {loadingEmp ? (
+              <div className="w-1/2 animate-pulse">
+                <div className="h-8 bg-gray-200 rounded w-4/6 mb-4"></div>
+                <div className="h-8 bg-gray-200 rounded w-3/6 mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded w-1/4 mb-2"></div>
+                <div className="h-6 bg-gray-200 rounded w-2/5"></div>
+              </div>
+            ) : employeeData ? (
+              <div className="mb-4 md:mb-0 cursor-pointer">
+                <h2 className="text-2xl text-[#434343] font-bold mb-2 select-none">
+                  {employeeData.user.firstName} <br />{" "}
+                  {employeeData.user.lastName}
+                </h2>
+                <p className="text-gray-400 select-none">
+                  Должность:{" "}
+                  <span className="font-extrabold">
+                    {" "}
+                    {employeeData.job.jobName}{" "}
+                  </span>
+                </p>
+                <p className="text-gray-400 select-none">
+                  Отдел:{" "}
+                  <span className="font-extrabold">
+                    {employeeData.department}
+                  </span>
+                </p>
+              </div>
+            ) : (
+              <h1>{!loadingEmp && employeeError.text}</h1>
+            )}
+          </div>  
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
             <button
               onClick={() => router.push("/changePass")}
@@ -82,12 +86,11 @@ export default function ProfilePage() {
           </div>
         </section>
         <div>
-          {employeeData?.user.position && (
-            <EmployeeResponsibilities
-              responsibilitiesFs={employeeData?.deputy}
-              position={employeeData?.user.position}
-            />
-          )}
+        <EmployeeResponsibilities
+        responsibilitiesFs={employeeData?.deputy || []}
+        position={employeeData?.user?.position}
+        isLoading={!employeeData || !employeeData.user.position} // Pass loading state based on data availability
+      />
           {/* на будущее, чтобы выводить доп. опции у начальников разных позиций */}
           {/* {employeeData?.user.position &&
             employeeData.user.position >= 2 &&
@@ -107,6 +110,10 @@ export default function ProfilePage() {
         {(employeeData?.user.position !== 1 || isBoss) && employeeData ? (
           <RoutesBoss />
         ) : null}
+
+        <div>
+
+        </div>
       </main>
       <UniversalFooter />
     </div>
