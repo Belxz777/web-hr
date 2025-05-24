@@ -129,9 +129,9 @@ export const CircularDiagram = ({
                   className="w-3 h-3 rounded-sm mr-2"
                   style={{ backgroundColor: item.color }}
                 ></div>
-                <span className="text-sm text-gray-300">{item.label}</span>
+                <span className="text-sm text-foreground">{item.label}</span>
               </div>
-              <div className="text-sm text-gray-400">
+              <div className="text-sm  text-muted">
                 {funcsTime} ({item.percentage.toFixed(0)}%)
               </div>
             </div>

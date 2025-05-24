@@ -11,14 +11,14 @@ export const DepartmentStatsInDay = ({ data }: DepartmentStatsProps) => {
     
   
     return (
-      <div className="bg-gray-800 rounded-2xl p-5 shadow-lg m-3">
+      <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border  shadow-lg m-3">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Статистика отдела</h2>
         </div>
   
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 ">
           <StatCard
-            title="Всего часов"
+            title="Общее отработанное время"
             value={totalHours}
             color="bg-blue-500"
           />

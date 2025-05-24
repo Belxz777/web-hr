@@ -1,56 +1,53 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
-import { useState, useEffect } from "react";
-import { Header } from "@/components/ui/header";
-import UniversalFooter from "@/components/buildIn/UniversalFooter";
-import { useParams } from "next/navigation";
-import type { EmployeeDistribution, EmployeeSummary } from "@/types";
-import { CircularDiagram } from "@/components/dashboard/CircularDiagram";
-import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime";
-import getEmployeeAnalytics from "@/components/server/analysis/employee";
+import { useState, useEffect } from "react"
+import { Header } from "@/components/ui/header"
+import UniversalFooter from "@/components/buildIn/UniversalFooter"
+import { useParams } from "next/navigation"
+import type { EmployeeDistribution, EmployeeSummary } from "@/types"
+import { CircularDiagram } from "@/components/dashboard/CircularDiagram"
+import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
+import getEmployeeAnalytics from "@/components/server/analysis/employee"
 
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return "Invalid date";
+  const date = new Date(dateString)
+  if (isNaN(date.getTime())) return "Invalid date"
   return new Intl.DateTimeFormat("ru-RU", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(date);
-};
+  }).format(date)
+}
 
 const getCurrentDate = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-export default function EmployeeDailyStats() {
-  const [selectedDate, setSelectedDate] = useState(getCurrentDate());
-  const [startDate, setStartDate] = useState(getCurrentDate());
-  const [endDate, setEndDate] = useState(getCurrentDate());
-  const [employeeSummary, setEmployeeSummary] = useState<EmployeeSummary>();
-  const [activeTab, setActiveTab] = useState("day");
-  const [employeeDistribution, setEmployeeDistribution] =
-    useState<EmployeeDistribution>();
-  const { empId } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
-  console.log(employeeDistribution);
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, "0")
+  const day = String(now.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
 
-  const totalTime = convertDataToNormalTime(
-    employeeSummary?.summary?.total_hours || 0
-  );
+export default function EmployeeDailyStats() {
+  const [selectedDate, setSelectedDate] = useState(getCurrentDate())
+  const [startDate, setStartDate] = useState(getCurrentDate())
+  const [endDate, setEndDate] = useState(getCurrentDate())
+  const [employeeSummary, setEmployeeSummary] = useState<EmployeeSummary>()
+  const [activeTab, setActiveTab] = useState("day")
+  const [employeeDistribution, setEmployeeDistribution] = useState<EmployeeDistribution>()
+  const { empId } = useParams()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const totalTime = convertDataToNormalTime(employeeSummary?.summary?.total_hours || 0)
 
   useEffect(() => {
-    fetchData();
+    fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [empId, activeTab]);
+  }, [empId, activeTab])
 
   const fetchData = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       if (activeTab === "interval") {
         const [summary, distribution] = await Promise.all([
@@ -62,9 +59,9 @@ export default function EmployeeDailyStats() {
             startDate: startDate,
             endDate: endDate,
           }),
-        ]);
-        setEmployeeSummary(summary);
-        setEmployeeDistribution(distribution);
+        ])
+        setEmployeeSummary(summary)
+        setEmployeeDistribution(distribution)
       } else {
         const [summary, distribution] = await Promise.all([
           getEmployeeAnalytics(Number(empId), "default", "day", {
@@ -73,50 +70,54 @@ export default function EmployeeDailyStats() {
           getEmployeeAnalytics(Number(empId), "percentage", "day", {
             date: selectedDate,
           }),
-        ]);
-        setEmployeeSummary(summary);
-        setEmployeeDistribution(distribution);
+        ])
+        setEmployeeSummary(summary)
+        setEmployeeDistribution(distribution)
       }
     } catch (error) {
-      console.error("Failed to fetch employee data:", error);
+      console.error("Failed to fetch employee data:", error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
+
   if (!employeeSummary || !employeeDistribution) {
     return (
-      <div className="mainProfileDiv bg-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
         <Header title="Статистика сотрудника" showPanel={false} />
         <main className="container mx-auto p-4 flex-grow">
           <div className="flex flex-col items-center justify-center h-[80vh]">
-            <div className="w-16 h-16 border-b-2 border-red-500 rounded-full animate-spin mb-4"></div>
-            <p className="text-white text-lg">Загрузка данных...</p>
+            <div className="relative">
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-secondary/30"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-primary absolute top-0 left-0"></div>
+            </div>
+            <p className="text-foreground text-lg mt-4 bg-card/80 backdrop-blur-sm px-4 py-2 rounded-lg">
+              Загрузка данных...
+            </p>
           </div>
         </main>
         <UniversalFooter />
       </div>
-    );
+    )
   }
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(e.target.value);
-  };
+    setSelectedDate(e.target.value)
+  }
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStartDate(e.target.value);
-  };
+    setStartDate(e.target.value)
+  }
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndDate(e.target.value);
-  };
-  const typicalHours = employeeDistribution?.summary?.compulsory_hours || 0;
-  const nonTypicalHours =
-    employeeDistribution?.summary?.non_compulsory_hours || 0;
-  const deputyHours = employeeDistribution?.summary?.deputy_hours || 0;
-  // const functionsHours = employeeDistribution?.summary?.function_hours || 0
+    setEndDate(e.target.value)
+  }
+
+  const typicalHours = employeeDistribution?.summary?.compulsory_hours || 0
+  const nonTypicalHours = employeeDistribution?.summary?.non_compulsory_hours || 0
+  const deputyHours = employeeDistribution?.summary?.deputy_hours || 0
 
   const hourDistributionData = [
-    // { label: "Функции", value: typicalHours, color: "#3B82F6" },
-    // { label: "Нетипичные", value: nonTypicalHours, color: "#10B981" },
     {
       label: "Основные",
       value: employeeSummary.summary.compulsory_hours || 0,
@@ -125,115 +126,87 @@ export default function EmployeeDailyStats() {
     {
       label: "Дополнительные",
       value: employeeSummary.summary.non_compulsory_hours || 0,
-      color: "#FFD700",
+      color: "#F0E68C",
     },
-  ];
-  const hourDistributionDataType = [
-    {
-      label: "Типичные для сотрудника",
-      value: typicalHours || 0,
-      color: "#008000",
-    },
-    {
-      label: "Нетипичные для сотрудника",
-      value: nonTypicalHours || 0,
-      color: "#DC143C",
-    },
-    {
-      label: "Дополнительные",
-      value: deputyHours || 0,
-      color: "#DAA520",
-    },
-    // {
-    //   label: "Функции",
-    //   value: functionsHours || 0,
-    //   color: "#BAE222",
-    // },
-  ];
+  ]
 
   const avgHoursPerReport =
     (employeeSummary?.reports_count || 0) > 0
-      ? (employeeSummary?.summary?.total_hours || 0) /
-        (employeeSummary?.reports_count || 1)
-      : 0;
+      ? (employeeSummary?.summary?.total_hours || 0) / (employeeSummary?.reports_count || 1)
+      : 0
 
-  const avgTime = convertDataToNormalTime(avgHoursPerReport || 0);
+  const avgTime = convertDataToNormalTime(avgHoursPerReport || 0)
 
   const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    // Reset dates when switching tabs
+    setActiveTab(tab)
     if (tab === "day") {
-      setSelectedDate(getCurrentDate());
+      setSelectedDate(getCurrentDate())
     } else {
-      setStartDate(getCurrentDate());
-      setEndDate(getCurrentDate());
+      setStartDate(getCurrentDate())
+      setEndDate(getCurrentDate())
     }
-    // We'll fetch data after state updates
-    setTimeout(fetchData, 0);
-  };
+    setTimeout(fetchData, 0)
+  }
+
   const formatDisplayDate = (dateString: string) => {
-    const [year, month, day] = dateString.split("-");
-    return `${day}.${month}.${year}`;
-  };
+    const [year, month, day] = dateString.split("-")
+    return `${day}.${month}.${year}`
+  }
 
   return (
-    <div className="mainProfileDiv bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
       <Header title="Статистика сотрудника" showPanel={false} />
       <main className="container mx-auto p-4 flex-grow">
-        <div className="grid w-full grid-cols-2 bg-gray-700 rounded-xl overflow-hidden">
+        <div className="grid w-full grid-cols-2 bg-card/90 backdrop-blur-sm rounded-xl overflow-hidden border border-border mb-4">
           <button
             onClick={() => handleTabChange("day")}
-            className={`py-2 px-4 text-center transition-colors ${
+            className={`py-3 px-4 text-center transition-all duration-200 ${
               activeTab === "day"
-                ? "bg-gray-600 font-medium"
-                : "hover:bg-gray-600/50"
+                ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                : "text-foreground hover:bg-secondary/20"
             }`}
           >
             За день
           </button>
           <button
             onClick={() => handleTabChange("interval")}
-            className={`py-2 px-4 text-center transition-colors ${
+            className={`py-3 px-4 text-center transition-all duration-200 ${
               activeTab === "interval"
-                ? "bg-gray-600 font-medium"
-                : "hover:bg-gray-600/50"
+                ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                : "text-foreground hover:bg-secondary/20"
             }`}
           >
             За период
           </button>
         </div>
-        <div className="max-w-6xl mx-auto mt-4">
-          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6">
-            <div className="bg-gray-700 p-4">
+
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6">
+            <div className="bg-gradient-to-r from-primary to-primary/80 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-2xl font-bold text-white">
-                    {employeeSummary?.employee?.employee_surname || ""}{" "}
-                    {employeeSummary?.employee?.employee_name || ""}{" "}
+                  <h1 className="text-2xl font-bold text-primary-foreground">
+                    {employeeSummary?.employee?.employee_surname || ""} {employeeSummary?.employee?.employee_name || ""}{" "}
                     {employeeSummary?.employee?.employee_patronymic || ""}
                   </h1>
-                  <p className="text-red-100">
-                    ID: {employeeSummary?.employee?.employee_id || ""}
-                  </p>
+                  <p className="text-primary-foreground/80">ID: {employeeSummary?.employee?.employee_id || ""}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-800 border border-gray-700 rounded-lg mt-4">
+            <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg m-4">
               <div className="p-4 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {activeTab === "day" && (
-                    <div className="bg-gray-700 rounded-xl p-4">
-                      <div className="text-white font-medium mb-2">
-                        Выбор дня
-                      </div>
+                    <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                      <div className="text-foreground font-medium mb-3">Выбор дня</div>
                       <input
                         type="date"
                         value={selectedDate}
                         onChange={handleDateChange}
-                        className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                        className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
                       />
-                      <div className="text-gray-400 mt-2 text-sm">
+                      <div className="text-muted-foreground mt-2 text-sm">
                         Выбрано: {formatDisplayDate(selectedDate)}
                       </div>
                     </div>
@@ -241,35 +214,29 @@ export default function EmployeeDailyStats() {
 
                   {activeTab === "interval" && (
                     <>
-                      <div className="bg-gray-700 rounded-xl p-4">
-                        <div className="text-white font-medium mb-2">
-                          Начальная дата
-                        </div>
+                      <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                        <div className="text-foreground font-medium mb-3">Начальная дата</div>
                         <input
                           type="date"
                           value={startDate}
                           onChange={handleStartDateChange}
-                          className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                          className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
                         />
-                        <div className="text-gray-400 mt-2 text-sm">
+                        <div className="text-muted-foreground mt-2 text-sm">
                           Выбрано: {formatDisplayDate(startDate)}
                         </div>
                       </div>
 
-                      <div className="bg-gray-700 rounded-xl p-4">
-                        <div className="text-white font-medium mb-2">
-                          Конечная дата
-                        </div>
+                      <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                        <div className="text-foreground font-medium mb-3">Конечная дата</div>
                         <input
                           type="date"
                           value={endDate}
                           onChange={handleEndDateChange}
                           min={startDate}
-                          className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                          className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
                         />
-                        <div className="text-gray-400 mt-2 text-sm">
-                          Выбрано: {formatDisplayDate(endDate)}
-                        </div>
+                        <div className="text-muted-foreground mt-2 text-sm">Выбрано: {formatDisplayDate(endDate)}</div>
                       </div>
                     </>
                   )}
@@ -277,7 +244,7 @@ export default function EmployeeDailyStats() {
                   <div className="flex justify-end items-center">
                     <button
                       onClick={fetchData}
-                      className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 max-h-10 rounded-xl transition-colors"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
                     >
                       Обновить данные
                     </button>
@@ -285,243 +252,114 @@ export default function EmployeeDailyStats() {
                 </div>
               </div>
             </div>
-            <div className="p-4">
+
+            <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-700 rounded-xl p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
-                    Общее отработанное время
-                  </h3>
-                  <div className="text-3xl font-bold text-red-400">
-                    {totalTime}
-                  </div>
+                <div className="bg-gradient-to-br from-secondary/20 to-secondary/10 backdrop-blur-sm rounded-xl p-6 text-center border border-border">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Общее отработанное время</h3>
+                  <div className="text-3xl font-bold text-primary">{totalTime}</div>
                 </div>
-                <div className="bg-gray-700 rounded-xl p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
-                    Средние показатели
-                  </h3>
-                  <div className="grid  gap-2">
+                <div className="bg-gradient-to-br from-primary/20 to-primary/10 backdrop-blur-sm rounded-xl p-6 text-center border border-border">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Средние показатели</h3>
+                  <div className="grid gap-2">
                     <div>
-                      <div className="text-xl font-bold text-red-400">
-                        {avgTime}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        часов на отчет
-                      </div>
+                      <div className="text-xl font-bold text-secondary">{avgTime}</div>
+                      <div className="text-xs text-muted-foreground">часов на отчет</div>
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-700 rounded-xl p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-2">
-                    Период
-                  </h3>
-                  <div className="text-xl font-bold text-red-400">
-                    {/* {employeeDistribution?.query_params?.start_date? formatDate(employeeDistribution.query_params.date)
-                      : "-"}{" "} */}
+                <div className="bg-gradient-to-br from-secondary/20 to-primary/20 backdrop-blur-sm rounded-xl p-6 text-center border border-border">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Период</h3>
+                  <div className="text-xl font-bold text-foreground">
                     {employeeDistribution.query_params.date
                       ? formatDate(employeeDistribution.query_params.date)
-                      : `${formatDate(
-                          employeeDistribution.query_params.start_date || ""
-                        )} - ${formatDate(
-                          employeeDistribution.query_params.end_date || ""
+                      : `${formatDate(employeeDistribution.query_params.start_date || "")} - ${formatDate(
+                          employeeDistribution.query_params.end_date || "",
                         )}`}
                   </div>
-                  {/* <div className="text-sm text-gray-400 mt-1">
-                    {employeeDistribution?.query_params?.days_count ? "Период" : "Один день"}
-                  </div> */}
                 </div>
               </div>
             </div>
           </div>
-          <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6">
-            <div className="p-4 border-b border-gray-700">
-              <h3 className="text-xl font-bold text-gray-200">
-                Распределение часов
-              </h3>
+
+          <div className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6">
+            <div className="p-4 border-b border-border bg-gradient-to-r from-secondary/10 to-primary/10">
+              <h3 className="text-xl font-bold text-foreground">Распределение часов</h3>
             </div>
-            <div className="grid justify-center gap-4 p-4">
+            <div className="grid justify-center gap-4 p-6">
               <CircularDiagram data={hourDistributionData} title="" />
-              {/* <CircularDiagram data={hourDistributionDataType} title="" /> */}
-              {/* я сделал, но выводит как будто неправильные данные, так как Дополнительные и  Нетипичные для сотрудника - одинаковое кол-во часов, хотя, может, я ошибаюсь. В общем, пока закомментировал */}
             </div>
           </div>
-          {/* Надо доделать, ты изменял роут для получения статистики сотрудников? employeeDistribution?.distribution нет  */}
-          {/* <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6">
-            <div className="p-4 border-b border-gray-700">
-              <h3 className="text-xl font-bold text-gray-200">Детализация по функциям</h3>
-            </div>
-            <div className="p-4" style={{ maxHeight: "calc(100vh - 400px)", overflowY: "scroll" }}>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-700">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        Функция
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        Часы
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        Процент
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        Записи
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-700">
-                    {employeeDistribution?.distribution?.by_functions?.typical?.length === 0 &&
-                    employeeDistribution?.distribution?.by_functions?.non_typical?.length === 0 ? (
-                      <tr>
-                        <td colSpan={4} className="px-4 py-4 text-center text-gray-500">
-                          Нет данных по функциям
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {(employeeDistribution?.distribution?.by_functions?.typical || []).map((func) => {
-                          const hoursByEveryFunc1 = convertDataToNormalTime(func.hours || 0)
 
-                          return (
-                            <tr key={`typical-${func.function_id}`}>
-                              <td className="px-4 py-3 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                                  <span className="text-gray-300">{func.function_name || "N/A"}</span>
-                                </div>
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">{hoursByEveryFunc1}</td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {(func.percent || 0).toFixed(1)}%
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">{func.entries_count || 0}</td>
-                            </tr>
-                          )
-                        })}
-                        {(employeeDistribution?.distribution?.by_functions?.non_typical || []).map((func) => {
-                          const hoursByEveryFunc2 = convertDataToNormalTime(func.hours || 0)
-
-                          return (
-                            <tr key={`non-typical-${func.function_id}`}>
-                              <td className="px-4 py-3 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="w-2 h-2 bg-red-600 rounded-full mr-2"></div>
-                                  <span className="text-gray-300">{func.function_name || "N/A"}</span>
-                                </div>
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">{hoursByEveryFunc2}</td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {(func.percent || 0).toFixed(1)}%
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">{func.entries_count || 0}</td>
-                            </tr>
-                          )
-                        })}
-                        {(employeeDistribution?.distribution?.extra || []).map((extra) => {
-                          const hoursByEveryFunc3 = convertDataToNormalTime(extra.hours || 0)
-
-                          return (
-                            <tr key={`extra-${extra.deputy_id}`}>
-                              <td className="px-4 py-3 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
-                                  <span className="text-gray-300">{extra.deputy_name || "N/A"}</span>
-                                </div>
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">{hoursByEveryFunc3}</td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                                {(extra.percent || 0).toFixed(1)}%
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-gray-300">{extra.entries_count || 0}</td>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div> */}
           <div
-            className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 mb-6"
+            className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6"
             style={{ maxHeight: "calc(100vh - 400px)", overflowY: "scroll" }}
           >
-            <div className="p-4 border-b border-gray-700">
-              <h3 className="text-xl font-bold text-gray-200">Отчеты</h3>
+            <div className="p-4 border-b border-border bg-gradient-to-r from-secondary/10 to-primary/10">
+              <h3 className="text-xl font-bold text-foreground">Отчеты</h3>
             </div>
             <div className="p-4">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-700">
+                <table className="min-w-full divide-y divide-border">
                   <thead>
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         ID
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Функция
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Часы
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Обязательная
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Комментарий
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Дата
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-700">
+                  <tbody className="divide-y divide-border">
                     {(employeeSummary?.reports?.length || 0) === 0 ? (
                       <tr>
-                        <td
-                          colSpan={6}
-                          className="px-4 py-4 text-center text-gray-500"
-                        >
+                        <td colSpan={6} className="px-4 py-4 text-center text-muted-foreground">
                           Нет отчетов за выбранный период
                         </td>
                       </tr>
                     ) : (
                       (employeeSummary?.reports || []).map((report: any) => {
-                        const workedHours = convertDataToNormalTime(
-                          report.worked_hours || 0
-                        );
+                        const workedHours = convertDataToNormalTime(report.worked_hours || 0)
 
                         return (
-                          <tr key={report.laborCostId}>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                          <tr key={report.laborCostId} className="hover:bg-secondary/5 transition-colors">
+                            <td className="px-4 py-3 whitespace-nowrap text-foreground">
                               {report.laborCostId || "N/A"}
                             </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
+                            <td className="px-4 py-3 whitespace-nowrap text-foreground">
                               {report.function || report.deputy || "N/A"}
                             </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {workedHours}
-                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap text-foreground">{workedHours}</td>
                             <td className="px-4 py-3 whitespace-nowrap">
                               {report.compulsory ? (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-900 text-red-200">
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/20 text-primary border border-primary/30">
                                   Да
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/20 text-secondary border border-secondary/30">
                                   Нет
                                 </span>
                               )}
                             </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {report.comment || ""}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-gray-300">
-                              {report.date
-                                ? new Date(report.date).toLocaleString("ru-RU")
-                                : "N/A"}
+                            <td className="px-4 py-3 whitespace-nowrap text-foreground">{report.comment || ""}</td>
+                            <td className="px-4 py-3 whitespace-nowrap text-foreground">
+                              {report.date ? new Date(report.date).toLocaleString("ru-RU") : "N/A"}
                             </td>
                           </tr>
-                        );
+                        )
                       })
                     )}
                   </tbody>
@@ -529,9 +367,10 @@ export default function EmployeeDailyStats() {
               </div>
             </div>
           </div>
+
           <div className="flex justify-end space-x-4 mb-6">
             <button
-              className="px-4 py-2 bg-gray-700 border border-gray-600 text-gray-200 rounded-xl hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="px-6 py-3 bg-card/90 backdrop-blur-sm border border-border text-foreground rounded-xl hover:bg-secondary/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary shadow-md"
               onClick={() => window.print()}
             >
               Печать
@@ -541,13 +380,16 @@ export default function EmployeeDailyStats() {
       </main>
       <UniversalFooter />
       {isLoading && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center">
-            <div className="w-12 h-12 border-b-2 border-red-500 rounded-full animate-spin mb-4"></div>
-            <p className="text-white">Обновление данных...</p>
+        <div className="fixed inset-0 bg-foreground/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-card/95 backdrop-blur-sm p-8 rounded-xl shadow-xl flex flex-col items-center border border-border">
+            <div className="relative mb-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-secondary/30"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-primary absolute top-0 left-0"></div>
+            </div>
+            <p className="text-foreground font-medium">Обновление данных...</p>
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -41,16 +41,16 @@ export function EmployeeResponsibilities({
         setLoading(false)
       }, 500)
     }
-    if(typeof window != undefined){
-      if(      localStorage.getItem('hourstoday') ){
-        sethoursWorked( Number( localStorage.getItem('hourstoday')))
+    if(typeof window !== 'undefined'){
+      const hoursToday = localStorage.getItem('hourstoday')
+      if(hoursToday){
+        let obj = JSON.parse(hoursToday)
+        sethoursWorked(Number(obj.value))
       }
     }
 
-
     setFunctionalData(responsibilitiesFs)
   }, [responsibilitiesFs])
-
   if (!functionalData) {
     return null
   }

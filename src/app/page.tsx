@@ -11,7 +11,7 @@ export default function HomePage() {
       <main className="bg-card rounded-3xl shadow-xl p-8 max-w-md w-full flex flex-col items-center">
         <header className="flex flex-col items-center">
           <PulseLogo className="w-16 h-16 text-primary" />
-          <h1 className="mt-6 text-2xl font-bold text-foreground text-center">Оценка функциональной эффективности</h1>
+          <h1 className="mt-6 text-2xl font-bold text-foreground text-center">HR-эффективность</h1>
           <p className="mt-2 text-center text-muted-foreground text-sm">Эффективный менеджер трудозатрат</p>
         </header>
         <nav className="w-full space-y-4 mt-8">

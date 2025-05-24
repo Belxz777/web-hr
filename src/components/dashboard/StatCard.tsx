@@ -11,7 +11,7 @@ export function StatCard({
     trendValue,
   }: StatCardProps) {
     return (
-      <div className="bg-gray-700 rounded-2xl p-4 shadow">
+      <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border  shadow-lg m-3 ">
         <div className="flex justify-between items-start">
           <div>
             <div className="text-sm text-gray-400 mb-1">{title}</div>

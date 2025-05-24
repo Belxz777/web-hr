@@ -13,7 +13,16 @@ import { Header } from "@/components/ui/header"
 import getAllFunctionsForReport from "@/components/server/userdata/getAllFunctionsForReport"
 import { CustomSelect } from "@/components/ui/CustomSelect"
 import { useLocalStorage } from "@/hooks/useLocalstorage"
-
+import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
+const setLocalStorageWithExpiry = (key: string, value: any) => {
+  const now = new Date();
+  const item = {
+    value: value,
+    timestamp: now.getTime(),
+    expiryDate: new Date(now).setHours(19, 0, 0, 0) // Устанавливаем время очистки на сегодня в 19:00
+  };
+  localStorage.setItem(key, JSON.stringify(item));
+}
 export default function ReportPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -46,7 +55,7 @@ export default function ReportPage() {
     functions: [],
   })
   const [type, settype] = useState<string>("main")
-
+  const [hoursworked,sethoursworked] = useState(0)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -65,6 +74,13 @@ export default function ReportPage() {
         }
       } catch (error) {
         console.error("Failed to fetch responsibilities:", error)
+      }
+    }
+    if(typeof window !== 'undefined'){
+      const hoursToday = localStorage.getItem('hourstoday')
+      if(hoursToday){
+        let obj = JSON.parse(hoursToday)
+        sethoursworked(Number(obj.value))
       }
     }
     fetchData()
@@ -195,7 +211,7 @@ export default function ReportPage() {
           if (typeof window !== 'undefined' && window.localStorage) {
 
   let hours = Number(localStorage.getItem("hourstoday")) + Number(formData.workingHours)
-localStorage.setItem('hourstoday',hours.toString())
+setLocalStorageWithExpiry('hourstoday',hours)
 }
 
     } catch (error) {
@@ -222,7 +238,9 @@ localStorage.setItem('hourstoday',hours.toString())
           <div className="mb-4 text-center text-foreground text-lg font-semibold">
             Отчет за: {formatReportDate(new Date())}
           </div>
-             
+          <div className="mb-4 text-center text-foreground text-lg font-semibold">
+            Уже отработано сегодня: {convertDataToNormalTime(hoursworked)}
+          </div>
           <div className="mb-4">
             <label htmlFor="type" className="block text-foreground mb-2">
               Выберите Тип

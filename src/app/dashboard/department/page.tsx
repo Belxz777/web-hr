@@ -5,15 +5,15 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Header } from "@/components/ui/header"
 import UniversalFooter from "@/components/buildIn/UniversalFooter"
-import type { DailyStats, Department } from "@/types"
+import type { DailyStats, Department, DepartmentDistribution } from "@/types"
 import { DepartmentStatsInDay } from "@/components/dashboard/DepartmentStatsInDay"
-import { DepartmentStatsInDayPer } from "@/components/dashboard/DepartmentStatsInDayPer"
+import { Bytypes } from "@/components/dashboard/typesdist"
 import { EmployeeStats } from "@/components/dashboard/EmployeeStats"
 import { TopFunctions } from "@/components/dashboard/TopFunctions"
 import { analyticsDepartments, analyticsDepartmentPercentage } from "@/components/server/analysis/departmentanalysis"
 import getAllDepartments from "@/components/server/admin/departments"
 
- const getCurrentDate = () => {
+const getCurrentDate = () => {
   const now = new Date()
   const year = now.getFullYear()
   const month = String(now.getMonth() + 1).padStart(2, "0")
@@ -24,15 +24,15 @@ import getAllDepartments from "@/components/server/admin/departments"
 export default function AnalyticsDashboard() {
   const [dataInDay, setDataInDay] = useState<DailyStats | null>(null)
   const [deps, setDeps] = useState<Department[]>([])
-  const [dataInDayPer, setDataInDayPer] = useState<any>(null)
+  const [dataInDayPer, setDataInDayPer] = useState<DepartmentDistribution | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Date states
-const [selectedDate, setSelectedDate] = useState(getCurrentDate())
+  const [selectedDate, setSelectedDate] = useState(getCurrentDate())
   const [startDate, setStartDate] = useState(getCurrentDate())
   const [endDate, setEndDate] = useState(getCurrentDate())
-  const [   selectedDep, setSelectedDep] = useState<number | null>(null)
+  const [selectedDep, setSelectedDep] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState("day")
 
   // Fetch departments on component mount
@@ -137,75 +137,83 @@ const [selectedDate, setSelectedDate] = useState(getCurrentDate())
   }
 
   return (
-    <div className="mainProfileDiv">
-      <Header title="Аналитика по отделам"  showPanel={false} />
+    <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
+      <Header title="Аналитика по отделам" showPanel={false} />
 
       <div className="p-4">
         <div className="w-full mb-4">
-          <div className="grid w-full grid-cols-2 bg-gray-700 rounded-xl overflow-hidden">
+          <div className="grid w-full grid-cols-2 bg-card/90 backdrop-blur-sm rounded-xl overflow-hidden border border-border">
             <button
               onClick={() => handleTabChange("day")}
-              className={`py-2 px-4 text-center transition-colors ${activeTab === "day" ? "bg-gray-600 font-medium" : "hover:bg-gray-600/50"}`}
+              className={`py-3 px-4 text-center transition-all duration-200 ${
+                activeTab === "day"
+                  ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                  : "text-foreground hover:bg-secondary/20"
+              }`}
             >
               За день
             </button>
             <button
               onClick={() => handleTabChange("interval")}
-              className={`py-2 px-4 text-center transition-colors ${activeTab === "interval" ? "bg-gray-600 font-medium" : "hover:bg-gray-600/50"}`}
+              className={`py-3 px-4 text-center transition-all duration-200 ${
+                activeTab === "interval"
+                  ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                  : "text-foreground hover:bg-secondary/20"
+              }`}
             >
               За период
             </button>
           </div>
 
-          <div className="bg-gray-800 border border-gray-700 rounded-lg mt-4">
-            <div className="p-4 space-y-4">
+          <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl mt-4 shadow-lg">
+            <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {activeTab === "day" && (
-                  <div className="bg-gray-700 rounded-xl p-4">
-                    <div className="text-white font-medium mb-2">Выбор дня</div>
+                  <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                    <div className="text-foreground font-medium mb-3">Выбор дня</div>
                     <input
                       type="date"
                       value={selectedDate}
                       onChange={handleDateChange}
-                      className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                      className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
                     />
-                    <div className="text-gray-400 mt-2 text-sm">Выбрано: {formatDisplayDate(selectedDate)}</div>
+                    <div className="text-muted-foreground mt-2 text-sm">Выбрано: {formatDisplayDate(selectedDate)}</div>
                   </div>
                 )}
 
                 {activeTab === "interval" && (
                   <>
-                    <div className="bg-gray-700 rounded-xl p-4">
-                      <div className="text-white font-medium mb-2">Начальная дата</div>
+                    <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                      <div className="text-foreground font-medium mb-3">Начальная дата</div>
                       <input
                         type="date"
                         value={startDate}
                         onChange={handleStartDateChange}
-                        className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                        className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
                       />
-                      <div className="text-gray-400 mt-2 text-sm">Выбрано: {formatDisplayDate(startDate)}</div>
+                      <div className="text-muted-foreground mt-2 text-sm">Выбрано: {formatDisplayDate(startDate)}</div>
                     </div>
 
-                    <div className="bg-gray-700 rounded-xl p-4">
-                      <div className="text-white font-medium mb-2">Конечная дата</div>
+                    <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                      <div className="text-foreground font-medium mb-3">Конечная дата</div>
                       <input
                         type="date"
                         value={endDate}
                         onChange={handleEndDateChange}
                         min={startDate}
-                        className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                        className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
                       />
-                      <div className="text-gray-400 mt-2 text-sm">Выбрано: {formatDisplayDate(endDate)}</div>
+                      <div className="text-muted-foreground mt-2 text-sm">Выбрано: {formatDisplayDate(endDate)}</div>
                     </div>
                   </>
                 )}
 
-                <div className="bg-gray-700 rounded-xl p-4">
-                  <div className="text-white font-medium mb-2">Выбор департамента</div>
+                <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                  <div className="text-foreground font-medium mb-3">Выбор департамента</div>
                   <select
                     value={selectedDep || ""}
                     onChange={handleDepChange}
-                    className="bg-gray-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
                   >
                     {deps.map((dep) => (
                       <option key={dep.departmentId} value={dep.departmentId}>
@@ -216,10 +224,10 @@ const [selectedDate, setSelectedDate] = useState(getCurrentDate())
                 </div>
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex justify-end pt-2">
                 <button
                   onClick={fetchData}
-                  className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-xl transition-colors"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
                 >
                   Обновить данные
                 </button>
@@ -229,24 +237,43 @@ const [selectedDate, setSelectedDate] = useState(getCurrentDate())
         </div>
       </div>
 
-      <h2 className="text-xl font-bold m-4">{getTitle()}</h2>
+      <div className="px-4">
+        <h2 className="text-xl font-bold text-foreground bg-card/80 backdrop-blur-sm rounded-xl p-4 border border-border shadow-sm">
+          {getTitle()}
+        </h2>
+      </div>
 
-      <main className="px-4 my-8 space-y-8">
+      <main className="px-4 my-8 space-y-8 flex-grow">
         {loading ? (
           <div className="flex justify-center items-center p-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="relative">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-secondary/30"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-primary absolute top-0 left-0"></div>
+            </div>
           </div>
         ) : error ? (
-          <div className="text-red-500 bg-red-100 p-4 rounded-lg text-center">{error}</div>
+          <div className="text-primary bg-primary/10 border border-primary/20 p-6 rounded-xl text-center backdrop-blur-sm">
+            <div className="font-medium">{error}</div>
+          </div>
         ) : dataInDay ? (
-          <>
-            <DepartmentStatsInDay data={dataInDay.department_stats} />
-            <DepartmentStatsInDayPer data={dataInDayPer?.distribution} />
-            <EmployeeStats data={dataInDay.employee_stats} />
-            <TopFunctions data={dataInDayPer?.distribution} />
-          </>
+          <div className="space-y-6">
+            <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
+              <DepartmentStatsInDay data={dataInDay.department_stats} />
+            </div>
+            <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
+               {dataInDayPer?.distribution && <Bytypes data={dataInDayPer.distribution} />}
+            </div>
+            <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
+              <EmployeeStats data={dataInDay.employee_stats} />
+            </div>
+            <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
+              {dataInDayPer?.distribution && <TopFunctions data={dataInDayPer.distribution} />}
+            </div>
+          </div>
         ) : (
-          <div className="text-gray-500 text-center py-8">Выберите параметры для загрузки данных</div>
+          <div className="text-muted-foreground text-center py-12 bg-card/80 backdrop-blur-sm rounded-xl border border-border">
+            <div className="text-lg">Выберите параметры для загрузки данных</div>
+          </div>
         )}
       </main>
 

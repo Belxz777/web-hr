@@ -1,33 +1,62 @@
-import { convertDataToNormalTime } from "../utils/convertDataToNormalTime";
+import { convertDataToNormalTime } from "../utils/convertDataToNormalTime"
 
-export function ProgressBar({
-    label,
-    value,
-    color,
-    hours,
-  }: {
-    label: string;
-    value: number;
-    color: string;
-    hours: number;
-  }) {
+interface ProgressBarProps {
+  label: string
+  value: number
+  color: string
+  hours: number
+  showClickHint?: boolean
+  isSubItem?: boolean
+}
 
-    const progressTime = convertDataToNormalTime(hours);
+export const ProgressBar = ({
+  label,
+  value,
+  color,
+  hours,
+  showClickHint = false,
+  isSubItem = false,
+}: ProgressBarProps) => {
+  const convertedTime = convertDataToNormalTime(hours)
 
-    return (
-      <div>
-        <div className="flex justify-between mb-1">
-          <div>{label}</div>
-          <div>
-            {progressTime} ({value.toFixed(1)}%)
-          </div>
+  return (
+    <div
+      className={`${isSubItem ? "bg-background/30" : "bg-background/50"} backdrop-blur-sm rounded-lg p-4 border border-border/50 transition-all duration-200 ${showClickHint ? "hover:shadow-md" : ""}`}
+    >
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center gap-2">
+          <span className={`font-medium ${isSubItem ? "text-sm text-foreground/80" : "text-foreground"}`}>{label}</span>
+          {showClickHint && (
+            <span className="text-xs text-muted-foreground bg-secondary/10 px-2 py-1 rounded-full">
+              Кликните для детализации
+            </span>
+          )}
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
-          <div
-            className={`${color} h-2.5 rounded-full`}
-            style={{ width: `${value}%` }}
-          ></div>
+        <div className="text-right">
+          <div className={`font-bold ${isSubItem ? "text-sm" : "text-base"} text-foreground`}>{value.toFixed(1)}%</div>
+          <div className="text-xs text-muted-foreground">{convertedTime}</div>
         </div>
       </div>
-    );
-  }
+
+      <div className="w-full bg-border/30 rounded-full h-2 overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all duration-500 ease-out relative overflow-hidden"
+          style={{
+            width: `${Math.min(value, 100)}%`,
+            backgroundColor: color,
+          }}
+        >
+          {/* Animated shine effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+        </div>
+      </div>
+
+      {/* Progress indicator text */}
+      {value > 0 && (
+        <div className="mt-1 text-xs text-muted-foreground">
+          {value < 10 ? "Низкая активность" : value < 50 ? "Умеренная активность" : "Высокая активность"}
+        </div>
+      )}
+    </div>
+  )
+}

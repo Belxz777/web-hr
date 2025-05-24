@@ -5,12 +5,12 @@ export const EmployeeStats = (departmentData: any) => {
   if (!departmentData) return null;
 
   return (
-    <div className="bg-gray-800 rounded-2xl p-4 m-2">
+    <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border  shadow-lg m-2">
       <h2 className="text-xl font-bold mb-4">Статистика сотрудников</h2>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-700">
+            <tr className="border-b ">
               <th className="text-left py-2">Cотрудник</th>
               <th className="text-left py-2">Всего времени</th>
               <th className="text-left py-2">Проработано над функциями</th>
@@ -20,7 +20,7 @@ export const EmployeeStats = (departmentData: any) => {
             </tr>
           </thead>
           <tbody>
-            {departmentData.data.map((employee: any) => {
+            {departmentData.data.map((employee: any,index:number) => {
               const timeOnFuncs = convertDataToNormalTime(
                 employee.function_hours
               );
@@ -29,7 +29,7 @@ export const EmployeeStats = (departmentData: any) => {
               return (
                 <>
                   <tr
-                    key={employee.employee_id}
+                    key={index}
                     className="border-b border-gray-700"
                   >
                     <td className="py-2">

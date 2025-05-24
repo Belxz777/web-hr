@@ -9,7 +9,13 @@ interface report {
   workingHours: number;
   comment: string;
 }
-
+type basicColors = {
+  main:{
+    typical:"#32CD32",
+    nontypical:"#B22222"
+  },
+  extra:"#F0E68C"
+}
 interface TFData {
   nonCompulsory: {
     deputyId: number;
@@ -174,6 +180,69 @@ interface CircularProgressProps {
   strokeWidth?: number;
   children?: React.ReactNode;
 }
+interface DepartmentDistribution {
+  department_id: string;
+  department_name: string;
+  time_period: {
+    type: string;
+    date: string;
+    start_date: string | null;
+    end_date: string | null;
+  };
+  total_hours: number;
+  total_entries: number;
+  distribution: {
+    by_type: {
+      functions: {
+        hours: number;
+        percent: number;
+      };
+      deputies: {
+        hours: number;
+        percent: number;
+      };
+      compulsory: {
+        hours: number;
+        percent: number;
+      };
+      non_compulsory: {
+        hours: number;
+        percent: number;
+      };
+      typical: {
+        hours: number;
+        percent: number;
+      };
+      non_typical: {
+        hours: number;
+        percent: number;
+      };
+    };
+    by_functions: {
+      typical: Array<{
+        function_id: number;
+        function_name: string;
+        hours: number;
+        percent: number;
+        entries_count: number;
+      }>;
+      non_typical: Array<{
+        function_id: number;
+        function_name: string;
+        hours: number;
+        percent: number;
+        entries_count: number;
+      }>;
+    };
+    by_deputies: Array<{
+      deputy_id: number;
+      deputy_name: string;
+      hours: number;
+      percent: number;
+      reports_count: number;
+    }>;
+  };
+}
 
 type EmployeeSummary = {
   employee: {
@@ -307,4 +376,6 @@ export type {
   DepartmentStatsProps,
   CircularProgressProps,
   StatCardProps,
+  basicColors,
+  DepartmentDistribution
 };

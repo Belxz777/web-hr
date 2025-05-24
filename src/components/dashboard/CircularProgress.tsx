@@ -1,67 +1,48 @@
-import { CircularProgressProps } from "@/types";
+import type React from "react"
 
-export function CircularProgress({
-  percentage,
-  color,
-  size = "md",
-  strokeWidth = 8,
-  children,
-}: CircularProgressProps) {
-  const sizeMap = {
-    sm: 80,
-    md: 100,
-    lg: 120,
-  };
-  const viewBoxSize = sizeMap[size];
-  const radius = (viewBoxSize - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+interface CircularProgressProps {
+  percentage: number
+  color: string
+  children?: React.ReactNode
+  size?: number
+  strokeWidth?: number
+}
 
-  const sizeClass = {
-    sm: "w-20 h-20",
-    md: "w-24 h-24",
-    lg: "w-32 h-32",
-  }[size];
+export function CircularProgress({ percentage, color, children, size = 80, strokeWidth = 8 }: CircularProgressProps) {
+  const radius = (size - strokeWidth) / 2
+  const circumference = radius * 2 * Math.PI
+  const strokeDasharray = circumference
+  const strokeDashoffset = circumference - (percentage / 100) * circumference
 
   return (
-    <div className={`relative ${sizeClass}`}>
-      <svg
-        className="w-full h-full"
-        viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
-      >
+    <div className="relative inline-flex items-center justify-center">
+      <svg width={size} height={size} className="transform -rotate-90">
         {/* Background circle */}
         <circle
-          className="text-gray-600"
-          strokeWidth={strokeWidth}
-          stroke="currentColor"
-          fill="transparent"
+          cx={size / 2}
+          cy={size / 2}
           r={radius}
-          cx={viewBoxSize / 2}
-          cy={viewBoxSize / 2}
+          stroke="hsl(var(--border))"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          className="opacity-20"
         />
         {/* Progress circle */}
         <circle
-          className="transition-all duration-300 ease-in-out"
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={color}
           strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
+          fill="transparent"
+          strokeDasharray={strokeDasharray}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
-          stroke={color}
-          fill="transparent"
-          r={radius}
-          cx={viewBoxSize / 2}
-          cy={viewBoxSize / 2}
-          style={{
-            transformOrigin: "50% 50%",
-            transform: "rotate(-90deg)",
-          }}
+          className="transition-all duration-300 ease-in-out"
         />
       </svg>
-      {children && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          {children}
-        </div>
-      )}
+      {/* Content in the center */}
+      <div className="absolute inset-0 flex items-center justify-center">{children}</div>
     </div>
-  );
+  )
 }
