@@ -30,22 +30,21 @@ export default function EmployeeSelect() {
   }, []);
 
   return (
-    <div className="mainProfileDiv min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-background text-foreground">
       <Header title="Выбор сотрудника" showPanel={false} />
       <div className="flex flex-col items-center justify-center gap-6 p-8 flex-grow">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold">Выберите сотрудника</h2>
-          <p className="mt-2 text-gray-400">
+          <h2 className="text-2xl font-semibold text-foreground">Выберите сотрудника</h2>
+          <p className="mt-2 text-muted-foreground">
             Найдите сотрудника по имени или фамилии, чтобы просмотреть его
             профиль.
           </p>
         </div>
 
-
         {isLoading ? (
           <div className="flex flex-col items-center gap-4">
             <svg
-              className="animate-spin h-8 w-8 text-red-500"
+              className="animate-spin h-8 w-8 text-primary"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -64,7 +63,7 @@ export default function EmployeeSelect() {
                 d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8 8 8 0 01-8-8z"
               ></path>
             </svg>
-            <span className="text-gray-400">Загрузка сотрудников...</span>
+            <span className="text-muted-foreground">Загрузка сотрудников...</span>
           </div>
         ) : emps.length > 0 ? (
           <EmployeeSelectInput
@@ -74,7 +73,7 @@ export default function EmployeeSelect() {
             }
           />
         ) : (
-          <p className="text-gray-400">Сотрудники не найдены.</p>
+          <p className="text-muted-foreground">Сотрудники не найдены.</p>
         )}
       </div>
     </div>

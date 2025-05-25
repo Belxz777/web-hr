@@ -1,82 +1,166 @@
-"use client"
-
-import type React from "react"
+import React, { useState, useEffect, useRef } from "react";
 
 interface CustomSelectProps {
-  type: string
-  formData: {
-    func_id: number
-    deputy_id: number
-    workingHours: string
-    comment: string
-  }
-  setFormData: React.Dispatch<
-    React.SetStateAction<{
-      func_id: number
-      deputy_id: number
-      workingHours: string
-      comment: string
-    }>
-  >
+  type: string;
+  formData: any;
+  setFormData: Function;
   responsibilities: {
-    length: any
+    length: any;
     nonCompulsory: {
-      deputyId: number
-      deputyName: string
-    }[]
+      deputyId: number;
+      deputyName: string;
+    }[];
     functions: {
-      funcId: number
-      funcName: string
-    }[]
-  }
+      funcId: number;
+      funcName: string;
+    }[];
+  };
 }
 
-export const CustomSelect: React.FC<CustomSelectProps> = ({ type, formData, setFormData, responsibilities }) => {
-  if (type === "main") {
-    return (
-      <select
-        id="func_id"
-        name="func_id"
-        value={formData.func_id}
-        onChange={(e) => {
-          setFormData((prev) => ({
-            ...prev,
-            func_id: Number(e.target.value),
-          }))
-        }}
-        className="w-full px-3 py-2 bg-background border border-input rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-        required
+export const CustomSelect: React.FC<CustomSelectProps> = ({
+  type,
+  formData,
+  setFormData,
+  responsibilities,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredFunctions = responsibilities?.functions?.filter((func) =>
+    func.funcName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredNonCompulsory = responsibilities?.nonCompulsory?.filter(
+    (duty) => duty.deputyName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const selectedLabel =
+    type === "main"
+      ? responsibilities?.functions?.find(
+          (func) => func.funcId === formData.func_id
+        )?.funcName || "Выберите обязанность"
+      : responsibilities?.nonCompulsory?.find(
+          (duty) => duty.deputyId === formData.deputy_id
+        )?.deputyName || "Выберите обязанность";
+
+  const handleSelect = (id: number) => {
+    if (type === "main") {
+      setFormData({ ...formData, func_id: id });
+    } else {
+      setFormData((prev: any) => ({ ...prev, deputy_id: id }));
+    }
+    setIsOpen(false);
+    setSearchTerm("");
+  };
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <button
+        type="button"
+        className="w-full px-4 py-2.5 border border-gray-700  text-left 
+          focus:outline-none focus:ring-2 focus:ring-secondary bg-white transition-colors duration-200
+          flex justify-between items-center rounded-xl"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
       >
-        <option value="">Выберите обязанность</option>
-        {responsibilities.functions.map((func) => (
-          <option key={func.funcId} value={func.funcId}>
-            {func.funcName}
-          </option>
-        ))}
-      </select>
-    )
-  } else {
-    return (
-      <select
-        id="deputy_id"
-        name="deputy_id"
-        value={formData.deputy_id}
-        onChange={(e) => {
-          setFormData((prev) => ({
-            ...prev,
-            deputy_id: Number(e.target.value),
-          }))
-        }}
-        className="w-full px-3 py-2 bg-background border border-input rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-        required
-      >
-        <option value="">Выберите обязанность</option>
-        {responsibilities.nonCompulsory.map((deputy) => (
-          <option key={deputy.deputyId} value={deputy.deputyId}>
-            {deputy.deputyName}
-          </option>
-        ))}
-      </select>
-    )
-  }
-}
+        <span className="truncate">{selectedLabel}</span>
+        <svg
+          className={`w-5 h-5 transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div
+          className="absolute z-10 w-full mt-1 bg-secondary border-gray-600 shadow-lg 
+            max-h-80 overflow-y-auto rounded-xl"
+          role="list -xl"
+        >
+          <div className="p-2">
+            <input
+              type="text"
+              placeholder="Поиск..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 bg-white border border-gray-500
+                focus:outline-none focus:ring-2 focus:ring-secondary rounded-xl"
+              aria-label="Search options"
+            />
+          </div>
+          <div
+            className={`p-2 ${
+              type === "main" ? "bg-secondary" : "bg-green-900/20"
+            } rounded-b-xl`}
+          >
+            <div className="text-gray-300 text-sm font-medium px-3 py-1">
+              {type === "main"
+                ? "Основные обязанности"
+                : "Дополнительные обязанности"}
+            </div>
+            {type === "main"
+              ? filteredFunctions?.map((func) => (
+                  <button
+                    key={func.funcId}
+                    type="button"
+                    className="w-full px-3 py-2 text-left text-gray-100 hover:bg-red-200/20 
+                      focus:outline-none focus:bg-secondary-50 transition-colors duration-150 rounded-xl"
+                    onClick={() => handleSelect(func.funcId)}
+                    role="option"
+                    aria-selected={formData.func_id === func.funcId}
+                  >
+                    {func.funcName}
+                  </button>
+                )) || (
+                  <div className="px-3 py-2 text-gray-400 rounded-xl">
+                    Обязанностей не найдено
+                  </div>
+                )
+              : filteredNonCompulsory?.map((duty) => (
+                  <button
+                    key={duty.deputyId}
+                    type="button"
+                    className="w-full px-3 py-2 text-left text-gray-100 hover:bg-green-500/20 
+                      focus:outline-none focus:bg-green-500/30 transition-colors duration-150 rounded-xl"
+                    onClick={() => handleSelect(duty.deputyId)}
+                    role="option"
+                    aria-selected={formData.deputy_id === duty.deputyId}
+                  >
+                    {duty.deputyName}
+                  </button>
+                )) || (
+                  <div className="px-3 py-2 text-gray-400 rounded-xl">
+                    Обязанностей не найдено
+                  </div>
+                )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

@@ -43,8 +43,8 @@ export const EmployeeSelectInput: React.FC<EmployeeSelectProps> = ({
     <div className="relative w-full" ref={dropdownRef}>
       <button
         type="button"
-        className="w-full px-4 py-2.5 border border-gray-700 text-gray-100 text-left 
-          focus:outline-none focus:ring-2 focus:ring-red-500 bg-gray-700 transition-colors duration-200
+        className="w-full px-4 py-2.5 border border-border text-foreground text-left 
+          focus:outline-none focus:ring-2 focus:ring-primary bg-card transition-colors duration-200
           flex justify-between items-center rounded-xl"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -68,7 +68,7 @@ export const EmployeeSelectInput: React.FC<EmployeeSelectProps> = ({
 
       {isOpen && (
         <div
-          className="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-600 shadow-lg 
+          className="absolute z-10 w-full mt-1 bg-card border border-border shadow-lg 
             max-h-80 overflow-y-auto rounded-xl"
         >
           <div className="p-2">
@@ -77,8 +77,8 @@ export const EmployeeSelectInput: React.FC<EmployeeSelectProps> = ({
               placeholder="Поиск..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-500 text-gray-100 
-                focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-400 rounded-xl"
+              className="w-full px-3 py-2 bg-background border border-border text-foreground 
+                focus:outline-none focus:ring-2 focus:ring-primary placeholder-muted-foreground rounded-xl"
             />
           </div>
           <div className="p-2">
@@ -87,8 +87,8 @@ export const EmployeeSelectInput: React.FC<EmployeeSelectProps> = ({
                 <button
                   key={employee.employeeId}
                   type="button"
-                  className="w-full px-3 py-2 text-left text-gray-100 hover:bg-gray-600 
-                    focus:outline-none focus:bg-gray-600 transition-colors duration-150 rounded-xl"
+                  className="w-full px-3 py-2 text-left text-foreground hover:bg-gray-300 
+                    focus:outline-none focus:bg-muted transition-colors duration-150 rounded-xl"
                   onClick={() => {
                     onSelect(employee.employeeId);
                     setIsOpen(false);
@@ -99,7 +99,7 @@ export const EmployeeSelectInput: React.FC<EmployeeSelectProps> = ({
                 </button>
               ))
             ) : (
-              <div className="px-3 py-2 text-gray-400 rounded-xl">
+              <div className="px-3 py-2 text-muted-foreground rounded-xl">
                 Сотрудники не найдены
               </div>
             )}
