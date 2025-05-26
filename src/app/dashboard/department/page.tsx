@@ -236,7 +236,6 @@ export default function AnalyticsDashboard() {
           </div>
         </div>
       </div>
-
       <div className="px-4">
         <h2 className="text-xl font-bold text-foreground bg-card/80 backdrop-blur-sm rounded-xl p-4 border border-border shadow-sm">
           {getTitle()}
@@ -255,20 +254,22 @@ export default function AnalyticsDashboard() {
           <div className="text-primary bg-primary/10 border border-primary/20 p-6 rounded-xl text-center backdrop-blur-sm">
             <div className="font-medium">{error}</div>
           </div>
-        ) : dataInDay ? (
-          <div className="space-y-6">
-            <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
+        ) : dataInDay && selectedDep ? (
+          <div className="space-y-6">   
+          <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
               <DepartmentStatsInDay data={dataInDay.department_stats} />
             </div>
+          <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
+              {dataInDayPer?.distribution && <TopFunctions data={dataInDayPer.distribution} />}
+            </div>
+            
             <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
-               {dataInDayPer?.distribution && <Bytypes data={dataInDayPer.distribution} />}
+                {dataInDayPer?.distribution && <Bytypes data={dataInDayPer.distribution} />}
             </div>
             <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
               <EmployeeStats data={dataInDay.employee_stats} />
             </div>
-            <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
-              {dataInDayPer?.distribution && <TopFunctions data={dataInDayPer.distribution} />}
-            </div>
+         
           </div>
         ) : (
           <div className="text-muted-foreground text-center py-12 bg-card/80 backdrop-blur-sm rounded-xl border border-border">
