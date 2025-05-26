@@ -261,14 +261,20 @@ type EmployeeSummary = {
   reports: Array<{
     laborCostId: number;
     departmentId: number;
-    function: number | null;
-    deputy: number | null;
+    function__funcName: string | null;
+    deputy__deputyName: string | null;
     compulsory: boolean;
     worked_hours: number;
     comment: string;
     date: string;
   }>;
   reports_count: number;
+  daily_summary: Array<{
+    date: string;
+    total_hours: number;
+    function_hours: number;
+    deputy_hours: number;
+  }>;
   query_params: {
     date: string;
     start_date: string | null;

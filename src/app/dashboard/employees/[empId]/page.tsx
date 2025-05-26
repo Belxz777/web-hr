@@ -10,6 +10,7 @@ import type { EmployeeDistribution, EmployeeSummary } from "@/types"
 import { CircularDiagram } from "@/components/dashboard/CircularDiagram"
 import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
 import getEmployeeAnalytics from "@/components/server/analysis/employee"
+import { DailySummaryGrid } from "@/components/buildIn/GridStats"
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
@@ -31,7 +32,14 @@ const getCurrentDate = () => {
 
 export default function EmployeeDailyStats() {
   const [selectedDate, setSelectedDate] = useState(getCurrentDate())
-  const [startDate, setStartDate] = useState(getCurrentDate())
+  const [startDate, setStartDate] = useState(() => {
+    const date = new Date()
+    date.setDate(date.getDate() - 7)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  })  
   const [endDate, setEndDate] = useState(getCurrentDate())
   const [employeeSummary, setEmployeeSummary] = useState<EmployeeSummary>()
   const [activeTab, setActiveTab] = useState("day")
@@ -142,7 +150,9 @@ export default function EmployeeDailyStats() {
     if (tab === "day") {
       setSelectedDate(getCurrentDate())
     } else {
-      setStartDate(getCurrentDate())
+           const date = new Date()
+    date.setDate(date.getDate() - 7)
+      setStartDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
       setEndDate(getCurrentDate())
     }
     setTimeout(fetchData, 0)
@@ -281,7 +291,9 @@ export default function EmployeeDailyStats() {
               </div>
             </div>
           </div>
-
+   <div className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6">
+        {activeTab === "interval" && <DailySummaryGrid data={employeeSummary?.daily_summary || []} />}
+      </div>
           <div className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6">
             <div className="p-4 border-b border-border bg-gradient-to-r from-secondary/10 to-primary/10">
               <h3 className="text-xl font-bold text-foreground">Распределение часов</h3>
@@ -304,16 +316,13 @@ export default function EmployeeDailyStats() {
                   <thead>
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        ID
+                        Название
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Функция
+                        Время
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Часы
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Обязательная
+                        Обязательная?
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Комментарий
@@ -331,16 +340,13 @@ export default function EmployeeDailyStats() {
                         </td>
                       </tr>
                     ) : (
-                      (employeeSummary?.reports || []).map((report: any) => {
+                      (employeeSummary?.reports || []).map((report: any,index:number) => {
                         const workedHours = convertDataToNormalTime(report.worked_hours || 0)
 
                         return (
                           <tr key={report.laborCostId} className="hover:bg-secondary/5 transition-colors">
                             <td className="px-4 py-3 whitespace-nowrap text-foreground">
-                              {report.laborCostId || "N/A"}
-                            </td>
-                            <td className="px-4 py-3 whitespace-nowrap text-foreground">
-                              {report.function || report.deputy || "N/A"}
+                              {report.function__funcName || report.deputy__deputyName || "N/A"}
                             </td>
                             <td className="px-4 py-3 whitespace-nowrap text-foreground">{workedHours}</td>
                             <td className="px-4 py-3 whitespace-nowrap">
@@ -364,10 +370,11 @@ export default function EmployeeDailyStats() {
                     )}
                   </tbody>
                 </table>
+                
               </div>
             </div>
           </div>
-
+  
           <div className="flex justify-end space-x-4 mb-6">
             <button
               className="px-6 py-3 bg-card/90 backdrop-blur-sm border border-border text-foreground rounded-xl hover:bg-secondary/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary shadow-md"
