@@ -94,7 +94,7 @@ export const SummaryStats = ({ data }: { data: DepartmentsData }) => {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <h4 className="text-sm font-semibold">Часы на поручения</h4>
+              <h4 className="text-sm font-semibold">Дополнительные обязанности</h4>
             </div>
             <div className="text-2xl font-bold">{convertedDeputyHours}</div>
           </div>
@@ -143,7 +143,7 @@ export const SummaryStats = ({ data }: { data: DepartmentsData }) => {
               <div className="flex items-center space-x-3">
                 <div className="w-4 h-4 bg-[#FF0000] rounded-sm"></div>
                 <span className="text-[#000000]">
-                  Поручения: <span className="font-semibold">{convertedDeputyHours}</span> (
+                  Дополнительные: <span className="font-semibold">{convertedDeputyHours}</span> (
                   {totalStats.total_hours > 0
                     ? ((totalStats.deputy_hours / totalStats.total_hours) * 100).toFixed(0)
                     : 0}

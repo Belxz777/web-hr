@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Header } from "@/components/ui/header"
 import UniversalFooter from "@/components/buildIn/UniversalFooter"
@@ -46,13 +45,7 @@ export default function EmployeeDailyStats() {
   const [employeeDistribution, setEmployeeDistribution] = useState<EmployeeDistribution>()
   const { empId } = useParams()
   const [isLoading, setIsLoading] = useState(false)
-
-  const totalTime = convertDataToNormalTime(employeeSummary?.summary?.total_hours || 0)
-
-  useEffect(() => {
-    fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [empId, activeTab])
+  const [shouldFetch, setShouldFetch] = useState(false)
 
   const fetchData = async () => {
     setIsLoading(true)
@@ -89,51 +82,87 @@ export default function EmployeeDailyStats() {
     }
   }
 
-  if (!employeeSummary || !employeeDistribution) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
-        <Header title="Статистика сотрудника" showPanel={false} />
-        <main className="container mx-auto p-4 flex-grow">
-          <div className="flex flex-col items-center justify-center h-[80vh]">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-secondary/30"></div>
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-primary absolute top-0 left-0"></div>
-            </div>
-            <p className="text-foreground text-lg mt-4 bg-card/80 backdrop-blur-sm px-4 py-2 rounded-lg">
-              Загрузка данных...
-            </p>
-          </div>
-        </main>
-        <UniversalFooter />
-      </div>
-    )
-  }
+  useEffect(() => {
+    if (shouldFetch) {
+      fetchData()
+    }
+  }, [selectedDate, startDate, endDate, activeTab, empId, shouldFetch])
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(e.target.value)
+    setShouldFetch(true)
   }
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value)
+    if (endDate) {
+      setShouldFetch(true)
+    }
   }
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(e.target.value)
+    if (startDate) {
+      setShouldFetch(true)
+    }
   }
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab)
+    setEmployeeSummary(undefined)
+    setEmployeeDistribution(undefined)
+    setShouldFetch(false)
+    if (tab === "day") {
+      setSelectedDate(getCurrentDate())
+      setStartDate("")
+      setEndDate("")
+    } else {
+      const date = new Date()
+      date.setDate(date.getDate() - 7)
+      setStartDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+      setEndDate(getCurrentDate())
+      setSelectedDate("")
+    }
+  }
+
+  const formatDisplayDate = (dateString: string) => {
+    const [year, month, day] = dateString.split("-")
+    return `${day}.${month}.${year}`
+  }
+
+  const totalTime = convertDataToNormalTime(employeeSummary?.summary?.total_hours || 0)
   const typicalHours = employeeDistribution?.summary?.compulsory_hours || 0
   const nonTypicalHours = employeeDistribution?.summary?.non_compulsory_hours || 0
   const deputyHours = employeeDistribution?.summary?.deputy_hours || 0
+  const functionsHours = employeeDistribution?.summary?.function_hours || 0
 
+  const hourDistributionDataType = [
+    { label: "Функции", value: functionsHours, color: "#3B82F6" },
+    {
+      label: "Типичные для сотрудника",
+      value: typicalHours || 0,
+      color: "#008000",
+    },
+    {
+      label: "Нетипичные для сотрудника",
+      value: nonTypicalHours || 0,
+      color: "#DC143C",
+    },
+    {
+      label: "Дополнительные",
+      value: deputyHours || 0,
+      color: "#DAA520",
+    },
+  ]
   const hourDistributionData = [
     {
       label: "Основные",
-      value: employeeSummary.summary.compulsory_hours || 0,
+      value: employeeSummary?.summary?.compulsory_hours || 0,
       color: "#32CD32",
     },
     {
       label: "Дополнительные",
-      value: employeeSummary.summary.non_compulsory_hours || 0,
+      value: employeeSummary?.summary?.non_compulsory_hours || 0,
       color: "#F0E68C",
     },
   ]
@@ -142,25 +171,97 @@ export default function EmployeeDailyStats() {
     (employeeSummary?.reports_count || 0) > 0
       ? (employeeSummary?.summary?.total_hours || 0) / (employeeSummary?.reports_count || 1)
       : 0
-
   const avgTime = convertDataToNormalTime(avgHoursPerReport || 0)
 
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab)
-    if (tab === "day") {
-      setSelectedDate(getCurrentDate())
-    } else {
-           const date = new Date()
-    date.setDate(date.getDate() - 7)
-      setStartDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
-      setEndDate(getCurrentDate())
-    }
-    setTimeout(fetchData, 0)
-  }
-
-  const formatDisplayDate = (dateString: string) => {
-    const [year, month, day] = dateString.split("-")
-    return `${day}.${month}.${year}`
+  if (!employeeSummary || !employeeDistribution) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
+        <Header title="Статистика сотрудника" showPanel={false} />
+        <main className="container mx-auto p-4 flex-grow">
+          <div className="grid w-full grid-cols-2 bg-card/90 backdrop-blur-sm rounded-xl overflow-hidden border border-border mb-4">
+            <button
+              onClick={() => handleTabChange("day")}
+              className={`py-3 px-4 text-center transition-all duration-200 ${
+                activeTab === "day"
+                  ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                  : "text-foreground hover:bg-secondary/20"
+              }`}
+            >
+              За день
+            </button>
+            <button
+              onClick={() => handleTabChange("interval")}
+              className={`py-3 px-4 text-center transition-all duration-200 ${
+                activeTab === "interval"
+                  ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                  : "text-foreground hover:bg-secondary/20"
+              }`}
+            >
+              За период
+            </button>
+          </div>
+          <div className="max-w-6xl mx-auto">
+            <div className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6">
+              <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg m-4">
+                <div className="p-4 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {activeTab === "day" && (
+                      <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                        <div className="text-foreground font-medium mb-3">Выбор дня</div>
+                        <input
+                          type="date"
+                          value={selectedDate}
+                          onChange={handleDateChange}
+                          className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
+                        />
+                        <div className="text-muted-foreground mt-2 text-sm">
+                          Выбрано: {formatDisplayDate(selectedDate)}
+                        </div>
+                      </div>
+                    )}
+                    {activeTab === "interval" && (
+                      <>
+                        <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                          <div className="text-foreground font-medium mb-3">Начальная дата</div>
+                          <input
+                            type="date"
+                            value={startDate}
+                            onChange={handleStartDateChange}
+                            className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
+                          />
+                          <div className="text-muted-foreground mt-2 text-sm">
+                            Выбрано: {formatDisplayDate(startDate)}
+                          </div>
+                        </div>
+                        <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                          <div className="text-foreground font-medium mb-3">Конечная дата</div>
+                          <input
+                            type="date"
+                            value={endDate}
+                            onChange={handleEndDateChange}
+                            min={startDate}
+                            className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
+                          />
+                          <div className="text-muted-foreground mt-2 text-sm">
+                            Выбрано: {formatDisplayDate(endDate)}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center p-8">
+                <p className="text-foreground text-lg bg-card/80 backdrop-blur-sm px-4 py-2 rounded-lg">
+                  Выберите дату
+                </p>
+              </div>
+            </div>
+          </div>
+        </main>
+        <UniversalFooter />
+      </div>
+    )
   }
 
   return (
@@ -199,6 +300,7 @@ export default function EmployeeDailyStats() {
                     {employeeSummary?.employee?.employee_surname || ""} {employeeSummary?.employee?.employee_name || ""}{" "}
                     {employeeSummary?.employee?.employee_patronymic || ""}
                   </h1>
+                  <p className="text-primary-foreground/80">Должность: {employeeSummary?.employee?.job_title || ""}</p>
                   <p className="text-primary-foreground/80">ID: {employeeSummary?.employee?.employee_id || ""}</p>
                 </div>
               </div>
@@ -246,19 +348,12 @@ export default function EmployeeDailyStats() {
                           min={startDate}
                           className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all"
                         />
-                        <div className="text-muted-foreground mt-2 text-sm">Выбрано: {formatDisplayDate(endDate)}</div>
+                        <div className="text-muted-foreground mt-2 text-sm">
+                          Выбрано: {formatDisplayDate(endDate)}
+                        </div>
                       </div>
                     </>
                   )}
-
-                  <div className="flex justify-end items-center">
-                    <button
-                      onClick={fetchData}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-                    >
-                      Обновить данные
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -291,15 +386,16 @@ export default function EmployeeDailyStats() {
               </div>
             </div>
           </div>
-   <div className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6">
-        {activeTab === "interval" && <DailySummaryGrid data={employeeSummary?.daily_summary || []} />}
-      </div>
+          <div className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6">
+            {activeTab === "interval" && <DailySummaryGrid data={employeeSummary?.daily_summary || []} />}
+          </div>
           <div className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6">
             <div className="p-4 border-b border-border bg-gradient-to-r from-secondary/10 to-primary/10">
               <h3 className="text-xl font-bold text-foreground">Распределение часов</h3>
             </div>
-            <div className="grid justify-center gap-4 p-6">
+            <div className="grid grid-cols-2 justify-center gap-4 p-6">
               <CircularDiagram data={hourDistributionData} title="" />
+              <CircularDiagram data={hourDistributionDataType} title="" />
             </div>
           </div>
 
@@ -340,7 +436,7 @@ export default function EmployeeDailyStats() {
                         </td>
                       </tr>
                     ) : (
-                      (employeeSummary?.reports || []).map((report: any,index:number) => {
+                      (employeeSummary?.reports || []).map((report: any, index: number) => {
                         const workedHours = convertDataToNormalTime(report.worked_hours || 0)
 
                         return (
@@ -370,11 +466,10 @@ export default function EmployeeDailyStats() {
                     )}
                   </tbody>
                 </table>
-                
               </div>
             </div>
           </div>
-  
+
           <div className="flex justify-end space-x-4 mb-6">
             <button
               className="px-6 py-3 bg-card/90 backdrop-blur-sm border border-border text-foreground rounded-xl hover:bg-secondary/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary shadow-md"

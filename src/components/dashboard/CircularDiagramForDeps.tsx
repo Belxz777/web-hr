@@ -45,7 +45,7 @@ export const CircularDiagramForDeps = ({
             cy="50"
             r={radius}
             fill="transparent"
-            stroke="#EF4444"
+            stroke="#249BA2"
             strokeWidth="16"
             strokeDasharray={`${
               (functionPercentage / 100) * circumference
@@ -59,7 +59,7 @@ export const CircularDiagramForDeps = ({
             cy="50"
             r={radius}
             fill="transparent"
-            stroke="#F87171"
+            stroke="#FF0000"
             strokeWidth="16"
             strokeDasharray={`${
               (deputyPercentage / 100) * circumference

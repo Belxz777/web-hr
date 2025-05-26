@@ -67,7 +67,7 @@ export const DepartmentCard = ({ department }: { department: DepartmentForStats 
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-[#FF0000] rounded-sm mr-2"></div>
-                  <span className="text-xs text-[#6D6D6D]">Поручения:</span>
+                  <span className="text-xs text-[#6D6D6D]">Дополнительные:</span>
                 </div>
                 <span className="text-xs font-medium text-[#000000]">{convertDataToNormalTime(deputyHours)}</span>
               </div>

@@ -250,6 +250,7 @@ type EmployeeSummary = {
     employee_name: string;
     employee_patronymic: string;
     employee_surname: string;
+    job_title: string;
   };
   summary: {
     total_hours: number;

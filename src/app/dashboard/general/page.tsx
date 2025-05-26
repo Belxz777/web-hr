@@ -163,7 +163,7 @@ export default function GeneralDashboard() {
                           scope="col"
                           className="px-6 py-3 text-left text-xs font-medium text-[#6D6D6D] uppercase tracking-wider"
                         >
-                          Поручения
+                          Дополнительные обязанности
                         </th>
                         <th
                           scope="col"
