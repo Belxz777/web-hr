@@ -1,20 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
+import type { BackendStatus } from "@/types"
 import { host } from "@/types"
 import { Header } from "@/components/ui/header"
 import { useRouter } from "next/navigation"
-
-// Типы для данных о состоянии системы
-type BackendStatus = {
-  is_running: boolean
-  uptime: number
-  memory_usage: number
-  cpu_usage: number
-  active_connections: number
-  last_updated: string
-}
 
 export default function SystemStatusPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -22,9 +12,7 @@ export default function SystemStatusPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const router = useRouter();
 
-  // Функция для форматирования времени работы
   const formatUptime = (seconds: number): string => {
     const days = Math.floor(seconds / 86400)
     const hours = Math.floor((seconds % 86400) / 3600)
@@ -34,16 +22,15 @@ export default function SystemStatusPage() {
     return `${days}д ${hours}ч ${minutes}м ${secs}с`
   }
 
-  // Функция для получения данных о состоянии бэкенда
   const fetchBackendStatus = async () => {
     try {
       const response = await fetch("/api/stats", {
         method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
-        mode: 'no-cors',
+        credentials: "include",
+        mode: "no-cors",
       })
       if (!response.ok) {
         throw new Error(`Ошибка: ${response.status}`)
@@ -60,18 +47,15 @@ export default function SystemStatusPage() {
     }
   }
 
-  // Загрузка данных при монтировании компонента
   useEffect(() => {
     fetchBackendStatus()
   }, [])
 
-  // Функция для обновления данных
   const refreshData = () => {
     setIsRefreshing(true)
     fetchBackendStatus()
   }
 
-  // Компонент для отображения метрики с прогресс-баром
   const MetricBar = ({
     label,
     value,
@@ -82,17 +66,18 @@ export default function SystemStatusPage() {
 
     return (
       <div className="mb-4">
-        <div className="flex justify-between mb-1">
-          <span className="text-sm text-gray-400">{label}</span>
-          <span className="text-sm text-gray-400">
+        <div className="flex justify-between mb-2">
+          <span className="text-sm font-medium text-[#6D6D6D]">{label}</span>
+          <span className="text-sm font-semibold text-[#000000]">
             {value}
             {unit}
           </span>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2.5">
+        <div className="w-full bg-gray-200 rounded-full h-3">
           <div
-            className={`h-2.5 rounded-full ${percentage > 80 ? "bg-red-500" : percentage > 60 ? "bg-yellow-500" : "bg-green-500"
-              }`}
+            className={`h-3 rounded-full transition-all duration-300 ${
+              percentage > 80 ? "bg-[#FF0000]" : percentage > 60 ? "bg-yellow-500" : "bg-[#249BA2]"
+            }`}
             style={{ width: `${percentage}%` }}
           ></div>
         </div>
@@ -102,19 +87,12 @@ export default function SystemStatusPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 flex items-center justify-center">
-        <div className="bg-gray-800 p-8 rounded-xl shadow-xl text-center max-w-md w-full mx-4">
-          {/* Улучшенный лоадер с плавной анимацией */}
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-500 mx-auto mb-6"></div>
-          
-          {/* Текст с анимацией пульсации для лучшего UX */}
-          <p className="text-gray-300 text-lg animate-pulse">
-            Загрузка данных о состоянии системы...
-          </p>
-          
-          {/* Дополнительный прогресс-бар */}
-          <div className="mt-4 w-full bg-gray-700 rounded-full h-2">
-            <div className="bg-red-500 h-2 rounded-full animate-progress"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="bg-white border border-gray-200 p-8 rounded-xl shadow-sm text-center max-w-md w-full mx-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#249BA2] mx-auto mb-6"></div>
+          <p className="text-[#6D6D6D] text-lg animate-pulse">Загрузка данных о состоянии системы...</p>
+          <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+            <div className="bg-[#249BA2] h-2 rounded-full animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -122,28 +100,26 @@ export default function SystemStatusPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-gray-900 text-gray-100">
+    <div className="min-h-screen bg-white text-[#000000]">
       <Header title="Состояние системы" position={5} showPanel={false} />
-      {/* <div className="flex w-full">
-        <button onClick={() => router.back()} className="flex m-3 items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{`<- Вернуться к админ-панели`}</button>
-      </div> */}
+
       <main className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
-            <h2 className="text-xl font-bold mr-4">Состояние бэкенда</h2>
+            <h2 className="text-xl font-bold mr-4 text-[#000000]">Состояние бэкенда</h2>
             {backendStatus && (
               <div className="flex items-center">
                 <div
-                  className={`w-3 h-3 rounded-full ${backendStatus.is_running ? "bg-green-500" : "bg-red-500"} mr-2`}
+                  className={`w-3 h-3 rounded-full ${backendStatus.is_running ? "bg-[#249BA2]" : "bg-[#FF0000]"} mr-2`}
                 ></div>
-                <span>{backendStatus.is_running ? "Работает" : "Не работает"}</span>
+                <span className="text-[#6D6D6D]">{backendStatus.is_running ? "Работает" : "Не работает"}</span>
               </div>
             )}
           </div>
           <button
             onClick={refreshData}
             disabled={isRefreshing}
-            className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-4 py-2 bg-[#249BA2] hover:bg-[#1e8a90] text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isRefreshing ? (
               <>
@@ -179,19 +155,16 @@ export default function SystemStatusPage() {
         </div>
 
         {error ? (
-          <div className="bg-red-600 text-white p-4 rounded-xl mb-6">
-            <h3 className="font-bold mb-2">Ошибка соединения с бэкендом </h3>
+          <div className="bg-red-50 border border-red-200 text-[#FF0000] p-4 rounded-xl mb-6">
+            <h3 className="font-bold mb-2">Ошибка соединения с бэкендом</h3>
             <p>{error}</p>
-            <p className="mt-2 text-sm">
-              Убедитесь, что бэкенд запущен и доступен по адресу: ${host}
-            </p>
+            <p className="mt-2 text-sm">Убедитесь, что бэкенд запущен и доступен по адресу: {host}</p>
           </div>
         ) : backendStatus ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* Статус бэкенда */}
-            <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
-              <h3 className="text-lg font-semibold mb-4 flex items-center">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold mb-4 flex items-center text-[#000000]">
+                <svg className="w-5 h-5 mr-2 text-[#249BA2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -203,36 +176,35 @@ export default function SystemStatusPage() {
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-400 mr-4">Адрес:  </span>
-                  <span className="text-gray-300">{host}</span>
+                  <span className="text-[#6D6D6D] mr-4">Адрес:</span>
+                  <span className="text-[#000000] font-medium">{host}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Статус:</span>
-                  <span className={backendStatus.is_running ? "text-green-500" : "text-red-500"}>
+                  <span className="text-[#6D6D6D]">Статус:</span>
+                  <span className={backendStatus.is_running ? "text-[#249BA2]" : "text-[#FF0000]"}>
                     {backendStatus.is_running ? "Работает" : "Не работает"}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Время работы:</span>
-                  <span>{formatUptime(backendStatus.uptime)}</span>
+                  <span className="text-[#6D6D6D]">Время работы:</span>
+                  <span className="text-[#000000] font-medium">{formatUptime(backendStatus.uptime)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Активные соединения:</span>
-                  <span>{backendStatus.active_connections}</span>
+                  <span className="text-[#6D6D6D]">Активные соединения:</span>
+                  <span className="text-[#000000] font-medium">{backendStatus.active_connections}</span>
                 </div>
-               
-               
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Последнее обновление:</span>
-                  <span>{new Date(backendStatus.last_updated).toLocaleString()}</span>
+                  <span className="text-[#6D6D6D]">Последнее обновление:</span>
+                  <span className="text-[#000000] font-medium">
+                    {new Date(backendStatus.last_updated).toLocaleString()}
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Системные метрики */}
-            <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
-              <h3 className="text-lg font-semibold mb-4 flex items-center">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold mb-4 flex items-center text-[#000000]">
+                <svg className="w-5 h-5 mr-2 text-[#249BA2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -246,11 +218,10 @@ export default function SystemStatusPage() {
                 <MetricBar label="Использование CPU" value={backendStatus.cpu_usage} />
                 <MetricBar label="Использование памяти" value={backendStatus.memory_usage} />
 
-                <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-                  <h4 className="font-medium mb-2">Сводка</h4>
-                  <p className="text-sm text-gray-300">
+                <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <h4 className="font-medium mb-2 text-[#000000]">Сводка</h4>
+                  <p className="text-sm text-[#6D6D6D]">
                     Бэкенд работает стабильно{" "}
-
                     {backendStatus.memory_usage > 80
                       ? " Высокое использование памяти!"
                       : backendStatus.memory_usage > 60
@@ -268,11 +239,10 @@ export default function SystemStatusPage() {
           </div>
         ) : null}
 
-        {/* JSON представление данных */}
         {backendStatus && (
-          <div className="bg-gray-800 rounded-xl p-6 shadow-lg mb-8">
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm mb-8">
+            <h3 className="text-lg font-semibold mb-4 flex items-center text-[#000000]">
+              <svg className="w-5 h-5 mr-2 text-[#249BA2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -282,7 +252,7 @@ export default function SystemStatusPage() {
               </svg>
               Данные в формате JSON
             </h3>
-            <pre className="bg-gray-900 p-4 rounded-md overflow-x-auto text-sm text-gray-300">
+            <pre className="bg-gray-50 border border-gray-200 p-4 rounded-xl overflow-x-auto text-sm text-[#000000]">
               {JSON.stringify(backendStatus, null, 2)}
             </pre>
           </div>
@@ -291,4 +261,3 @@ export default function SystemStatusPage() {
     </div>
   )
 }
-

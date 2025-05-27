@@ -57,7 +57,7 @@ export function EmployeeResponsibilities({
 
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-[#000000]">Функциональные обязанности</h2>
+      <h2 className="text-2xl font-bold mb-4 text-[#000000] my-4">Функциональные обязанности</h2>
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -407,8 +407,19 @@ type DepartmentsData = {
   total_departments: number;
 };
 
+type BackendStatus = {
+  is_running: boolean
+  uptime: number
+  memory_usage: number
+  cpu_usage: number
+  active_connections: number
+  last_updated: string
+}
+
+
 export { host };
 export type {
+  BackendStatus,
   department,
   EmployeeInfo,
   DepartmentStats,
