@@ -11,6 +11,7 @@ import { EmployeeStats } from "@/components/dashboard/EmployeeStats"
 import { TopFunctions } from "@/components/dashboard/TopFunctions"
 import { analyticsDepartments, analyticsDepartmentPercentage } from "@/components/server/analysis/departmentanalysis"
 import getAllDepartments from "@/components/server/admin/departments"
+import { get } from "http"
 
 const getCurrentDate = () => {
   const now = new Date()
@@ -171,29 +172,8 @@ export default function AnalyticsDashboard() {
         <Header title="Аналитика по отделам" showPanel={false} />
         <div className="p-4">
           <div className="w-full mb-4">
-            <div className="grid w-full grid-cols-2 bg-card/90 backdrop-blur-sm rounded-xl overflow-hidden border border-border">
-              <button
-                onClick={() => handleTabChange("day")}
-                className={`py-3 px-4 text-center transition-all duration-200 ${
-                  activeTab === "day"
-                    ? "bg-primary text-primary-foreground font-medium shadow-sm"
-                    : "text-foreground hover:bg-secondary/20"
-                }`}
-              >
-                За день
-              </button>
-              <button
-                onClick={() => handleTabChange("interval")}
-                className={`py-3 px-4 text-center transition-all duration-200 ${
-                  activeTab === "interval"
-                    ? "bg-primary text-primary-foreground font-medium shadow-sm"
-                    : "text-foreground hover:bg-secondary/20"
-                }`}
-              >
-                За период
-              </button>
-            </div>
             <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl mt-4 shadow-lg">
+              
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {activeTab === "day" && (
@@ -253,6 +233,19 @@ export default function AnalyticsDashboard() {
                       ))}
                     </select>
                   </div>
+                   <div className="flex items-center justify-between mb-3">
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={activeTab === "interval"}
+                          onChange={()=>handleTabChange(activeTab === "interval" ? "day" : "interval")}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        <span className="ml-2 text-xl font-medium text-foreground">
+                          {activeTab === "day" ? "День" : "Интервал"}
+                        </span>
+                      </label>                    </div>
                 </div>
               </div>
             </div>
@@ -273,20 +266,6 @@ export default function AnalyticsDashboard() {
       <Header title="Аналитика по отделам" showPanel={false} />
       <div className="p-4">
         <div className="w-full mb-4">
-          <div className="grid w-full grid-cols-2 bg-card/90 backdrop-blur-sm rounded-xl overflow-hidden border border-border">
-            <button
-              onClick={() => handleTabChange("day")}
-              className="button-tab-button px-4 py-3 text-center transition-all duration-200 bg-primary text-primary-foreground font-medium shadow-sm hover:bg-primary/90"
-            >
-              За день
-            </button>
-            <button
-              onClick={() => handleTabChange("interval")}
-              className="button-tab-button px-4 py-3 text-center transition-all duration-200 text-foreground hover:bg-secondary/20"
-            >
-              За период
-            </button>
-          </div>
           <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl mt-4 shadow-lg">
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -347,17 +326,25 @@ export default function AnalyticsDashboard() {
                     ))}
                   </select>
                 </div>
+                 <div className="flex items-center justify-between mb-3">
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={activeTab === "interval"}
+                          onChange={()=>handleTabChange(activeTab === "interval" ? "day" : "interval")}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        <span className="ml-2 text-xl font-medium text-foreground">
+                          {activeTab === "day" ? "День" : "Интервал"}
+                        </span>
+                      </label>                    </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="px-4">
-        <h2 className="text-xl font-bold text-foreground bg-card/80 backdrop-blur-sm rounded-xl p-4 border border-border shadow-sm">
-          {getTitle()}
-        </h2>
-      </div>
-      <main className="px-4 my-8 space-y-8 flex-grow">
+      <main className="px-4 my-4 space-y-2 flex-grow">
         {loading ? (
           <div className="flex justify-center items-center p-8">
             <div className="relative">
@@ -372,7 +359,7 @@ export default function AnalyticsDashboard() {
         ) : (
           <div className="space-y-6">
             <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
-              <DepartmentStatsInDay data={dataInDay.department_stats} />
+              <DepartmentStatsInDay data={dataInDay.department_stats} title={getTitle()}/>
             </div>
             <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
               {dataInDayPer?.distribution && <TopFunctions data={dataInDayPer.distribution} />}

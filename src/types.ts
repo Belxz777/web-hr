@@ -136,6 +136,7 @@ type DepartmentStatsProps = {
     deputy_hours: number;
     employee_count: number;
   };
+  title: string;
 };
 type EmployeeStatsProps = {
   deputy_hours: number;

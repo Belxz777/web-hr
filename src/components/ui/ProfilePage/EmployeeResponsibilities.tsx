@@ -156,55 +156,55 @@ export function EmployeeResponsibilities({
         </div>
       )}
 
-      {/* Work hours tracking section */}
-      <div className="mt-8 bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-          <h3 className="text-xl font-bold text-[#000000] mb-2 md:mb-0">Учет рабочего времени</h3>
-          <div className="text-gray-600">{currentDate}</div>
-        </div>
-
-        <div className="mb-2 flex justify-between">
-          <span className="text-[#249BA2] font-medium">Отработано сегодня:</span>
-          <span className="font-bold text-[#249BA2]">{Math.floor(hoursWorked)} ч. и {Math.round((hoursWorked % 1) * 60)} мин.  из 8 ч</span>
-        </div>
-
-        <div className="relative h-6 bg-gray-100 rounded-full overflow-hidden">
-          <div
-            className="absolute top-0 left-0 h-full bg-[#249BA2] transition-all duration-500 ease-in-out"
-            style={{ width: `${workdayPercentage}%` }}
-          ></div>
-          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-xs font-medium">
-            {workdayPercentage}%
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="mt-4 grid grid-cols-4 gap-2">
-            {[...Array(4)].map((_, index) => (
-              <div key={index} className="animate-pulse bg-gray-200 h-10 rounded-lg"></div>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">
-            {/* <div className="bg-gray-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-gray-500">План</div>
-              <div className="font-bold text-[#249BA2]">8 ч</div>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-gray-500">Факт</div>
-              <div className="font-bold text-[#249BA2]">{hoursWorked} ч</div>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-gray-500">Осталось</div>
-              <div className="font-bold text-[#249BA2]">{Math.max(8 - hoursWorked, 0).toFixed(1)} ч</div>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-3 text-center">
-              <div className="text-xs text-gray-500">Эффективность</div>
-              <div className="font-bold text-[#249BA2]">{workdayPercentage}%</div>
-            </div> */}
-          </div>
-        )}
-      </div>
     </div>
   )
 }
+
+      // <div className="mt-8 bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      //   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+      //     <h3 className="text-xl font-bold text-[#000000] mb-2 md:mb-0">Учет рабочего времени</h3>
+      //     <div className="text-gray-600">{currentDate}</div>
+      //   </div>
+
+      //   <div className="mb-2 flex justify-between">
+      //     <span className="text-[#249BA2] font-medium">Отработано сегодня:</span>
+      //     <span className="font-bold text-[#249BA2]">{Math.floor(hoursWorked)} ч. и {Math.round((hoursWorked % 1) * 60)} мин.  из 8 ч</span>
+      //   </div>
+
+      //   <div className="relative h-6 bg-gray-100 rounded-full overflow-hidden">
+      //     <div
+      //       className="absolute top-0 left-0 h-full bg-[#249BA2] transition-all duration-500 ease-in-out"
+      //       style={{ width: `${workdayPercentage}%` }}
+      //     ></div>
+      //     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-xs font-medium">
+      //       {workdayPercentage}%
+      //     </div>
+      //   </div>
+
+      //   {loading ? (
+      //     <div className="mt-4 grid grid-cols-4 gap-2">
+      //       {[...Array(4)].map((_, index) => (
+      //         <div key={index} className="animate-pulse bg-gray-200 h-10 rounded-lg"></div>
+      //       ))}
+      //     </div>
+      //   ) : (
+      //     <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">
+      //       {/* <div className="bg-gray-50 rounded-lg p-3 text-center">
+      //         <div className="text-xs text-gray-500">План</div>
+      //         <div className="font-bold text-[#249BA2]">8 ч</div>
+      //       </div>
+      //       <div className="bg-gray-50 rounded-lg p-3 text-center">
+      //         <div className="text-xs text-gray-500">Факт</div>
+      //         <div className="font-bold text-[#249BA2]">{hoursWorked} ч</div>
+      //       </div>
+      //       <div className="bg-gray-50 rounded-lg p-3 text-center">
+      //         <div className="text-xs text-gray-500">Осталось</div>
+      //         <div className="font-bold text-[#249BA2]">{Math.max(8 - hoursWorked, 0).toFixed(1)} ч</div>
+      //       </div>
+      //       <div className="bg-gray-50 rounded-lg p-3 text-center">
+      //         <div className="text-xs text-gray-500">Эффективность</div>
+      //         <div className="font-bold text-[#249BA2]">{workdayPercentage}%</div>
+      //       </div> */}
+      //     </div>
+      //   )}
+      // </div>

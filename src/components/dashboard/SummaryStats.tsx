@@ -132,7 +132,7 @@ export const SummaryStats = ({ data }: { data: DepartmentsData }) => {
             </div>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <div className={`w-4 h-4 ${basicColors.extra} rounded-sm`}></div>
+                <div className={`w-4 h-4 ${basicColors.main.typical} rounded-sm`}></div>
                 <span className="text-[#000000]">
                   Функции: <span className="font-semibold">{convertedFunctionHours}</span> (
                   {totalStats.total_hours > 0

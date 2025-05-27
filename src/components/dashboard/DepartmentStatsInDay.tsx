@@ -2,8 +2,8 @@ import { DepartmentStatsProps } from "@/types";
 import { StatCard } from "./StatCard";
 import { convertDataToNormalTime } from "../utils/convertDataToNormalTime";
 
-export const DepartmentStatsInDay = ({ data }: DepartmentStatsProps) => {
-    if (!data) return null;
+export const DepartmentStatsInDay = ({ data, title }: DepartmentStatsProps) => {  
+   if (!data) return null;
 
      const totalHours = convertDataToNormalTime(data.total_hours);
      const fsHours = convertDataToNormalTime(data.function_hours);
@@ -12,7 +12,10 @@ export const DepartmentStatsInDay = ({ data }: DepartmentStatsProps) => {
   
     return (
       <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border  shadow-lg m-3">
-        <div className="flex justify-between items-center mb-4">
+         <h1 className="text-3xl font-extrabold text-primary bg-card/80 backdrop-blur-sm rounded-xl pb-6 shadow-sm  border-primary select-none">
+          {title}
+        </h1>
+        <div className="flex justify-between items-center mb-4 mt-4">
           <h2 className="text-xl font-bold">Статистика отдела</h2>
         </div>
   
