@@ -1,3 +1,4 @@
+import { basicColorsHrs } from "@/store/sets";
 import { convertDataToNormalTime } from "../utils/convertDataToNormalTime";
 
 export const CircularDiagram = ({
@@ -142,3 +143,93 @@ export const CircularDiagram = ({
   );
 };
 
+
+export const HoursDistributionDiagram = ({
+  data,
+  title,
+}: {
+  data: any[];
+  title: string;
+}) => {
+  const total = data.reduce((acc, item) => acc + item.value, 0);
+  const chartData = data.map((item) => ({
+    ...item,
+    percentage: (item.value / total) * 100,
+  }));
+
+  let startAngle = 0;
+
+  return (
+    <div className="relative w-full">
+      <div className="relative w-full aspect-square">
+        <svg viewBox="0 0 100 100">
+          {chartData.map((item: any, index: number) => {
+            const angle = (item.percentage / 100) * 360;
+            const endAngle = startAngle + angle;
+            const largeArcFlag = angle > 180 ? 1 : 0;
+
+            const startRad = (startAngle * Math.PI) / 180;
+            const endRad = (endAngle * Math.PI) / 180;
+
+            const x1 = 50 + 30 * Math.cos(startRad);
+            const y1 = 50 + 30 * Math.sin(startRad);
+            const x2 = 50 + 30 * Math.cos(endRad);
+            const y2 = 50 + 30 * Math.sin(endRad);
+
+            const textRad = ((startAngle + angle / 2) * Math.PI) / 180;
+            const textX = 50 + 20 * Math.cos(textRad);
+            const textY = 50 + 20 * Math.sin(textRad);
+
+            startAngle += angle;
+
+            return (
+              <g key={index}>
+                <path
+                  d={`M 50 50 L ${x1} ${y1} A 30 30 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                  fill={item.color}
+                />
+                {item.percentage > 5 && (
+                  <text
+                    x={textX}
+                    y={textY}
+                    fill="black"
+                    fontSize="5"
+                    fontWeight={"bold"}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    {item.percentage.toFixed(0)}%
+                  </text>
+                )}
+              </g>
+            );
+          })}
+          <circle cx="50" cy="50" r="20" fill="#1F2937" />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center flex-col">
+          <span className="text-2xl font-bold text-gray-200 z-10 bg-[#1F2937] px-2 rounded">
+            {total}
+          </span>
+        </div>
+      </div>
+      <div className="mt-4 w-full">
+        {chartData.map((item: any, index: number) => {
+          return (
+            <div key={index} className="flex items-center justify-between mb-1">
+              <div className="flex items-center">
+                <div
+                  className="w-3 h-3 rounded-sm mr-2"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span className="text-sm text-foreground">{item.label}</span>
+              </div>
+              <div className="text-sm text-muted">
+                {item.value} ({item.percentage.toFixed(0)}%)
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

@@ -5,3 +5,10 @@ export const basicColors = {
     },
     extra:"bg-[#F0E68C]"
   }
+ export  const basicColorsHrs = {
+  main:{
+    typical:"#32CD32",
+    nontypical:"#B22222"
+  },
+  extra:"#F0E68C"
+}

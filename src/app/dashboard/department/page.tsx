@@ -258,14 +258,9 @@ export default function AnalyticsDashboard() {
             </div>
           </div>
         </div>
-        <div className="px-4">
-          <h2 className="text-xl font-bold text-foreground bg-card/80 backdrop-blur-sm rounded-xl p-4 border border-border shadow-sm">
-            {getTitle()}
-          </h2>
-        </div>
         <main className="px-4 my-8 space-y-8 flex-grow">
           <div className="text-muted-foreground text-center py-12 bg-white/80 rounded-xl border border-border">
-            <div className="text-lg">Выберите дату</div>
+            <div className="text-lg">Пожалуйста выберите дату</div>
           </div>
         </main>
         <UniversalFooter />
