@@ -185,10 +185,10 @@ export default function GeneralDashboard() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[#000000]">
                             {department.department_stats.total_hours.toFixed(1)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[#249BA2]">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#32CD32]">
                             {department.department_stats.function_hours.toFixed(1)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[#FF0000]">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[#F0E68C]">
                             {department.department_stats.deputy_hours.toFixed(1)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[#000000]">

@@ -10,6 +10,7 @@ import { CircularDiagram } from "@/components/dashboard/CircularDiagram"
 import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
 import getEmployeeAnalytics from "@/components/server/analysis/employee"
 import { DailySummaryGrid } from "@/components/buildIn/GridStats"
+import { basicColorsHrs } from "@/store/sets"
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
@@ -56,6 +57,7 @@ export default function EmployeeDailyStats() {
             startDate: startDate,
             endDate: endDate,
           }),
+
           getEmployeeAnalytics(Number(empId), "percentage", "period", {
             startDate: startDate,
             endDate: endDate,
@@ -137,21 +139,20 @@ export default function EmployeeDailyStats() {
   const functionsHours = employeeDistribution?.summary?.function_hours || 0
 
   const hourDistributionDataType = [
-    { label: "Функции", value: functionsHours, color: "#3B82F6" },
     {
       label: "Типичные для сотрудника",
       value: typicalHours || 0,
-      color: "#008000",
+      color: basicColorsHrs.main.typical,
     },
     {
       label: "Нетипичные для сотрудника",
       value: nonTypicalHours || 0,
-      color: "#DC143C",
+      color: basicColorsHrs.main.nontypical,
     },
     {
       label: "Дополнительные",
       value: deputyHours || 0,
-      color: "#DAA520",
+      color: basicColorsHrs.extra,
     },
   ]
   const hourDistributionData = [
@@ -175,7 +176,7 @@ export default function EmployeeDailyStats() {
 
   if (!employeeSummary || !employeeDistribution) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col cursor-pointer">
         <Header title="Статистика сотрудника" showPanel={false} />
         <main className="container mx-auto p-4 flex-grow">
           <div className="grid w-full grid-cols-2 bg-card/90 backdrop-blur-sm rounded-xl overflow-hidden border border-border mb-4">
@@ -253,7 +254,7 @@ export default function EmployeeDailyStats() {
               </div>
               <div className="flex flex-col items-center justify-center p-8">
                 <p className="text-foreground text-lg bg-card/80 backdrop-blur-sm px-4 py-2 rounded-lg">
-                  Выберите дату
+                  Пожалуйста выберите дату
                 </p>
               </div>
             </div>
@@ -265,7 +266,7 @@ export default function EmployeeDailyStats() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col cursor-pointer">
       <Header title="Статистика сотрудника" showPanel={false} />
       <main className="container mx-auto p-4 flex-grow">
         <div className="grid w-full grid-cols-2 bg-card/90 backdrop-blur-sm rounded-xl overflow-hidden border border-border mb-4">
@@ -306,7 +307,7 @@ export default function EmployeeDailyStats() {
               </div>
             </div>
 
-            <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg m-4">
+            <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg m-4 cursor-pointer">
               <div className="p-4 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {activeTab === "day" && (
@@ -326,7 +327,7 @@ export default function EmployeeDailyStats() {
 
                   {activeTab === "interval" && (
                     <>
-                      <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border">
+                      <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border cursor-pointer">
                         <div className="text-foreground font-medium mb-3">Начальная дата</div>
                         <input
                           type="date"
@@ -393,12 +394,11 @@ export default function EmployeeDailyStats() {
             <div className="p-4 border-b border-border bg-gradient-to-r from-secondary/10 to-primary/10">
               <h3 className="text-xl font-bold text-foreground">Распределение часов</h3>
             </div>
-            <div className="grid grid-cols-2 justify-center gap-4 p-6">
-              <CircularDiagram data={hourDistributionData} title="" />
-              <CircularDiagram data={hourDistributionDataType} title="" />
+            <div className="flex justify-center gap-4 p-6">
+              <CircularDiagram data={hourDistributionData} title="" showtotal={true} />
+              {/* <CircularDiagram data={hourDistributionDataType} title=""  showtotal={false} /> */}
             </div>
           </div>
-
           <div
             className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-border mb-6"
             style={{ maxHeight: "calc(100vh - 400px)", overflowY: "scroll" }}

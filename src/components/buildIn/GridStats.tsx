@@ -1,5 +1,6 @@
 "use client"
 
+import { basicColors, basicColorsHrs } from "@/store/sets"
 import { convertDataToNormalTime } from "../utils/convertDataToNormalTime"
 
 interface DailySummaryData {
@@ -41,27 +42,7 @@ export function DailySummaryGrid({ data}: DailySummaryGridProps) {
     return days[date.getDay()]
   }
 
-  const getIntensityLevel = (hours: number) => {
-    if (hours === 0) return "empty"
-    if (hours <= 4) return "low"
-    if (hours <= 8) return "medium"
-    return "high"
-  }
 
-  const getIntensityColor = (level: string) => {
-    switch (level) {
-      case "empty":
-        return "bg-border/30"
-      case "low":
-        return "bg-secondary/30"
-      case "medium":
-        return "bg-secondary/60"
-      case "high":
-        return "bg-primary/60"
-      default:
-        return "bg-border/30"
-    }
-  }
 
   const maxHours = Math.max(...data.map((d) => d.total_hours))
 
@@ -78,8 +59,8 @@ export function DailySummaryGrid({ data}: DailySummaryGridProps) {
         {data.map((day, index) => {
           const { day: dayNum, month } = formatDate(day.date)
           const dayName = getDayName(day.date)
-          const intensity = getIntensityLevel(day.total_hours)
-          const intensityColor = getIntensityColor(intensity)
+          // const intensity = getIntensityLevel(day.total_hours)
+          // const intensityColor = getIntensityColor(intensity)
           const totalTime = convertDataToNormalTime(day.total_hours)
           const functionTime = convertDataToNormalTime(day.function_hours)
           const deputyTime = convertDataToNormalTime(day.deputy_hours)
@@ -111,7 +92,8 @@ export function DailySummaryGrid({ data}: DailySummaryGridProps) {
                 <div
                   className={`
                     w-12 h-12 rounded-full flex items-center justify-center
-                    ${intensityColor} border-2 border-border/50
+                    bg-gradient-to-r from-green-500/20 to-transparent
+                    border-2 border-l-green-800/[${Math.min((day.total_hours / 8) * 100, 100)}%] border-border/50
                     transition-all duration-300 group-hover:scale-110
                   `}
                 >
@@ -119,20 +101,20 @@ export function DailySummaryGrid({ data}: DailySummaryGridProps) {
                 </div>
 
                 {/* Hours breakdown bars */}
-                <div className="w-full space-y-1">
+                {/* <div className="w-full space-y-1">
                   {day.function_hours > 0 && (
                     <div className="flex items-center gap-1">
-                      <div className="w-2 h-1 bg-secondary rounded-full"></div>
+                      <div className={`w-2 h-1 ${basicColors.main.typical} rounded-full`}></div>
                       <div className="text-xs text-muted-foreground">{day.function_hours}ч</div>
                     </div>
                   )}
                   {day.deputy_hours > 0 && (
                     <div className="flex items-center gap-1">
-                      <div className="w-2 h-1 bg-primary rounded-full"></div>
+                      <div className={`w-2 h-1 ${basicColors.extra} rounded-full`}></div>
                       <div className="text-xs text-muted-foreground">{day.deputy_hours}ч</div>
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
 
               {/* Tooltip on hover */}
@@ -147,7 +129,7 @@ export function DailySummaryGrid({ data}: DailySummaryGridProps) {
               </div>
 
               {/* Intensity indicator */}
-              <div className="absolute top-2 right-2">
+              {/* <div className="absolute top-2 right-2">
                 <div
                   className={`w-2 h-2 rounded-full ${
                     intensity === "high"
@@ -159,27 +141,24 @@ export function DailySummaryGrid({ data}: DailySummaryGridProps) {
                           : "bg-border"
                   }`}
                 ></div>
-              </div>
+              </div> */}
             </div>
           )
         })}
       </div>
 
       {/* Legend */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground">
+      {/* <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-secondary rounded-full"></div>
+          <div className={`w-3 h-3 ${basicColors.main.typical} rounded-full`}></div>
           <span>Основные функции</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-primary rounded-full"></div>
+          <div className={`w-3 h-3 ${basicColors.extra} rounded-full`}></div>
           <span>Дополнительные обязанности</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-border rounded-full"></div>
-          <span>Нет активности</span>
-        </div>
-      </div>
+
+      </div> */}
 
       {/* Summary stats */}
       <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -189,14 +168,14 @@ export function DailySummaryGrid({ data}: DailySummaryGridProps) {
           </div>
           <div className="text-xs text-muted-foreground">Всего часов</div>
         </div>
-        <div className="text-center p-3 bg-background/30 rounded-lg border border-border/50">
-          <div className="text-lg font-bold text-secondary">
+        <div className={`text-center p-3 bg-background/30 rounded-lg border border-border/50 text-[${basicColorsHrs.main.typical}] `}>
+          <div className={`text-lg font-bold  text-${basicColors.main.typical} `}>
             {convertDataToNormalTime(data.reduce((sum, day) => sum + day.function_hours, 0))}
           </div>
           <div className="text-xs text-muted-foreground">Основные</div>
         </div>
-        <div className="text-center p-3 bg-background/30 rounded-lg border border-border/50">
-          <div className="text-lg font-bold text-primary">
+        <div className={`text-center p-3 bg-background/30 rounded-lg border border-border/50 text-[${basicColorsHrs.extra}] `}>
+          <div className={`text-lg font-bold  text-${basicColors.extra} `}>
             {convertDataToNormalTime(data.reduce((sum, day) => sum + day.deputy_hours, 0))}
           </div>
           <div className="text-xs text-muted-foreground">Дополнительные</div>

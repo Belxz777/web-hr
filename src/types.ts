@@ -281,6 +281,58 @@ type EmployeeSummary = {
     start_date: string | null;
     end_date: string | null;
   };
+  distribution: {
+    by_type: {
+      by_functions: {
+        typical: Array<{
+          function_id: number;
+          function_name: string;
+          hours: number;
+          percent: number;
+          entries_count: number;
+        }>;
+        non_typical: Array<{
+          function_id: number;
+          function_name: string;
+          hours: number;
+          percent: number;
+          entries_count: number;
+        }>;
+      };
+      non_compulsory: {
+        hours: number;
+        percent: number;
+      };
+      typical: {
+        hours: number;
+        percent: number;
+      };
+      non_typical: {
+        hours: number;
+        percent: number;
+      };
+    };
+    by_functions: {
+      typical: Array<{
+        function_id: number;
+        function_name: string;
+        hours: number;
+        percent: number;
+      }>;
+      non_typical: Array<{
+        function_id: number;
+        function_name: string;
+        hours: number;
+        percent: number;
+      }>;
+    };
+    by_deputies: Array<{
+      deputy_id: number;
+      deputy_name: string;
+      hours: number;
+      percent: number;
+    }>;
+  }
 };
 
 type EmployeeDistribution = {

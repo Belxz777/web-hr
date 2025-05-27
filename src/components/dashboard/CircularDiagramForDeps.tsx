@@ -37,7 +37,7 @@ export const CircularDiagramForDeps = ({
   const deputyPercentage = (deputyHours / total) * 100;
 
   return (
-    <div className="relative w-24 h-24">
+    <div className="relative w-32 h-32">
       <svg viewBox="0 0 100 100" className="w-full h-full">
         {functionHours > 0 && (
           <circle
@@ -45,7 +45,7 @@ export const CircularDiagramForDeps = ({
             cy="50"
             r={radius}
             fill="transparent"
-            stroke="#249BA2"
+            stroke="#32CD32"
             strokeWidth="16"
             strokeDasharray={`${
               (functionPercentage / 100) * circumference
@@ -59,7 +59,7 @@ export const CircularDiagramForDeps = ({
             cy="50"
             r={radius}
             fill="transparent"
-            stroke="#FF0000"
+            stroke="#F0E68C"
             strokeWidth="16"
             strokeDasharray={`${
               (deputyPercentage / 100) * circumference
@@ -71,10 +71,10 @@ export const CircularDiagramForDeps = ({
         <circle cx="50" cy="50" r="32" fill="#1F2937" />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center flex-col">
-        <span className="text-sm font-bold text-gray-200">
+        <span className="text-sm font-bold text-gray-200 bg-gray-800 rounded-xl ">
           {convertedTotalHours}
         </span>
-        <span className="text-xs text-gray-400">часов</span>
+        <span className="text-xs text-gray-400">ч.</span>
       </div>
     </div>
   );

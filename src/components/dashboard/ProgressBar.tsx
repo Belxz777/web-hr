@@ -51,12 +51,7 @@ export const ProgressBar = ({
         </div>
       </div>
 
-      {/* Progress indicator text */}
-      {value > 0 && (
-        <div className="mt-1 text-xs text-muted-foreground">
-          {value < 10 ? "Низкая активность" : value < 50 ? "Умеренная активность" : "Высокая активность"}
-        </div>
-      )}
+    
     </div>
   )
 }
