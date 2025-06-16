@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import type React from "react"
-import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
+import type React from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 interface MenuItemProps {
-  href: string
-  icon: React.ReactNode
-  children: React.ReactNode
+  href: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ href, icon, children }) => {
@@ -25,35 +25,35 @@ const MenuItem: React.FC<MenuItemProps> = ({ href, icon, children }) => {
         </span>
       </Link>
     </li>
-  )
-}
+  );
+};
 
 const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
-  const [currentTime, setCurrentTime] = useState("")
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
-    setCurrentTime(new Date().toLocaleTimeString())
+    setCurrentTime(new Date().toLocaleTimeString());
     const timer = setInterval(() => {
-      setCurrentTime(new Date().toLocaleTimeString())
-    }, 1000)
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
 
-    return () => clearInterval(timer)
-  }, [])
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false)
+        setIsMenuOpen(false);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="relative" ref={menuRef}>
@@ -89,7 +89,11 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
           absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl py-2 
           transform origin-top-right transition-all duration-300 ease-in-out z-50
           border border-gray-200
-          ${isMenuOpen ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"}
+          ${
+            isMenuOpen
+              ? "scale-100 opacity-100"
+              : "scale-95 opacity-0 pointer-events-none"
+          }
         `}
       >
         <ul className="py-1 space-y-1">
@@ -119,28 +123,55 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
               </MenuItem>
 
               {position >= 4 && (
-                <MenuItem
-                  href="/stats"
-                  icon={
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 2L3 5v6c0 5.5 3.5 10.75 9 12 5.5-1.25 9-6.5 9-12V5l-9-3z"
-                      />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
-                    </svg>
-                  }
-                >
-                  Статус работы приложения
-                </MenuItem>
+                <>
+                  <MenuItem
+                    href="/stats"
+                    icon={
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 2L3 5v6c0 5.5 3.5 10.75 9 12 5.5-1.25 9-6.5 9-12V5l-9-3z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 12l2 2 4-4"
+                        />
+                      </svg>
+                    }
+                  >
+                    Статус работы приложения
+                  </MenuItem>
+                  <MenuItem
+                    href="/admin"
+                    icon={
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 7h6v6H3V7zm8 0h6v6h-6V7zm-8 8h6v6H3v-6zm8 0h6v6h-6v-6z"
+                        />
+                      </svg>
+                    }
+                  >
+                    Админ-панель
+                  </MenuItem>
+                </>
               )}
             </>
           )}
@@ -198,7 +229,9 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
           <li className="mt-2 pt-2 border-t border-gray-200">
             <div className="flex items-center justify-between px-4 py-2 text-sm">
               <span className="text-gray-500">Время:</span>
-              <span className="text-gray-700 font-mono bg-gray-100 px-2 py-1 rounded-xl">{currentTime}</span>
+              <span className="text-gray-700 font-mono bg-gray-100 px-2 py-1 rounded-xl">
+                {currentTime}
+              </span>
             </div>
             <div className="flex items-center justify-between px-4 py-2 text-sm">
               <span className="text-gray-500">День недели:</span>
@@ -210,39 +243,45 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HeaderMenu
+export default HeaderMenu;
 
 const CompanyLogos = () => {
   return (
     <div className="flex items-center space-x-4">
       <Link href="/profile">
-      <img src="/info.png" alt="Info" className="w-auto h-16" />
+        <img src="/info.png" alt="Info" className="w-auto h-16" />
       </Link>
     </div>
-  )
-}
+  );
+};
 
 const NavLinks = () => {
   return (
     <nav className="hidden md:flex items-center space-x-8">
-      <Link href="/report" className="text-gray-700 hover:text-[#249BA2] font-medium">
+      <Link
+        href="/report"
+        className="text-gray-700 hover:text-[#249BA2] font-medium"
+      >
         Заполнение отчета
       </Link>
-      <Link href="/settings" className="text-gray-700 hover:text-[#249BA2] font-medium">
+      <Link
+        href="/settings"
+        className="text-gray-700 hover:text-[#249BA2] font-medium"
+      >
         Настройки
       </Link>
     </nav>
-  )
-}
+  );
+};
 
 export const Header: React.FC<{
-  title?: string
-  position?: number | null
-  showPanel: boolean
-  buttons?: boolean
+  title?: string;
+  position?: number | null;
+  showPanel: boolean;
+  buttons?: boolean;
 }> = ({ title, position = null, showPanel, buttons = false }) => {
   return (
     <header className="bg-white border-b border-gray-200 py-2 px-4">
@@ -279,5 +318,5 @@ export const Header: React.FC<{
         </div>
       )}
     </header>
-  )
-}
+  );
+};
