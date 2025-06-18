@@ -3,6 +3,15 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/ui/header";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
+import {
+  createDepartmentFn,
+  deleteDepartmentFn,
+  updateDepartmentFn,
+} from "@/components/server/admin/department";
+import useGetAlldeps from "@/hooks/useDeps";
+import { getAllDeputies } from "@/components/server/admin/deputy";
+import { createJobFn, getAllJobs, updateJobFn } from "@/components/server/admin/jobs";
+import getAllFunctionsForReport from "@/components/server/userdata/getAllFunctionsForReport";
 
 type Department = {
   id: number;
@@ -29,24 +38,90 @@ type TFS = {
 };
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<"departments" | "positions">(
-    "departments"
-  );
-  const [departmentSubTab, setDepartmentSubTab] = useState<
-    "create" | "edit" | "delete"
-  >("create");
-  const [positionSubTab, setPositionSubTab] = useState<"create" | "edit">(
-    "create"
-  );
+  const [activeTab, setActiveTab] = useState<"departments" | "positions">("departments");
+  const [departmentSubTab, setDepartmentSubTab] = useState<"create" | "edit" | "delete">("create");
+  const [positionSubTab, setPositionSubTab] = useState<"create" | "edit">("create");
 
-  // Состояния для данных
   const [departments, setDepartments] = useState<Department[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [deputies, setDeputies] = useState<Deputy[]>([]);
-  const [loading, setLoading] = useState(false);
   const [tfsOptions, setTfsOptions] = useState<TFS[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Состояния форм
+  const { deps, loading: isDepsLoading, refetch } = useGetAlldeps();
+
+  useEffect(() => {
+    setLoading(isDepsLoading);
+    if (deps) {
+      setDepartments(deps);
+    }
+  }, [deps, isDepsLoading]);
+
+  const [isJobsLoaded, setIsJobsLoaded] = useState(false);
+  const [isDeputiesLoaded, setIsDeputiesLoaded] = useState(false);
+  const [isTfsLoaded, setIsTfsLoaded] = useState(false);
+
+  const fetchJobs = async () => {
+    if (isJobsLoaded) return;
+    setLoading(true);
+    try {
+      const jobs = await getAllJobs();
+      setJobs(jobs);
+      setIsJobsLoaded(true);
+    } catch (error) {
+      console.error("Ошибка загрузки должностей:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDeputies = async () => {
+    if (isDeputiesLoaded) return;
+    setLoading(true);
+    try {
+      const deputies = await getAllDeputies();
+      if (deputies) {
+        setDeputies(deputies);
+        setIsDeputiesLoaded(true);
+      }
+    } catch (error) {
+      console.error("Ошибка загрузки замов:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTFS = async () => {
+    if (isTfsLoaded) return;
+    setLoading(true);
+    try {
+      const tfs = await getAllFunctionsForReport();
+      if (tfs) {
+        setTfsOptions(tfs);
+        setIsTfsLoaded(true);
+      }
+    } catch (error) {
+      console.error("Ошибка загрузки TFS:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "positions") {
+      if (positionSubTab === "create" || positionSubTab === "edit") {
+        if (!isJobsLoaded) fetchJobs();
+        if (!isDeputiesLoaded) fetchDeputies();
+      }
+    } else if (activeTab === "departments") {
+      if (departmentSubTab === "edit") {
+        if (!isJobsLoaded) fetchJobs();
+        if (!isDeputiesLoaded) fetchDeputies();
+        if (!isTfsLoaded) fetchTFS();
+      } else if (departmentSubTab === "delete") {}
+    }
+  }, [activeTab, departmentSubTab, positionSubTab, isJobsLoaded, isDeputiesLoaded, isTfsLoaded]);
+
   const [departmentForm, setDepartmentForm] = useState({
     departmentName: "",
     departmentDescription: "",
@@ -70,75 +145,19 @@ export default function AdminPage() {
     deputy: 0,
   });
 
-  // Функции-пустышки для загрузки данных
-  const fetchDepartments = async () => {
-    setLoading(true);
-    // Имитация запроса
-    setTimeout(() => {
-      setDepartments([
-        {
-          id: 1,
-          departmentName: "Отдел разработки",
-          departmentDescription: "Разработка программного обеспечения",
-          jobsList: [1, 2],
-          tfs: [1, 2, 3],
-        },
-        {
-          id: 2,
-          departmentName: "Отдел маркетинга",
-          departmentDescription: "Продвижение и реклама",
-          jobsList: [3],
-          tfs: [4, 5],
-        },
-      ]);
-      setLoading(false);
-    }, 1000);
-  };
-
-  const fetchJobs = async () => {
-    setLoading(true);
-    // Имитация запроса
-    setTimeout(() => {
-      setJobs([
-        { id: 1, jobName: "Frontend разработчик", deputy: 1 },
-        { id: 2, jobName: "Backend разработчик", deputy: 2 },
-        { id: 3, jobName: "Маркетолог", deputy: 3 },
-      ]);
-      setLoading(false);
-    }, 1000);
-  };
-
-  const fetchDeputies = async () => {
-    // Имитация запроса
-    setDeputies([
-      { id: 1, name: "Иванов И.И." },
-      { id: 2, name: "Петров П.П." },
-      { id: 3, name: "Сидоров С.С." },
-    ]);
-
-    // Добавить загрузку TFS
-    setTfsOptions([
-      { id: 1, name: "Функция планирования" },
-      { id: 2, name: "Функция контроля" },
-      { id: 3, name: "Функция анализа" },
-      { id: 4, name: "Функция отчетности" },
-      { id: 5, name: "Функция координации" },
-    ]);
-  };
-
-  // Функции-пустышки для отправки данных
   const createDepartment = async (data: {
     departmentName: string;
     departmentDescription: string;
   }) => {
     setLoading(true);
-    console.log("Создание департамента:", data);
-    // Имитация запроса
-    setTimeout(() => {
-      alert("Департамент создан успешно!");
-      setDepartmentForm({ departmentName: "", departmentDescription: "" });
+    try {
+      await createDepartmentFn(data);
+      await refetch();
+    } catch (error) {
+      console.error("Ошибка создания отдела:", error);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const updateDepartment = async (data: {
@@ -147,55 +166,57 @@ export default function AdminPage() {
     tfs: number[];
   }) => {
     setLoading(true);
-    console.log("Обновление департамента:", data);
-    // Имитация запроса
-    setTimeout(() => {
+    try {
+      await updateDepartmentFn(data.id, data.jobsList, data.tfs);
+      await refetch();
       alert("Департамент обновлен успешно!");
+    } catch (error) {
+      console.error("Ошибка обновления отдела:", error);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const deleteDepartment = async (id: number) => {
     setLoading(true);
-    console.log("Удаление департамента:", id);
-    // Имитация запроса
-    setTimeout(() => {
-      alert("Департамент удален успешно!");
-      setDeleteDepartmentId(0);
+    try {
+      await deleteDepartmentFn(id);
+      await refetch();
+    } catch (error) {
+      console.error("Ошибка удаления отдела:", error);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
-  const createJob = async (data: { jobName: string; deputy: number }) => {
-    setLoading(true);
-    console.log("Создание должности:", data);
-    // Имитация запроса
-    setTimeout(() => {
-      alert("Должность создана успешно!");
-      setJobForm({ jobName: "", deputy: 0 });
-      setLoading(false);
-    }, 1000);
-  };
+const createJob = async (data: { jobName: string; deputy: number }) => {
+  setLoading(true);
+  try {
+    await createJobFn(data.jobName, data.deputy);
+    setIsJobsLoaded(false);
+    await fetchJobs();
+    alert("Должность создана успешно!");
+    setJobForm({ jobName: "", deputy: 0 });
+  } catch (error) {
+    console.error("Ошибка создания должности:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const updateJob = async (data: { id: number; deputy: number }) => {
     setLoading(true);
-    console.log("Обновление должности:", data);
-    // Имитация запроса
-    setTimeout(() => {
+    try {
+      await updateJobFn(data.id, data.deputy);
+      setIsJobsLoaded(false); // Сбрасываем флаг для повторной загрузки
+      await fetchJobs();
       alert("Должность обновлена успешно!");
+    } catch (error) {
+      console.error("Ошибка обновления должности:", error);
+    } finally {
       setLoading(false);
-    }, 1000);
-  };
-
-  useEffect(() => {
-    if (activeTab === "departments" && departments.length === 0) {
-      fetchDepartments();
-      fetchDeputies();
-    } else if (activeTab === "positions" && jobs.length === 0) {
-      fetchJobs();
-      fetchDeputies();
     }
-  }, [activeTab]);
+  };
 
   const TabButton = ({
     tab,
@@ -244,13 +265,11 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header title="Админ-панель" showPanel={true} position={5} />
-
       <main className="container mx-auto p-4 flex-grow">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-[#000000] mb-6">
             Управление системой
           </h1>
-
           <div className="flex space-x-1 mb-6">
             <TabButton
               tab="departments"
@@ -263,14 +282,12 @@ export default function AdminPage() {
               isActive={activeTab === "positions"}
             />
           </div>
-
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             {activeTab === "departments" && (
               <div>
                 <h2 className="text-2xl font-bold text-[#000000] mb-4">
                   Управление департаментами
                 </h2>
-
                 <div className="flex space-x-2 mb-6">
                   <SubTabButton
                     tab="create"
@@ -291,14 +308,12 @@ export default function AdminPage() {
                     onClick={() => setDepartmentSubTab("delete")}
                   />
                 </div>
-
                 {loading && (
                   <div className="flex items-center justify-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#249BA2]"></div>
                     <span className="ml-2 text-[#6D6D6D]">Загрузка...</span>
                   </div>
                 )}
-
                 {departmentSubTab === "create" && !loading && (
                   <div className="max-w-md">
                     <h3 className="text-lg font-semibold text-[#000000] mb-4">
@@ -357,7 +372,6 @@ export default function AdminPage() {
                     </form>
                   </div>
                 )}
-
                 {departmentSubTab === "edit" && !loading && (
                   <div className="max-w-lg">
                     <h3 className="text-lg font-semibold text-[#000000] mb-4">
@@ -393,7 +407,6 @@ export default function AdminPage() {
                           ))}
                         </select>
                       </div>
-
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-2">
                           Должности (Jobs List)
@@ -406,25 +419,19 @@ export default function AdminPage() {
                             >
                               <input
                                 type="checkbox"
-                                checked={editDepartmentForm.jobsList.includes(
-                                  job.id
-                                )}
+                                checked={editDepartmentForm.jobsList.includes(job.id)}
                                 onChange={(e) => {
                                   if (e.target.checked) {
                                     setEditDepartmentForm({
                                       ...editDepartmentForm,
-                                      jobsList: [
-                                        ...editDepartmentForm.jobsList,
-                                        job.id,
-                                      ],
+                                      jobsList: [...editDepartmentForm.jobsList, job.id],
                                     });
                                   } else {
                                     setEditDepartmentForm({
                                       ...editDepartmentForm,
-                                      jobsList:
-                                        editDepartmentForm.jobsList.filter(
-                                          (id) => id !== job.id
-                                        ),
+                                      jobsList: editDepartmentForm.jobsList.filter(
+                                        (id) => id !== job.id
+                                      ),
                                     });
                                   }
                                 }}
@@ -437,11 +444,9 @@ export default function AdminPage() {
                           ))}
                         </div>
                         <p className="text-xs text-[#6D6D6D] mt-1">
-                          Выбрано: {editDepartmentForm.jobsList.length}{" "}
-                          должностей
+                          Выбрано: {editDepartmentForm.jobsList.length} должностей
                         </p>
                       </div>
-
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-2">
                           Функции (TFS)
@@ -454,9 +459,7 @@ export default function AdminPage() {
                             >
                               <input
                                 type="checkbox"
-                                checked={editDepartmentForm.tfs.includes(
-                                  tfs.id
-                                )}
+                                checked={editDepartmentForm.tfs.includes(tfs.id)}
                                 onChange={(e) => {
                                   if (e.target.checked) {
                                     setEditDepartmentForm({
@@ -484,7 +487,6 @@ export default function AdminPage() {
                           Выбрано: {editDepartmentForm.tfs.length} функций
                         </p>
                       </div>
-
                       <button
                         type="submit"
                         disabled={loading || editDepartmentForm.id === 0}
@@ -495,7 +497,6 @@ export default function AdminPage() {
                     </form>
                   </div>
                 )}
-
                 {departmentSubTab === "delete" && !loading && (
                   <div className="max-w-md">
                     <h3 className="text-lg font-semibold text-[#000000] mb-4">
@@ -504,9 +505,7 @@ export default function AdminPage() {
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
-                        if (
-                          confirm("Вы уверены, что хотите удалить этот отдел?")
-                        ) {
+                        if (confirm("Вы уверены, что хотите удалить этот отдел?")) {
                           deleteDepartment(deleteDepartmentId);
                         }
                       }}
@@ -544,13 +543,11 @@ export default function AdminPage() {
                 )}
               </div>
             )}
-
             {activeTab === "positions" && (
               <div>
                 <h2 className="text-2xl font-bold text-[#000000] mb-4">
                   Управление должностями
                 </h2>
-
                 <div className="flex space-x-2 mb-6">
                   <SubTabButton
                     tab="create"
@@ -565,14 +562,12 @@ export default function AdminPage() {
                     onClick={() => setPositionSubTab("edit")}
                   />
                 </div>
-
                 {loading && (
                   <div className="flex items-center justify-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#249BA2]"></div>
                     <span className="ml-2 text-[#6D6D6D]">Загрузка...</span>
                   </div>
                 )}
-
                 {positionSubTab === "create" && !loading && (
                   <div className="max-w-md">
                     <h3 className="text-lg font-semibold text-[#000000] mb-4">
@@ -633,7 +628,6 @@ export default function AdminPage() {
                     </form>
                   </div>
                 )}
-
                 {positionSubTab === "edit" && !loading && (
                   <div className="max-w-md">
                     <h3 className="text-lg font-semibold text-[#000000] mb-4">
@@ -707,7 +701,6 @@ export default function AdminPage() {
           </div>
         </div>
       </main>
-
       <UniversalFooter />
     </div>
   );

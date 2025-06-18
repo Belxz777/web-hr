@@ -73,7 +73,6 @@ useEffect(()=>{
   let hours = getLocalStorageWithExpiry('hourstoday')
   setworkedhours(hours)
 },[])
-  // доп - это не компалсари, а functions - это под. функции для фс
 
   return (
     <div className="mainProfileDiv">
