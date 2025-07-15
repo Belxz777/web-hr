@@ -1,3 +1,5 @@
+// Should be deleted, but i will do it when server will work
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

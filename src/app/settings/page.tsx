@@ -4,23 +4,11 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/ui/header";
 
 
-// Пример данных контактов поддержки
 const supportContacts = [
   { name: "Техническая поддержка", email: "@belxz999 (TELEGRAM)" },
-  { name: "Сообщить об ошибке", email: "@belxz999 (TELEGRAM)" },
 ];
 
 export default function SettingsPage() {
-  const [theme, setTheme] = useState("dark");
-  const [showAllResponsibilities, setShowAllResponsibilities] = useState(false);
-  const [responsibilities, setResponsibilities] = useState([]);
-
-
-  const initialDisplayCount = 3;
-  const displayedData = showAllResponsibilities
-    ? responsibilities
-    : responsibilities.slice(0, initialDisplayCount);
-
   return (
     <div
       className={`min-h-screen bg-gradient-to-br from-secondary to-primary`}

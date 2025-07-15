@@ -1,12 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
-import { PulseLogo } from '@/svgs/Logo'
 import { Header } from '@/components/ui/header'
 
 export default function UploadTasksPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -17,7 +14,6 @@ export default function UploadTasksPage() {
   const handleUpload = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (selectedFile) {
-      // Здесь будет логика загрузки файла на сервер
     } else {
       console.log('Файл не выбран')
     }

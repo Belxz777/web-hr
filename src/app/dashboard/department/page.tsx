@@ -11,7 +11,6 @@ import { EmployeeStats } from "@/components/dashboard/EmployeeStats"
 import { TopFunctions } from "@/components/dashboard/TopFunctions"
 import { analyticsDepartments, analyticsDepartmentPercentage } from "@/components/server/analysis/departmentanalysis"
 import getAllDepartments from "@/components/server/admin/departments"
-import { get } from "http"
 
 const getCurrentDate = () => {
   const now = new Date()
@@ -29,7 +28,6 @@ export default function AnalyticsDashboard() {
   const [error, setError] = useState<string | null>(null)
   const [shouldFetch, setShouldFetch] = useState(false)
 
-  // Date states
   const [selectedDate, setSelectedDate] = useState(getCurrentDate())
   const [startDate, setStartDate] = useState(() => {
     const date = new Date()
@@ -43,7 +41,6 @@ export default function AnalyticsDashboard() {
   const [selectedDep, setSelectedDep] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState("day")
 
-  // Fetch departments on component mount
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -61,7 +58,6 @@ export default function AnalyticsDashboard() {
     fetchDepartments()
   }, [])
 
-  // Fetch data when department or dates change and shouldFetch is true
   useEffect(() => {
     if (selectedDep && shouldFetch) {
       fetchData()
@@ -78,7 +74,6 @@ export default function AnalyticsDashboard() {
       let data, dataPer
 
       if (activeTab === "day") {
-        // Fetch data for a single day
         data = await analyticsDepartments({
           depId: selectedDep,
           date: selectedDate,
@@ -88,7 +83,6 @@ export default function AnalyticsDashboard() {
           date: selectedDate,
         })
       } else {
-        // Fetch data for a date range
         data = await analyticsDepartments({
           depId: selectedDep,
           startDate: startDate,

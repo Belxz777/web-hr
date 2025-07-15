@@ -597,7 +597,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
-                          Deputy (ID)
+                          Вспомогательная функция (Deputy)
                         </label>
                         <select
                           required
@@ -610,7 +610,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                           }
                           className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
                         >
-                          <option value={0}>Выберите deputy</option>
+                          <option value={0}>Выберите вспомогательную функцию</option>
                           {deputies.map((deputy) => (
                             <option key={deputy.id} value={deputy.id}>
                               {deputy.name} (ID: {deputy.id})

@@ -5,7 +5,6 @@ import { EmployeeSelectInput } from "@/components/ui/CustomSelectForChooseEmp";
 import { Header } from "@/components/ui/header";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export default function EmployeeSelect() {
   const [emps, setEmp] = useState([]);

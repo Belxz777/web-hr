@@ -12,7 +12,6 @@ interface EmployeeResponsibilitiesProps {
 
 export function EmployeeResponsibilities({
   responsibilitiesFs = [],
-  position,
   isLoading=false
 }: EmployeeResponsibilitiesProps) {
 
@@ -21,18 +20,15 @@ export function EmployeeResponsibilities({
   const [showAdditionalResponsibilities, setShowAdditionalResponsibilities] = useState(true)
   const [functionalData, setFunctionalData] = useState<Deputy[]>(responsibilitiesFs)
   const [hoursWorked,sethoursWorked] = useState(0)
-  // Separate responsibilities by type
   const mainResponsibilities = functionalData.filter((item) => item.compulsory)
   const additionalResponsibilities = functionalData.filter((item) => !item.compulsory)
 
-  // Format current date in Russian
   const currentDate = new Date().toLocaleDateString("ru-RU", {
     day: "numeric",
     month: "long",
     year: "numeric",
   })
 
-  // Calculate percentage of 8-hour workday completed
   const workdayPercentage = Math.min(Math.round((hoursWorked / 8) * 100), 100)
 
   useEffect(() => {
@@ -61,7 +57,6 @@ export function EmployeeResponsibilities({
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Enhanced loading skeleton for main responsibilities */}
           <div className="bg-gray-100 rounded-xl p-6 shadow-sm">
             <div className="flex justify-between items-center mb-4 border-b border-gray-200 pb-2">
               <div className="animate-pulse bg-gray-200 h-6 w-24 rounded"></div>
@@ -70,7 +65,6 @@ export function EmployeeResponsibilities({
             <div className="animate-pulse bg-gray-200 rounded-xl h-14 mb-3"></div>
           </div>
 
-          {/* Enhanced loading skeleton for additional responsibilities */}
           <div className="bg-gray-100 rounded-xl p-6 shadow-sm">
             <div className="flex justify-between items-center mb-4 border-b border-gray-200 pb-2">
               <div className="animate-pulse bg-gray-200 h-6 w-32 rounded"></div>
@@ -85,7 +79,6 @@ export function EmployeeResponsibilities({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Основные обязанности */}
           <div className="bg-[#249BA2] rounded-xl p-6 text-white shadow-sm">
             <div className="flex justify-between items-center mb-4 border-b border-white/30 pb-2">
               <h3 className="text-xl font-bold">Основная</h3>
@@ -117,7 +110,6 @@ export function EmployeeResponsibilities({
             )}
           </div>
 
-          {/* Дополнительные обязанности */}
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <div className="flex justify-between items-center mb-4 border-b border-gray-200 pb-2">
               <h3 className="text-xl font-bold text-[#000000]">Дополнительные</h3>

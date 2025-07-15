@@ -19,7 +19,7 @@ const setLocalStorageWithExpiry = (key: string, value: any) => {
   const item = {
     value: value,
     timestamp: now.getTime(),
-    expiryDate: new Date(now).setHours(19, 0, 0, 0) // Устанавливаем время очистки на сегодня в 19:00
+    expiryDate: new Date(now).setHours(19, 0, 0, 0)
   };
   localStorage.setItem(key, JSON.stringify(item));
 }

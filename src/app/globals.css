@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 input, select {
-  @apply text-black dark:text-white; /* Черный текст в светлой теме, белый в темной */
-  @apply bg-white dark:bg-gray-800; /* Белый фон в светлой, темный в темной */
+  @apply text-black dark:text-white;
+  @apply bg-white dark:bg-gray-800;
 }
 
 /* :root {

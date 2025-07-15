@@ -1,3 +1,5 @@
+// Could be useful
+
 // import { Job, TFData } from "@/types";
 
 // export default function UpdateFR({

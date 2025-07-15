@@ -3,12 +3,10 @@
 import type React from "react"
 
 import { useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import getEmployeeId from "@/components/server/useless/fetchuserbyid"
 import { Header } from "@/components/ui/header"
 
-// Тип данных сотрудника согласно требованиям
 type Employee = {
   employeeId: number
   firstName: string
@@ -24,9 +22,7 @@ type Employee = {
   tasksCount: null
 }
 
-// Имитация запроса к API
 
-// Имитация данных отделов и должностей для отображения имен вместо ID
 const departments = [
   { id: 1, name: "IT отдел" },
   { id: 2, name: "Отдел дизайна" },
@@ -76,13 +72,11 @@ export default function AdminUserDetailsPage() {
       setIsLoading(false)
     }
   }
-  // Получение названия отдела по ID
   const getDepartmentName = (id: number) => {
         const department = departments.find((dept) => dept.id === id)
         return department ? department.name : `Отдел ID: ${id}`
     }
 
-    // Получение названия должности по ID
     const getJobTitle = (id: number) => {
         const job = jobs.find((job) => job.id === id)
         return job ? job.title : `Должность ID: ${id}`
@@ -182,7 +176,6 @@ export default function AdminUserDetailsPage() {
 
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Основная информация */}
                 <section>
                   <h3 className="text-lg font-semibold mb-4 pb-2 border-b border-gray-700">Основная информация</h3>
                   <dl className="space-y-3">
@@ -205,7 +198,6 @@ export default function AdminUserDetailsPage() {
                   </dl>
                 </section>
 
-                {/* Информация о работе */}
                 <section>
                   <h3 className="text-lg font-semibold mb-4 pb-2 border-b border-gray-700">Информация о работе</h3>
                   <dl className="space-y-3">
@@ -236,7 +228,6 @@ export default function AdminUserDetailsPage() {
                   </dl>
                 </section>
 
-                {/* Информация о задачах */}
                 <section>
                   <h3 className="text-lg font-semibold mb-4 pb-2 border-b border-gray-700">Информация о задачах</h3>
                   <dl className="space-y-3">
@@ -256,7 +247,6 @@ export default function AdminUserDetailsPage() {
                 </section>
               </div>
 
-              {/* Кнопки действий */}
               <div className="mt-8 flex flex-wrap gap-4">
                 <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
                   Редактировать профиль

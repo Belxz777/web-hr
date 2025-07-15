@@ -133,28 +133,6 @@ export default function EmployeeDailyStats() {
   }
 
   const totalTime = convertDataToNormalTime(employeeSummary?.summary?.total_hours || 0)
-  const typicalHours = employeeDistribution?.summary?.compulsory_hours || 0
-  const nonTypicalHours = employeeDistribution?.summary?.non_compulsory_hours || 0
-  const deputyHours = employeeDistribution?.summary?.deputy_hours || 0
-  const functionsHours = employeeDistribution?.summary?.function_hours || 0
-
-  const hourDistributionDataType = [
-    {
-      label: "Типичные для сотрудника",
-      value: typicalHours || 0,
-      color: basicColorsHrs.main.typical,
-    },
-    {
-      label: "Нетипичные для сотрудника",
-      value: nonTypicalHours || 0,
-      color: basicColorsHrs.main.nontypical,
-    },
-    {
-      label: "Дополнительные",
-      value: deputyHours || 0,
-      color: basicColorsHrs.extra,
-    },
-  ]
   const hourDistributionData = [
     {
       label: "Основные",

@@ -60,7 +60,6 @@ export const Bytypes = ({ data }: { data: local["distribution"] }) => {
     <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
       <h2 className="text-xl font-bold text-foreground mb-6">Распределение по типам</h2>
       <div className="flex flex-col space-y-4">
-        {/* Main compulsory progress bar - clickable if has typical data */}
         <div
           className={`${
             hasTypicalData ? "cursor-pointer hover:bg-secondary/5 rounded-lg p-2 -m-2 transition-all duration-200" : ""
@@ -85,7 +84,6 @@ export const Bytypes = ({ data }: { data: local["distribution"] }) => {
           </div>
         </div>
 
-        {/* Expanded typical/non-typical bars */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
             isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
@@ -109,7 +107,6 @@ export const Bytypes = ({ data }: { data: local["distribution"] }) => {
           </div>
         </div>
 
-        {/* Non-compulsory progress bar */}
         <ProgressBar
           label="Дополнительные"
           value={data?.by_type?.non_compulsory?.percent ?? 0}
@@ -118,7 +115,6 @@ export const Bytypes = ({ data }: { data: local["distribution"] }) => {
         />
       </div>
 
-      {/* Info text */}
       {hasTypicalData && (
         <div className="mt-4 text-xs text-muted-foreground flex items-center gap-1">
           Нажмите на "Основные сотрудников" для детализации

@@ -4,10 +4,8 @@ import { useState, useEffect } from "react"
 import type { BackendStatus } from "@/types"
 import { host } from "@/types"
 import { Header } from "@/components/ui/header"
-import { useRouter } from "next/navigation"
 
 export default function SystemStatusPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null)
