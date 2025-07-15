@@ -1,8 +1,5 @@
 "use server";
 import { host } from "@/types";
-import { cookies } from "next/headers";
-import { FunctionComponent } from "react";
-
 async function getAllJobs(): Promise<any> {
   try {
     const response = await fetch(

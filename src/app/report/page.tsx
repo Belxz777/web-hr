@@ -239,7 +239,7 @@ setLocalStorageWithExpiry('hourstoday',hours)
             Отчет за: {formatReportDate(new Date())}
           </div>
           <div className="mb-4 text-center text-foreground text-lg font-semibold">
-            Уже отработано сегодня: {convertDataToNormalTime(hoursworked)}
+            Сегодня отработано: {convertDataToNormalTime(hoursworked)}
           </div>
           <div className="mb-4">
             <label htmlFor="type" className="block text-foreground mb-2">

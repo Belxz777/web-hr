@@ -5,10 +5,18 @@ import { Header } from "@/components/ui/header";
 
 
 const supportContacts = [
-  { name: "Техническая поддержка", email: "@belxz999 (TELEGRAM)" },
+  { name: "Техническая поддержка", email: "" },
 ];
 
 export default function SettingsPage() {
+  const news = [
+    {
+      title: "Тестовый запуск приложения",
+      description:
+        "Мы запустили приложение в тестовом режиме. ",
+      date: "2025-07-17",
+    }
+  ]
   return (
     <div
       className={`min-h-screen bg-gradient-to-br from-secondary to-primary`}
@@ -19,24 +27,26 @@ export default function SettingsPage() {
         <section
           className={`mb-8  bg-card rounded-xl p-6`}
         >
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            Контакты поддержки
+          <h2 className="text-2xl font-bold mb-4  text-left">
+           Настройки
           </h2>
-          <ul className="space-y-2">
-            {supportContacts.map((contact, index) => (
-              <li
-                key={index}
-                className={` rounded-lg p-3`}
-              >
-                <h3 className="font-medium">{contact.name}</h3>
-                <p
-                  className={`text-sm `}
-                >
-                  Писать: {contact.email}
-                </p>
-              </li>
-            ))}
-          </ul>
+      
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold mb-2">Версия приложения</h3>
+                  <p className="text-gray-600">v1.0.0</p>
+                </div>
+      
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Важные новости</h3>
+                {news.map((item, index) => (
+                      <div key={index} className="  bg-secondary-foreground rounded-lg p-4">
+                        <h4 className="text-lg font-semibold">{item.title}</h4>
+                        <p className="text-gray-600">{item.description}</p>
+                        <p className="text-gray-600 text-sm">{item.date}</p>
+                      </div>
+                    ))}
+                </div>
+      
         </section>
       </main>
     </div>

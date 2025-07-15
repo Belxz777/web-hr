@@ -29,7 +29,11 @@ type Job = {
 
 type Deputy = {
   id: number;
-  name: string;
+  deputyName: string;
+  compulsory: boolean;
+  deputyDescription: string;
+  deputy_functions: string[];
+
 };
 
 type TFS = {
@@ -613,7 +617,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                           <option value={0}>Выберите вспомогательную функцию</option>
                           {deputies.map((deputy) => (
                             <option key={deputy.id} value={deputy.id}>
-                              {deputy.name} (ID: {deputy.id})
+                              {deputy.deputyName} (ID: {deputy.id})
                             </option>
                           ))}
                         </select>
@@ -679,9 +683,12 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
                         >
                           <option value={0}>Выберите deputy</option>
+                          {
+                            JSON.stringify(deputies)
+                          }
                           {deputies.map((deputy) => (
                             <option key={deputy.id} value={deputy.id}>
-                              {deputy.name} (ID: {deputy.id})
+                              {deputy.deputyName} (ID: {deputy.id})
                             </option>
                           ))}
                         </select>

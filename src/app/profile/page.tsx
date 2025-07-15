@@ -9,7 +9,7 @@ import { Header } from "@/components/ui/header";
 import { useUserStore } from "@/store/userStore";
 import { EmployeeResponsibilities } from "@/components/ui/ProfilePage/EmployeeResponsibilities";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 const setLocalStorageWithExpiry = (key: string, value: any) => {
   const now = new Date();
   const item = {
@@ -64,6 +64,8 @@ export default function ProfilePage() {
   } = useEmployeeData();
   const { isBoss } = useUserStore();
   const [workedhours, setworkedhours] = useState(0);
+  const position = useMemo(() => employeeData?.user?.position, [employeeData]);
+const isLoading = useMemo(() => !employeeData || !position, [employeeData, position]);
   useEffect(() => {
     checkAndClearExpiredLocalStorage();
     let hours = getLocalStorageWithExpiry("hourstoday");
@@ -100,7 +102,7 @@ export default function ProfilePage() {
             ) : employeeData ? (
               <div className="space-y-4">
                 <div className="cursor-pointer group">
-                  <h2 className="text-2xl text-foreground font-bold mb-2 select-none group-hover:text-primary transition-colors duration-200">
+                  <h2 className="text-2xl text-foreground font-bold mb-2 select-none  transition-colors duration-200">
                     {employeeData.user.firstName} <br />
                     {employeeData.user.lastName}
                   </h2>

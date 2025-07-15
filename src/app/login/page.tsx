@@ -70,12 +70,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4  select-none">
       <main className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full">
         <div className="flex flex-col items-center mb-6">
           <PulseLogo className="w-16 h-16 text-[#FF0000]" />
           <h1 className="mt-4 text-3xl font-bold text-[#000000]">Вход в систему</h1>
-          <p className="mt-2 text-center text-[#6D6D6D]">Введите ваши учетные данные для доступа к системе</p>
+          <p className="mt-2 text-center text-[#6D6D6D]">Введите ваши данные для доступа к системе</p>
         </div>
 
         <form onSubmit={handleSubmit} className="w-full space-y-4">
@@ -201,7 +201,7 @@ export default function LoginPage() {
             Забыли пароль?
           </Link>
           <Link href="/register" className="text-[#249BA2] hover:underline">
-            Регистрация
+           Регистрация
           </Link>
         </div>
       </main>

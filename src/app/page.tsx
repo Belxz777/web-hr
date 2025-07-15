@@ -7,12 +7,12 @@ import { useRouter } from "next/navigation"
 export default function HomePage() {
   const router = useRouter()
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col items-center justify-center p-4 select-none">
       <main className="bg-card rounded-3xl shadow-xl p-8 max-w-md w-full flex flex-col items-center">
         <header className="flex flex-col items-center">
           <PulseLogo className="w-16 h-16 text-primary" />
           <h1 className="mt-6 text-2xl font-bold text-foreground text-center">HR-эффективность</h1>
-          <p className="mt-2 text-center text-muted-foreground text-sm">Эффективный менеджер трудозатрат</p>
+          <p className="mt-2 text-center text-muted-foreground text-sm">Система менеджмента трудозатрат</p>
         </header>
         <nav className="w-full space-y-4 mt-8">
           <Link
@@ -43,7 +43,7 @@ export default function HomePage() {
           </div>
 
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Система "Рабочий Пульс" предназначена для эффективного управления трудозатратами и отслеживания выполнения
+            Система "HR-эффективность" предназначена для эффективного управления трудозатратами и отслеживания выполнения
             задач.
           </p>
         </div>
