@@ -9,9 +9,9 @@ import {
   updateDepartmentFn,
 } from "@/components/server/admin/department";
 import useGetAlldeps from "@/hooks/useDeps";
-import { getAllDeputies } from "@/components/server/admin/deputy";
-import { createJobFn, getAllJobs, updateJobFn } from "@/components/server/admin/jobs";
-import getAllFunctionsForReport from "@/components/server/userdata/getAllFunctionsForReport";
+import { getAllDeputies, createDeputyFn, updateDeputyFn, deleteDeputyFn } from "@/components/server/admin/deputy";
+import { createJobFn, deleteJobFn, getAllJobs, updateJobFn } from "@/components/server/admin/jobs";
+import { createFunctionFn, deleteFunctionFn, getAllFunctionsForReport } from "@/components/server/userdata/functions";
 
 type Department = {
   departmentId: number;
@@ -38,9 +38,11 @@ type TFS = {
 };
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<"departments" | "positions">("departments");
+  const [activeTab, setActiveTab] = useState<"departments" | "positions" | "functions" | "deputies">("departments");
   const [departmentSubTab, setDepartmentSubTab] = useState<"create" | "edit" | "delete">("create");
-  const [positionSubTab, setPositionSubTab] = useState<"create" | "edit">("create");
+  const [positionSubTab, setPositionSubTab] = useState<"create" | "edit" | "delete">("create");
+  const [functionSubTab, setFunctionSubTab] = useState<"create" | "delete">("create");
+  const [deputySubTab, setDeputySubTab] = useState<"create" | "edit" | "delete">("create");
 
   const [departments, setDepartments] = useState<Department[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -121,8 +123,14 @@ export default function AdminPage() {
         if (!isJobsLoaded) fetchJobs();
         if (!isDeputiesLoaded) fetchDeputies();
       }
+    } else if (activeTab === "functions") {
+      if (!isDeputiesLoaded) fetchDeputies();
+      if (functionSubTab === "delete" && !isTfsLoaded) fetchTFS();
+    } else if (activeTab === "deputies") {
+      if (!isDeputiesLoaded) fetchDeputies();
+      if (deputySubTab === "edit" && !isTfsLoaded) fetchTFS();
     }
-  }, [activeTab, departmentSubTab, positionSubTab, isJobsLoaded, isDeputiesLoaded, isTfsLoaded]);
+  }, [activeTab, departmentSubTab, positionSubTab, functionSubTab, deputySubTab, isJobsLoaded, isDeputiesLoaded, isTfsLoaded]);
 
   const [departmentForm, setDepartmentForm] = useState({
     departmentName: "",
@@ -146,6 +154,28 @@ export default function AdminPage() {
     id: 0,
     deputy: 0,
   });
+
+  const [deleteJobForm, setDeleteJobForm] = useState({
+    id: 0,
+  });
+
+  const [createFunctionForm, setCreateFunctionForm] = useState({
+    funcName: "",
+    consistent: 0,
+  });
+
+  const [deleteFunctionId, setDeleteFunctionId] = useState(0);
+
+  const [createDeputyForm, setCreateDeputyForm] = useState({
+    deputyName: "",
+  });
+
+  const [editDeputyForm, setEditDeputyForm] = useState({
+    id: 0,
+    deputy_functions: [] as number[],
+  });
+
+  const [deleteDeputyId, setDeleteDeputyId] = useState(0);
 
   const createDepartment = async (data: {
     departmentName: string;
@@ -221,6 +251,95 @@ export default function AdminPage() {
     }
   };
 
+  const deleteJob = async (data: { id: number }) => {
+    setLoading(true);
+    try {
+      await deleteJobFn(data.id);
+      setIsJobsLoaded(false);
+      await fetchJobs();
+      alert("Должность удалена успешно!");
+    } catch (error) {
+      console.error("Ошибка удаления должности:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createFunction = async (data: { funcName: string; consistent: number }) => {
+    setLoading(true);
+    try {
+      await createFunctionFn(data);
+      setIsTfsLoaded(false);
+      await fetchTFS();
+      alert("Функция создана успешно!");
+      setCreateFunctionForm({ funcName: "", consistent: 0 });
+    } catch (error) {
+      console.error("Ошибка создания функции:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteFunction = async (id: number) => {
+    setLoading(true);
+    try {
+      await deleteFunctionFn(id);
+      setIsTfsLoaded(false);
+      await fetchTFS();
+      alert("Функция удалена успешно!");
+      setDeleteFunctionId(0);
+    } catch (error) {
+      console.error("Ошибка удаления функции:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createDeputy = async (data: { deputyName: string }) => {
+    setLoading(true);
+    try {
+      await createDeputyFn(data.deputyName);
+      setIsDeputiesLoaded(false);
+      await fetchDeputies();
+      alert("Вспомогательная функция создана успешно!");
+      setCreateDeputyForm({ deputyName: "" });
+    } catch (error) {
+      console.error("Ошибка создания вспомогательной функции:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateDeputy = async (data: { id: number; deputy_functions: number[] }) => {
+    setLoading(true);
+    try {
+      await updateDeputyFn(data.id, data.deputy_functions);
+      setIsDeputiesLoaded(false);
+      await fetchDeputies();
+      alert("Вспомогательная функция обновлена успешно!");
+      setEditDeputyForm({ id: 0, deputy_functions: [] });
+    } catch (error) {
+      console.error("Ошибка обновления вспомогательной функции:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteDeputy = async (id: number) => {
+    setLoading(true);
+    try {
+      await deleteDeputyFn(id);
+      setIsDeputiesLoaded(false);
+      await fetchDeputies();
+      alert("Вспомогательная функция удалена успешно!");
+      setDeleteDeputyId(0);
+    } catch (error) {
+      console.error("Ошибка удаления вспомогательной функции:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const TabButton = ({
     tab,
     label,
@@ -283,6 +402,16 @@ export default function AdminPage() {
               tab="positions"
               label="Должности"
               isActive={activeTab === "positions"}
+            />
+            <TabButton
+              tab="functions"
+              label="Функции"
+              isActive={activeTab === "functions"}
+            />
+            <TabButton
+              tab="deputies"
+              label="Вспомогательные функции"
+              isActive={activeTab === "deputies"}
             />
           </div>
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
@@ -412,7 +541,7 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-2">
-                          Должности (Jobs List)
+                          Должности
                         </label>
                         <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-xl p-3">
                           {jobs.map((job) => (
@@ -452,7 +581,7 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-2">
-                          Функции (TFS)
+                          Функции
                         </label>
                         <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-xl p-3">
                           {tfsOptions.map((tfs) => (
@@ -537,7 +666,7 @@ export default function AdminPage() {
                       <button
                         type="submit"
                         disabled={loading || deleteDepartmentId === 0}
-                        className="w-full px-4 py-2 bg-[#FF0000] text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
+                        className="w-full px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
                       >
                         {loading ? "Удаление..." : "Удалить отдел"}
                       </button>
@@ -554,17 +683,21 @@ export default function AdminPage() {
                 <div className="flex space-x-2 mb-6">
                   <SubTabButton
                     tab="create"
-                    label="Добавление работы"
+                    label="Добавление должности"
                     isActive={positionSubTab === "create"}
                     onClick={() => setPositionSubTab("create")}
                   />
                   <SubTabButton
-
-
                     tab="edit"
-                    label="Изменение работы"
+                    label="Изменение должности"
                     isActive={positionSubTab === "edit"}
                     onClick={() => setPositionSubTab("edit")}
+                  />
+                  <SubTabButton
+                    tab="delete"
+                    label="Удаление должности"
+                    isActive={positionSubTab === "delete"}
+                    onClick={() => setPositionSubTab("delete")}
                   />
                 </div>
                 {loading && (
@@ -576,7 +709,7 @@ export default function AdminPage() {
                 {positionSubTab === "create" && !loading && (
                   <div className="max-w-md">
                     <h3 className="text-lg font-semibold text-[#000000] mb-4">
-                      Добавить новую работу
+                      Добавить новую должность
                     </h3>
                     <form
                       onSubmit={(e) => {
@@ -587,7 +720,7 @@ export default function AdminPage() {
                     >
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
-                          Название работы
+                          Название должности
                         </label>
                         <input
                           type="text"
@@ -597,7 +730,7 @@ export default function AdminPage() {
                             setJobForm({ ...jobForm, jobName: e.target.value })
                           }
                           className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
-                          placeholder="Введите название работы"
+                          placeholder="Введите название должности"
                         />
                       </div>
                       <div>
@@ -616,12 +749,11 @@ export default function AdminPage() {
                           className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
                         >
                           <option value={0}>Выберите вспомогательную функцию</option>
-                          {deputies.map((deputy) => {
-
-                           return <option key={deputy.deputyId} value={deputy.deputyId}>
+                          {deputies.map((deputy) => (
+                            <option key={deputy.deputyId} value={deputy.deputyId}>
                               {deputy.deputyName} (ID: {deputy.deputyId})
                             </option>
-})}
+                          ))}
                         </select>
                       </div>
                       <button
@@ -629,7 +761,7 @@ export default function AdminPage() {
                         disabled={loading}
                         className="w-full px-4 py-2 bg-[#249BA2] text-white rounded-xl hover:bg-[#1e8a90] transition-colors disabled:opacity-50"
                       >
-                        {loading ? "Создание..." : "Создать работу"}
+                        {loading ? "Создание..." : "Создать должность"}
                       </button>
                     </form>
                   </div>
@@ -637,7 +769,7 @@ export default function AdminPage() {
                 {positionSubTab === "edit" && !loading && (
                   <div className="max-w-md">
                     <h3 className="text-lg font-semibold text-[#000000] mb-4">
-                      Изменить работу
+                      Изменить должность
                     </h3>
                     <form
                       onSubmit={(e) => {
@@ -648,7 +780,7 @@ export default function AdminPage() {
                     >
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
-                          Выберите работу
+                          Выберите должность
                         </label>
                         <select
                           required
@@ -661,7 +793,7 @@ export default function AdminPage() {
                           }
                           className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
                         >
-                          <option value={0}>Выберите работу</option>
+                          <option value={0}>Выберите должность</option>
                           {jobs.map((job) => (
                             <option key={job.jobId} value={job.jobId}>
                               {job.jobName}
@@ -671,7 +803,7 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
-                          Вспомогательная функция (ID)
+                          Вспомогательная функция
                         </label>
                         <select
                           required
@@ -697,7 +829,384 @@ export default function AdminPage() {
                         disabled={loading || editJobForm.id === 0}
                         className="w-full px-4 py-2 bg-[#249BA2] text-white rounded-xl hover:bg-[#1e8a90] transition-colors disabled:opacity-50"
                       >
-                        {loading ? "Обновление..." : "Обновить работу"}
+                        {loading ? "Обновление..." : "Обновить должность"}
+                      </button>
+                    </form>
+                  </div>
+                )}
+                {positionSubTab === "delete" && !loading && (
+                  <div className="max-w-md">
+                    <h3 className="text-lg font-semibold text-[#000000] mb-4">
+                      Удаление должности
+                    </h3>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        deleteJob(deleteJobForm);
+                      }}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
+                          Выберите должность
+                        </label>
+                        <select
+                          required
+                          value={deleteJobForm.id}
+                          onChange={(e) =>
+                            setDeleteJobForm({
+                              ...deleteJobForm,
+                              id: Number(e.target.value),
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
+                        >
+                          <option value={0}>Выберите должность</option>
+                          {jobs.map((job) => (
+                            <option key={job.jobId} value={job.jobId}>
+                              {job.jobName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={loading || deleteJobForm.id === 0}
+                        className="w-full px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
+                      >
+                        {loading ? "Удаление..." : "Удалить должность"}
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
+            )}
+            {activeTab === "functions" && (
+              <div>
+                <h2 className="text-2xl font-bold text-[#000000] mb-4">
+                  Управление функциями
+                </h2>
+                <div className="flex space-x-2 mb-6">
+                  <SubTabButton
+                    tab="create"
+                    label="Создание функции"
+                    isActive={functionSubTab === "create"}
+                    onClick={() => setFunctionSubTab("create")}
+                  />
+                  <SubTabButton
+                    tab="delete"
+                    label="Удаление функции"
+                    isActive={functionSubTab === "delete"}
+                    onClick={() => setFunctionSubTab("delete")}
+                  />
+                </div>
+                {loading && (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#249BA2]"></div>
+                    <span className="ml-2 text-[#6D6D6D]">Загрузка...</span>
+                  </div>
+                )}
+                {functionSubTab === "create" && !loading && (
+                  <div className="max-w-md">
+                    <h3 className="text-lg font-semibold text-[#000000] mb-4">
+                      Создать новую функцию
+                    </h3>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        createFunction(createFunctionForm);
+                      }}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
+                          Название функции
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={createFunctionForm.funcName}
+                          onChange={(e) =>
+                            setCreateFunctionForm({
+                              ...createFunctionForm,
+                              funcName: e.target.value,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
+                          placeholder="Введите название функции"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
+                          Вспомогательная функция
+                        </label>
+                        <select
+                          required
+                          value={createFunctionForm.consistent}
+                          onChange={(e) =>
+                            setCreateFunctionForm({
+                              ...createFunctionForm,
+                              consistent: Number(e.target.value),
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
+                        >
+                          <option value={0}>Выберите вспомогательную функцию</option>
+                          {deputies.map((deputy) => (
+                            <option key={deputy.deputyId} value={deputy.deputyId}>
+                              {deputy.deputyName} (ID: {deputy.deputyId})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full px-4 py-2 bg-[#249BA2] text-white rounded-xl hover:bg-[#1e8a90] transition-colors disabled:opacity-50"
+                      >
+                        {loading ? "Создание..." : "Создать функцию"}
+                      </button>
+                    </form>
+                  </div>
+                )}
+                {functionSubTab === "delete" && !loading && (
+                  <div className="max-w-md">
+                    <h3 className="text-lg font-semibold text-[#000000] mb-4">
+                      Удалить функцию
+                    </h3>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (confirm("Вы уверены, что хотите удалить эту функцию?")) {
+                          deleteFunction(deleteFunctionId);
+                        }
+                      }}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
+                          Выберите функцию для удаления
+                        </label>
+                        <select
+                          required
+                          value={deleteFunctionId}
+                          onChange={(e) => setDeleteFunctionId(Number(e.target.value))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
+                        >
+                          <option value={0}>Выберите функцию</option>
+                          {tfsOptions.map((func) => (
+                            <option key={func.funcId} value={func.funcId}>
+                              {func.funcName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={loading || deleteFunctionId === 0}
+                        className="w-full px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
+                      >
+                        {loading ? "Удаление..." : "Удалить функцию"}
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
+            )}
+            {activeTab === "deputies" && (
+              <div>
+                <h2 className="text-2xl font-bold text-[#000000] mb-4">
+                  Управление вспомогательными функциями
+                </h2>
+                <div className="flex space-x-2 mb-6">
+                  <SubTabButton
+                    tab="create"
+                    label="Создание вспомогательной функции"
+                    isActive={deputySubTab === "create"}
+                    onClick={() => setDeputySubTab("create")}
+                  />
+                  <SubTabButton
+                    tab="edit"
+                    label="Изменение вспомогательной функции"
+                    isActive={deputySubTab === "edit"}
+                    onClick={() => setDeputySubTab("edit")}
+                  />
+                  <SubTabButton
+                    tab="delete"
+                    label="Удаление вспомогательной функции"
+                    isActive={deputySubTab === "delete"}
+                    onClick={() => setDeputySubTab("delete")}
+                  />
+                </div>
+                {loading && (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#249BA2]"></div>
+                    <span className="ml-2 text-[#6D6D6D]">Загрузка...</span>
+                  </div>
+                )}
+                {deputySubTab === "create" && !loading && (
+                  <div className="max-w-md">
+                    <h3 className="text-lg font-semibold text-[#000000] mb-4">
+                      Создать новую вспомогательную функцию
+                    </h3>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        createDeputy(createDeputyForm);
+                      }}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
+                          Название вспомогательной функции
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={createDeputyForm.deputyName}
+                          onChange={(e) =>
+                            setCreateDeputyForm({
+                              ...createDeputyForm,
+                              deputyName: e.target.value,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
+                          placeholder="Введите название вспомогательной функции"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full px-4 py-2 bg-[#249BA2] text-white rounded-xl hover:bg-[#1e8a90] transition-colors disabled:opacity-50"
+                      >
+                        {loading ? "Создание..." : "Создать вспомогательную функцию"}
+                      </button>
+                    </form>
+                  </div>
+                )}
+                {deputySubTab === "edit" && !loading && (
+                  <div className="max-w-lg">
+                    <h3 className="text-lg font-semibold text-[#000000] mb-4">
+                      Изменить вспомогательную функцию
+                    </h3>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        updateDeputy(editDeputyForm);
+                      }}
+                      className="space-y-6"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
+                          Выберите вспомогательную функцию
+                        </label>
+                        <select
+                          required
+                          value={editDeputyForm.id}
+                          onChange={(e) =>
+                            setEditDeputyForm({
+                              ...editDeputyForm,
+                              id: Number(e.target.value),
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
+                        >
+                          <option value={0}>Выберите вспомогательную функцию</option>
+                          {deputies.map((deputy) => (
+                            <option key={deputy.deputyId} value={deputy.deputyId}>
+                              {deputy.deputyName} (ID: {deputy.deputyId})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[#6D6D6D] mb-2">
+                          Основные функции
+                        </label>
+                        <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-xl p-3">
+                          {tfsOptions.map((tfs) => (
+                            <label
+                              key={tfs.funcId}
+                              className="flex items-center space-x-2 cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={editDeputyForm.deputy_functions.includes(tfs.funcId)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setEditDeputyForm({
+                                      ...editDeputyForm,
+                                      deputy_functions: [...editDeputyForm.deputy_functions, tfs.funcId],
+                                    });
+                                  } else {
+                                    setEditDeputyForm({
+                                      ...editDeputyForm,
+                                      deputy_functions: editDeputyForm.deputy_functions.filter(
+                                        (id) => id !== tfs.funcId
+                                      ),
+                                    });
+                                  }
+                                }}
+                                className="rounded border-gray-300 text-[#249BA2] focus:ring-[#249BA2]"
+                              />
+                              <span className="text-sm text-[#000000]">
+                                {tfs.funcName}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                        <p className="text-xs text-[#6D6D6D] mt-1">
+                          Выбрано: {editDeputyForm.deputy_functions.length} функций
+                        </p>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={loading || editDeputyForm.id === 0}
+                        className="w-full px-4 py-2 bg-[#249BA2] text-white rounded-xl hover:bg-[#1e8a90] transition-colors disabled:opacity-50"
+                      >
+                        {loading ? "Обновление..." : "Обновить вспомогательную функцию"}
+                      </button>
+                    </form>
+                  </div>
+                )}
+                {deputySubTab === "delete" && !loading && (
+                  <div className="max-w-md">
+                    <h3 className="text-lg font-semibold text-[#000000] mb-4">
+                      Удалить вспомогательную функцию
+                    </h3>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (confirm("Вы уверены, что хотите удалить эту вспомогательную функцию?")) {
+                          deleteDeputy(deleteDeputyId);
+                        }
+                      }}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
+                          Выберите вспомогательную функцию для удаления
+                        </label>
+                        <select
+                          required
+                          value={deleteDeputyId}
+                          onChange={(e) => setDeleteDeputyId(Number(e.target.value))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
+                        >
+                          <option value={0}>Выберите вспомогательную функцию</option>
+                          {deputies.map((deputy) => (
+                            <option key={deputy.deputyId} value={deputy.deputyId}>
+                              {deputy.deputyName} (ID: {deputy.deputyId})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={loading || deleteDeputyId === 0}
+                        className="w-full px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
+                      >
+                        {loading ? "Удаление..." : "Удалить вспомогательную функцию"}
                       </button>
                     </form>
                   </div>

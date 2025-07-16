@@ -105,4 +105,37 @@ async function updateJobFn(id:number, deputy: number): Promise<any> {
   }
 }
 
-export { getAllJobs, createJobFn, updateJobFn };
+async function deleteJobFn(id: number): Promise<any> {
+  try {
+    const response = await fetch(
+      `${host}entities/job/?id=${id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error deleting job: ${response.statusText}`);
+    }
+
+    if (response.status === 204 || response.headers.get("content-length") === "0") {
+      return { success: true };
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error("Unknown error occurred");
+    }
+  }
+}
+
+export { getAllJobs, createJobFn, updateJobFn, deleteJobFn };

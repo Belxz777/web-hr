@@ -232,7 +232,7 @@ export default function EmployeeDailyStats() {
               </div>
               <div className="flex flex-col items-center justify-center p-8">
                 <p className="text-foreground text-lg bg-card/80 backdrop-blur-sm px-4 py-2 rounded-lg">
-                  Пожалуйста выберите дату
+                  Пожалуйста, выберите дату (загрузка произойдет после выбора даты)
                 </p>
               </div>
             </div>

@@ -247,7 +247,7 @@ export default function AnalyticsDashboard() {
         </div>
         <main className="px-4 my-8 space-y-8 flex-grow">
           <div className="text-muted-foreground text-center py-12 bg-white/80 rounded-xl border border-border">
-            <div className="text-lg">Пожалуйста выберите дату</div>
+            <div className="text-lg"> Пожалуйста, выберите дату (загрузка произойдет после выбора даты)</div>
           </div>
         </main>
         <UniversalFooter />

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 import sendReport from "@/components/server/userdata/report"
 import UniversalFooter from "@/components/buildIn/UniversalFooter"
 import { Header } from "@/components/ui/header"
-import getAllFunctionsForReport from "@/components/server/userdata/getAllFunctionsForReport"
+import {getAllFunctionsForReport} from "@/components/server/userdata/functions"
 import { CustomSelect } from "@/components/ui/CustomSelect"
 import { useLocalStorage } from "@/hooks/useLocalstorage"
 import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
@@ -26,8 +26,6 @@ const setLocalStorageWithExpiry = (key: string, value: any) => {
 export default function ReportPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [showPopup, setShowPopup] = useState(false)
-  const [isPopupVisible, setIsPopupVisible] = useState(false)
   const [error, setError] = useState<{ status: boolean; text: string; success: boolean }>({
     status: false,
     success: false,
@@ -36,7 +34,7 @@ export default function ReportPage() {
   const [formData, setFormData] = useState({
     func_id: 0,
     deputy_id: 0,
-    workingHours: "0.50",
+    workingHours: "",
     comment: "",
   })
   const [responsibilities, setResponsibilities] = useState<{
