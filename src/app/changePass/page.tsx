@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import changePassword from "@/components/server/auth/passchange"
+import {changePassword} from "@/components/server/auth/passchange"
 import { useRouter } from "next/navigation"
 import type { changePass } from "@/types"
 import { PulseLogo } from "@/svgs/Logo"
@@ -37,11 +37,11 @@ export default function ChangePassword() {
       setLoading(false)
       return
     }
-    if (credentials.new_password.length < 6 || !/[a-zA-Z]/.test(credentials.new_password)) {
+    if (credentials.new_password.length < 12) {
       setShowWarning({
         ...showWarning,
         status: true,
-        text: "Пароль должен содержать более 6 символов и хотя бы один символ",
+        text: "Пароль должен содержать минимум 12 символов",
       })
       setIsPopupVisible(true)
       setLoading(false)

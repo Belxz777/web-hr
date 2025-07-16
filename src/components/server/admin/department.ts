@@ -52,15 +52,20 @@ async function deleteDepartmentFn(depId: number): Promise<void> {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(`Error deleting department: ${error.error || response.statusText}`);
+      throw new Error(
+        `Error deleting department: ${error.error || response.statusText}`
+      );
     }
   } catch (error) {
     console.error(error);
     throw error instanceof Error ? error : new Error("Unknown error occurred");
   }
 }
-async function updateDepartmentFn(depId: number,jobsList: number[], tfs: number[] ): Promise<void> {
-  
+async function updateDepartmentFn(
+  depId: number,
+  jobsList: number[],
+  tfs: number[]
+): Promise<void> {
   try {
     const response = await fetch(`${host}entities/department/?id=${depId}`, {
       method: "PATCH",
@@ -69,13 +74,16 @@ async function updateDepartmentFn(depId: number,jobsList: number[], tfs: number[
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        jobsList, tfs
+        jobsList,
+        tfs,
       }),
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(`Error updating department: ${error.error || response.statusText}`);
+      throw new Error(
+        `Error updating department: ${error.error || response.statusText}`
+      );
     }
   } catch (error) {
     console.error(error);

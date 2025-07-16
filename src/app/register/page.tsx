@@ -49,9 +49,14 @@ export default function RegisterPage() {
       return;
     }
 
+    if (formData.password.length < 12) {
+      setError("Пароль должен содержать минимум 12 символов, буквы и цифры");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await registerUser(formData);
-      console.log("Success:", response);
       router.push("/profile");
       setSent(true);
     } catch (err) {
@@ -91,7 +96,7 @@ export default function RegisterPage() {
 
             <div className="relative">
               <label htmlFor="password" className="block text-sm font-medium text-[#6D6D6D] mb-1">
-                Пароль
+                Пароль (минимальная длина: 12 символов)
               </label>
               <input
                 id="password"

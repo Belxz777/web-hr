@@ -193,10 +193,9 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-4 flex justify-between items-center text-sm">
-          {/* Unfortunately, forgot password is not working, return 403, but i provide correct token  */}
-          {/* <Link href="/forgot-password" className="text-[#249BA2] hover:underline">
+          <Link href="/forgot-password" className="text-[#249BA2] hover:underline">
             Забыли пароль?
-          </Link> */}
+          </Link>
           <Link href="/register" className="text-[#249BA2] hover:underline">
            Регистрация
           </Link>
