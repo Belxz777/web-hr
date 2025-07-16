@@ -182,7 +182,7 @@ export function DailySummaryGrid({ data}: DailySummaryGridProps) {
         </div>
         <div className="text-center p-3 bg-background/30 rounded-lg border border-border/50">
           <div className="text-lg font-bold text-foreground">
-            {(data.reduce((sum, day) => sum + day.total_hours, 0) / data.length).toFixed(1)}ч
+            {convertDataToNormalTime(data.reduce((sum, day) => sum + day.total_hours, 0) / data.length)}
           </div>
           <div className="text-xs text-muted-foreground">Среднее в день</div>
         </div>

@@ -5,7 +5,8 @@ import { Header } from "@/components/ui/header";
 
 
 const supportContacts = [
-  { name: "Техническая поддержка", email: "" },
+  { name: "Связаться с разработчиком", email: "https://t.me/belxz999" },
+  { name: "Связаться с тех поддержкой ", email: "30112" },
 ];
 
 export default function SettingsPage() {
@@ -14,7 +15,7 @@ export default function SettingsPage() {
       title: "Тестовый запуск приложения",
       description:
         "Мы запустили приложение в тестовом режиме. ",
-      date: "2025-07-17",
+      date: "2025-07-25",
     }
   ]
   return (
@@ -46,8 +47,20 @@ export default function SettingsPage() {
                       </div>
                     ))}
                 </div>
-      
+               
+         <section>
+          <h2 className="text-2xl font-bold mb-4">Поддержка</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {supportContacts.map((contact, index) => (
+              <div key={index} className="bg-secondary-foreground rounded-lg p-4">
+                <h3 className="text-lg font-semibold">{contact.name}</h3>
+                <p className=" text-secondary font-extrabold text-2xl">{contact.email}</p>
+              </div>
+            ))}
+            </div>
         </section>
+        </section>
+     
       </main>
     </div>
   );

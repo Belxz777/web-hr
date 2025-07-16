@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import React from "react";
+import logo from '../../public/men.svg'
 import { ThemeProvider } from 'next-themes';
 export const metadata: Metadata = {
   title: "HR-эффективность",
   description: "Приложение для мониторинга и анализа рабочего времени",
   icons: {
-    icon: "https://storage.yandexcloud.net/filesup/photo_5411229227967182152_m.png",
+    icon: logo.src,
   }
 };
 
