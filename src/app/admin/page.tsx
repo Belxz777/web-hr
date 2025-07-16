@@ -14,31 +14,27 @@ import { createJobFn, getAllJobs, updateJobFn } from "@/components/server/admin/
 import getAllFunctionsForReport from "@/components/server/userdata/getAllFunctionsForReport";
 
 type Department = {
-  id: number;
+  departmentId: number;
   departmentName: string;
-  departmentDescription: string;
-  jobsList: number[];
-  tfs: number[];
 };
 
 type Job = {
-  id: number;
+  jobId: number;
   jobName: string;
   deputy: number;
 };
 
 type Deputy = {
-  id: number;
+  deputyId: number;
   deputyName: string;
+  deputyDescription: string | null;
   compulsory: boolean;
-  deputyDescription: string;
-  deputy_functions: string[];
-
+  deputy_functions: { funcId: number; funcName: string }[];
 };
 
 type TFS = {
-  id: number;
-  name: string;
+  funcId: number;
+  funcName: string;
 };
 
 export default function AdminPage() {
@@ -69,8 +65,8 @@ export default function AdminPage() {
     if (isJobsLoaded) return;
     setLoading(true);
     try {
-      const jobs = await getAllJobs();
-      setJobs(jobs);
+      const jobsData = await getAllJobs();
+      setJobs(jobsData);
       setIsJobsLoaded(true);
     } catch (error) {
       console.error("Ошибка загрузки должностей:", error);
@@ -83,9 +79,9 @@ export default function AdminPage() {
     if (isDeputiesLoaded) return;
     setLoading(true);
     try {
-      const deputies = await getAllDeputies();
-      if (deputies) {
-        setDeputies(deputies);
+      const deputiesData = await getAllDeputies();
+      if (deputiesData) {
+        setDeputies(deputiesData);
         setIsDeputiesLoaded(true);
       }
     } catch (error) {
@@ -99,9 +95,9 @@ export default function AdminPage() {
     if (isTfsLoaded) return;
     setLoading(true);
     try {
-      const tfs = await getAllFunctionsForReport();
-      if (tfs) {
-        setTfsOptions(tfs);
+      const tfsData = await getAllFunctionsForReport();
+      if (tfsData) {
+        setTfsOptions(tfsData.functions);
         setIsTfsLoaded(true);
       }
     } catch (error) {
@@ -112,17 +108,19 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    if (activeTab === "positions") {
-      if (positionSubTab === "create" || positionSubTab === "edit") {
-        if (!isJobsLoaded) fetchJobs();
-        if (!isDeputiesLoaded) fetchDeputies();
-      }
-    } else if (activeTab === "departments") {
+    if (activeTab === "departments") {
       if (departmentSubTab === "edit") {
         if (!isJobsLoaded) fetchJobs();
         if (!isDeputiesLoaded) fetchDeputies();
         if (!isTfsLoaded) fetchTFS();
-      } else if (departmentSubTab === "delete") {}
+      } else if (departmentSubTab === "delete" && !isDepsLoading) {
+        refetch();
+      }
+    } else if (activeTab === "positions") {
+      if (positionSubTab === "create" || positionSubTab === "edit") {
+        if (!isJobsLoaded) fetchJobs();
+        if (!isDeputiesLoaded) fetchDeputies();
+      }
     }
   }, [activeTab, departmentSubTab, positionSubTab, isJobsLoaded, isDeputiesLoaded, isTfsLoaded]);
 
@@ -157,6 +155,7 @@ export default function AdminPage() {
     try {
       await createDepartmentFn(data);
       await refetch();
+      alert("Отдел создан успешно!");
     } catch (error) {
       console.error("Ошибка создания отдела:", error);
     } finally {
@@ -193,26 +192,26 @@ export default function AdminPage() {
     }
   };
 
-const createJob = async (data: { jobName: string; deputy: number }) => {
-  setLoading(true);
-  try {
-    await createJobFn(data.jobName, data.deputy);
-    setIsJobsLoaded(false);
-    await fetchJobs();
-    alert("Должность создана успешно!");
-    setJobForm({ jobName: "", deputy: 0 });
-  } catch (error) {
-    console.error("Ошибка создания должности:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+  const createJob = async (data: { jobName: string; deputy: number }) => {
+    setLoading(true);
+    try {
+      await createJobFn(data.jobName, data.deputy);
+      setIsJobsLoaded(false);
+      await fetchJobs();
+      alert("Должность создана успешно!");
+      setJobForm({ jobName: "", deputy: 0 });
+    } catch (error) {
+      console.error("Ошибка создания должности:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const updateJob = async (data: { id: number; deputy: number }) => {
     setLoading(true);
     try {
       await updateJobFn(data.id, data.deputy);
-      setIsJobsLoaded(false); // Сбрасываем флаг для повторной загрузки
+      setIsJobsLoaded(false);
       await fetchJobs();
       alert("Должность обновлена успешно!");
     } catch (error) {
@@ -405,7 +404,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                         >
                           <option value={0}>Выберите отдел</option>
                           {departments.map((dept) => (
-                            <option key={dept.id} value={dept.id}>
+                            <option key={dept.departmentId} value={dept.departmentId}>
                               {dept.departmentName}
                             </option>
                           ))}
@@ -418,23 +417,23 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                         <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-xl p-3">
                           {jobs.map((job) => (
                             <label
-                              key={job.id}
+                              key={job.jobId}
                               className="flex items-center space-x-2 cursor-pointer"
                             >
                               <input
                                 type="checkbox"
-                                checked={editDepartmentForm.jobsList.includes(job.id)}
+                                checked={editDepartmentForm.jobsList.includes(job.jobId)}
                                 onChange={(e) => {
                                   if (e.target.checked) {
                                     setEditDepartmentForm({
                                       ...editDepartmentForm,
-                                      jobsList: [...editDepartmentForm.jobsList, job.id],
+                                      jobsList: [...editDepartmentForm.jobsList, job.jobId],
                                     });
                                   } else {
                                     setEditDepartmentForm({
                                       ...editDepartmentForm,
                                       jobsList: editDepartmentForm.jobsList.filter(
-                                        (id) => id !== job.id
+                                        (id) => id !== job.jobId
                                       ),
                                     });
                                   }
@@ -458,23 +457,23 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                         <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-xl p-3">
                           {tfsOptions.map((tfs) => (
                             <label
-                              key={tfs.id}
+                              key={tfs.funcId}
                               className="flex items-center space-x-2 cursor-pointer"
                             >
                               <input
                                 type="checkbox"
-                                checked={editDepartmentForm.tfs.includes(tfs.id)}
+                                checked={editDepartmentForm.tfs.includes(tfs.funcId)}
                                 onChange={(e) => {
                                   if (e.target.checked) {
                                     setEditDepartmentForm({
                                       ...editDepartmentForm,
-                                      tfs: [...editDepartmentForm.tfs, tfs.id],
+                                      tfs: [...editDepartmentForm.tfs, tfs.funcId],
                                     });
                                   } else {
                                     setEditDepartmentForm({
                                       ...editDepartmentForm,
                                       tfs: editDepartmentForm.tfs.filter(
-                                        (id) => id !== tfs.id
+                                        (id) => id !== tfs.funcId
                                       ),
                                     });
                                   }
@@ -482,7 +481,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                                 className="rounded border-gray-300 text-[#249BA2] focus:ring-[#249BA2]"
                               />
                               <span className="text-sm text-[#000000]">
-                                {tfs.name}
+                                {tfs.funcName}
                               </span>
                             </label>
                           ))}
@@ -529,7 +528,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                         >
                           <option value={0}>Выберите отдел</option>
                           {departments.map((dept) => (
-                            <option key={dept.id} value={dept.id}>
+                            <option key={dept.departmentId} value={dept.departmentId}>
                               {dept.departmentName}
                             </option>
                           ))}
@@ -560,6 +559,8 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                     onClick={() => setPositionSubTab("create")}
                   />
                   <SubTabButton
+
+
                     tab="edit"
                     label="Изменение работы"
                     isActive={positionSubTab === "edit"}
@@ -601,7 +602,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
-                          Вспомогательная функция (Deputy)
+                          Вспомогательная функция
                         </label>
                         <select
                           required
@@ -615,11 +616,12 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
                         >
                           <option value={0}>Выберите вспомогательную функцию</option>
-                          {deputies.map((deputy) => (
-                            <option key={deputy.id} value={deputy.id}>
-                              {deputy.deputyName} (ID: {deputy.id})
+                          {deputies.map((deputy) => {
+
+                           return <option key={deputy.deputyId} value={deputy.deputyId}>
+                              {deputy.deputyName} (ID: {deputy.deputyId})
                             </option>
-                          ))}
+})}
                         </select>
                       </div>
                       <button
@@ -661,7 +663,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                         >
                           <option value={0}>Выберите работу</option>
                           {jobs.map((job) => (
-                            <option key={job.id} value={job.id}>
+                            <option key={job.jobId} value={job.jobId}>
                               {job.jobName}
                             </option>
                           ))}
@@ -669,7 +671,7 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#6D6D6D] mb-1">
-                          Deputy (ID)
+                          Вспомогательная функция (ID)
                         </label>
                         <select
                           required
@@ -682,13 +684,10 @@ const createJob = async (data: { jobName: string; deputy: number }) => {
                           }
                           className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
                         >
-                          <option value={0}>Выберите deputy</option>
-                          {
-                            JSON.stringify(deputies)
-                          }
+                          <option value={0}>Выберите вспомогательную функцию</option>
                           {deputies.map((deputy) => (
-                            <option key={deputy.id} value={deputy.id}>
-                              {deputy.deputyName} (ID: {deputy.id})
+                            <option key={deputy.deputyId} value={deputy.deputyId}>
+                              {deputy.deputyName} (ID: {deputy.deputyId})
                             </option>
                           ))}
                         </select>

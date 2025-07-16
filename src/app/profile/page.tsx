@@ -6,7 +6,6 @@ import { logout } from "@/components/server/auth/logout";
 import { RoutesBoss } from "@/components/buildIn/ReportDownload";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { Header } from "@/components/ui/header";
-import { useUserStore } from "@/store/userStore";
 import { EmployeeResponsibilities } from "@/components/ui/ProfilePage/EmployeeResponsibilities";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -62,9 +61,9 @@ export default function ProfilePage() {
     loadingEmp,
     error: employeeError,
   } = useEmployeeData();
-  const { isBoss } = useUserStore();
   const [workedhours, setworkedhours] = useState(0);
   const position = useMemo(() => employeeData?.user?.position, [employeeData]);
+  
 const isLoading = useMemo(() => !employeeData || !position, [employeeData, position]);
   useEffect(() => {
     checkAndClearExpiredLocalStorage();
@@ -181,7 +180,7 @@ const isLoading = useMemo(() => !employeeData || !position, [employeeData, posit
             />
           )} */}
         </div>
-        {(employeeData?.user.position !== 1 || isBoss) && employeeData ? (
+        {(employeeData?.user.position !== 1 ) && employeeData ? (
           <RoutesBoss />
         ) : null}
 

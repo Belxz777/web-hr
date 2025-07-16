@@ -1,11 +1,17 @@
+"use server";
 import { host } from "@/types";
+import { cookies } from "next/headers";
 
 async function getAllDeputies(): Promise<any> {
   try {
+      const cookieStore = cookies();
+      const jwt = cookieStore.get("cf-auth-id")?.value;
+
     const response = await fetch(`${host}entities/deputy/`, {
       method: "GET",
       credentials: "include",
       headers: {
+       'Cookie': `jwt=${jwt}; cf-auth-id=${jwt}`,
         "Content-Type": "application/json",
       },
     });

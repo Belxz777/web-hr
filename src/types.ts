@@ -121,6 +121,7 @@ interface changePass {
   new_password: string;
 }
 // const host ="https://projects.bell-x.ru/pulse/";
+// const host ="https://backend-pulse-1.onrender.com/api/v1/";
 const host = "http://127.0.0.1:8000/api/v1/"
 interface statusType {
   code: string | number;

@@ -60,6 +60,7 @@ async function deleteDepartmentFn(depId: number): Promise<void> {
   }
 }
 async function updateDepartmentFn(depId: number,jobsList: number[], tfs: number[] ): Promise<void> {
+  
   try {
     const response = await fetch(`${host}entities/department/?id=${depId}`, {
       method: "PATCH",

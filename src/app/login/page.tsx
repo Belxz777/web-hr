@@ -6,11 +6,9 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { PulseLogo } from "@/svgs/Logo"
-import { useUserStore } from "@/store/userStore"
 import sendUserLoginData from "@/components/server/auth/login"
 
 export default function LoginPage() {
-  const { setIsBoss } = useUserStore()
   const router = useRouter()
 
   const [login, setLogin] = useState<string>("")
@@ -47,8 +45,6 @@ export default function LoginPage() {
         })
         return
       }
-
-      setIsBoss(resultData.isBoss)
 
       localStorage.setItem("lc-pos-x", resultData.isBoss)
       if (resultData.isBoss) {
@@ -197,9 +193,10 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-4 flex justify-between items-center text-sm">
-          <Link href="/forgot-password" className="text-[#249BA2] hover:underline">
+          {/* Unfortunately, forgot password is not working, return 403, but i provide correct token  */}
+          {/* <Link href="/forgot-password" className="text-[#249BA2] hover:underline">
             Забыли пароль?
-          </Link>
+          </Link> */}
           <Link href="/register" className="text-[#249BA2] hover:underline">
            Регистрация
           </Link>
