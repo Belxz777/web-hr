@@ -1,20 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+
+interface Responsibility {
+  deputyId: number;
+  deputyName: string;
+}
+
+interface FunctionItem {
+  funcId: number;
+  funcName: string;
+}
+
+interface ResponsibilitiesData {
+  nonCompulsory: Responsibility[];
+  functions: FunctionItem[];
+}
 
 interface CustomSelectProps {
   type: string;
-  formData: any;
-  setFormData: Function;
-  responsibilities: {
-    length: any;
-    nonCompulsory: {
-      deputyId: number;
-      deputyName: string;
-    }[];
-    functions: {
-      funcId: number;
-      funcName: string;
-    }[];
+  formData: {
+    func_id: number;
+    deputy_id: number;
   };
+  setFormData: (data: React.SetStateAction<{
+    func_id: number;
+    deputy_id: number;
+    workingHours: string;
+    comment: string;
+  }>) => void;
+  responsibilities: ResponsibilitiesData;
 }
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -27,12 +40,10 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Обработчик клика вне компонента
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -40,38 +51,46 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredFunctions = responsibilities?.functions?.filter((func) =>
+  // Фильтрация элементов
+  const filteredFunctions = responsibilities.functions.filter((func) =>
     func.funcName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredNonCompulsory = responsibilities?.nonCompulsory?.filter(
-    (duty) => duty.deputyName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredNonCompulsory = responsibilities.nonCompulsory.filter((duty) =>
+    duty.deputyName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const selectedLabel =
-    type === "main"
-      ? responsibilities?.functions?.find(
-          (func) => func.funcId === formData.func_id
-        )?.funcName || "Выберите обязанность"
-      : responsibilities?.nonCompulsory?.find(
-          (duty) => duty.deputyId === formData.deputy_id
-        )?.deputyName || "Выберите обязанность";
-
-  const handleSelect = (id: number) => {
+  // Получение выбранного значения
+  const getSelectedLabel = useCallback(() => {
     if (type === "main") {
-      setFormData({ ...formData, func_id: id });
+      const selected = responsibilities.functions.find(func => func.funcId === formData.func_id);
+      return selected?.funcName || "Выберите обязанность";
     } else {
-      setFormData((prev: any) => ({ ...prev, deputy_id: id }));
+      const selected = responsibilities.nonCompulsory.find(duty => duty.deputyId === formData.deputy_id);
+      return selected?.deputyName || "Выберите обязанность";
+    }
+  }, [type, formData, responsibilities]);
+
+  // Обработчик выбора элемента
+  const handleSelect = useCallback((id: number) => {
+    if (type === "main") {
+      setFormData(prev => ({ ...prev, func_id: id, deputy_id: 0 }));
+    } else {
+      setFormData(prev => ({ ...prev, deputy_id: id, func_id: 0 }));
     }
     setIsOpen(false);
     setSearchTerm("");
-  };
+  }, [type, setFormData]);
+
+  const selectedLabel = getSelectedLabel();
+  const currentItems = type === "main" ? filteredFunctions : filteredNonCompulsory;
+  const isEmpty = currentItems.length === 0;
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <button
         type="button"
-        className="w-full px-4 py-2.5 border border-gray-700  text-left 
+        className="w-full px-4 py-2.5 border border-gray-700 text-left 
           focus:outline-none focus:ring-2 focus:ring-secondary bg-white transition-colors duration-200
           flex justify-between items-center rounded-xl"
         onClick={() => setIsOpen(!isOpen)}
@@ -80,19 +99,12 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
       >
         <span className="truncate">{selectedLabel}</span>
         <svg
-          className={`w-5 h-5 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-5 h-5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M19 9l-7 7-7-7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
@@ -100,7 +112,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         <div
           className="absolute z-10 w-full mt-1 bg-secondary border-gray-600 shadow-lg 
             max-h-80 overflow-y-auto rounded-xl"
-          role="list -xl"
+          role="listbox"
         >
           <div className="p-2">
             <input
@@ -113,51 +125,38 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
               aria-label="Search options"
             />
           </div>
-          <div
-            className={`p-2 ${
-              type === "main" ? "bg-secondary" : "bg-green-900/20"
-            } rounded-b-xl`}
-          >
+          <div className={`p-2 ${type === "main" ? "bg-secondary" : "bg-green-900/20"} rounded-b-xl`}>
             <div className="text-gray-300 text-sm font-medium px-3 py-1">
-              {type === "main"
-                ? "Основные обязанности"
-                : "Дополнительные обязанности"}
+              {type === "main" ? "Основные обязанности" : "Дополнительные обязанности"}
             </div>
-            {type === "main"
-              ? filteredFunctions?.map((func) => (
-                  <button
-                    key={func.funcId}
-                    type="button"
-                    className="w-full px-3 py-2 text-left text-gray-100 hover:bg-red-200/20 
-                      focus:outline-none focus:bg-secondary-50 transition-colors duration-150 rounded-xl"
-                    onClick={() => handleSelect(func.funcId)}
-                    role="option"
-                    aria-selected={formData.func_id === func.funcId}
-                  >
-                    {func.funcName}
-                  </button>
-                )) || (
-                  <div className="px-3 py-2 text-gray-400 rounded-xl">
-                    Обязанностей не найдено
-                  </div>
-                )
-              : filteredNonCompulsory?.map((duty) => (
-                  <button
-                    key={duty.deputyId}
-                    type="button"
-                    className="w-full px-3 py-2 text-left text-gray-100 hover:bg-green-500/20 
-                      focus:outline-none focus:bg-green-500/30 transition-colors duration-150 rounded-xl"
-                    onClick={() => handleSelect(duty.deputyId)}
-                    role="option"
-                    aria-selected={formData.deputy_id === duty.deputyId}
-                  >
-                    {duty.deputyName}
-                  </button>
-                )) || (
-                  <div className="px-3 py-2 text-gray-400 rounded-xl">
-                    Обязанностей не найдено
-                  </div>
-                )}
+            
+            {isEmpty ? (
+              <div className="px-3 py-2 text-gray-400 rounded-xl">Обязанностей не найдено</div>
+            ) : (
+              currentItems.map((item) => (
+                <button
+                  key={type === "main" ? (item as FunctionItem).funcId : (item as Responsibility).deputyId}
+                  type="button"
+                  className={`w-full px-3 py-2 text-left text-gray-100 transition-colors duration-150 rounded-xl
+                    ${type === "main" 
+                      ? "hover:bg-red-200/20 focus:bg-secondary-50" 
+                      : "hover:bg-green-500/20 focus:bg-green-500/30"}`}
+                  onClick={() => handleSelect(
+                    type === "main" 
+                      ? (item as FunctionItem).funcId 
+                      : (item as Responsibility).deputyId
+                  )}
+                  role="option"
+                  aria-selected={
+                    type === "main" 
+                      ? formData.func_id === (item as FunctionItem).funcId 
+                      : formData.deputy_id === (item as Responsibility).deputyId
+                  }
+                >
+                  {type === "main" ? (item as FunctionItem).funcName : (item as Responsibility).deputyName}
+                </button>
+              ))
+            )}
           </div>
         </div>
       )}

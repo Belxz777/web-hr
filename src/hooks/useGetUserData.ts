@@ -1,82 +1,90 @@
-// hooks/useEmployeeData.js
+import { useState, useEffect, useRef } from 'react';
 import authUser from '@/components/server/auth/auth';
 import { checkAndClearStorage } from '@/components/utils/checktime';
-// import { fetchTitle } from '@/components/server/userdata/jobtitle';
-import { employee } from '@/types';
-import { useState, useEffect } from 'react';
+
 interface Deputy {
-  deputyId: number
-  deputyName: string
-  compulsory: boolean
+  deputyId: number;
+  deputyName: string;
+  compulsory: boolean;
 }
 
 interface Job {
-  jobName: string
-  deputy: number
+  jobName: string;
+  deputy: number;
 }
 
 interface User {
-  employeeId: number
-  firstName: string
-  lastName: string
-  position: number
+  employeeId: number;
+  firstName: string;
+  lastName: string;
+  position: number;
 }
 
 interface AuthResponse {
-  user: User
-  job: Job,
-  department:string,
-  deputy: Deputy[]
+  user: User;
+  job: Job;
+  department: string;
+  deputy: Deputy[];
 }
-interface Department {
-  departmentName: string
+
+interface ErrorState {
+  status: boolean;
+  text: string;
 }
+
 const useEmployeeData = () => {
-  const [employeeData, setData] = useState<AuthResponse | null >(null);
-  const [title, setTitle] = useState<string>('');
+  const [employeeData, setData] = useState<AuthResponse | null>(null);
   const [loadingEmp, setLoading] = useState(true);
-  const [error, setError] = useState({
+  const [error, setError] = useState<ErrorState>({
     status: false,
     text: "",
-});
-  const abortController = new AbortController();
+  });
+  
+  const mountedRef = useRef(true);
+
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      checkAndClearStorage();      
-    }
     const fetchEmployeeData = async () => {
       try {
         setLoading(true);
-        const response = await authUser();
-        setData(response);
-        setTitle(response?.job.jobName || '');
-      } catch (err) {
-        if (err instanceof Error) {
-          setError({
-            status: true,
-            text: err.message,
-          });
-        } else {
-          setError({
-            status: true,
-            text: 'An unexpected error occurred',
-          });
+        setError({ status: false, text: "" });
+
+        if (typeof window !== 'undefined') {
+          checkAndClearStorage();
         }
-      } finally {
-        setLoading(false);
+
+        const response = await authUser();
+        
+        if (mountedRef.current) {
+          setData(response);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (mountedRef.current) {
+          const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+          setError({
+            status: true,
+            text: errorMessage,
+          });
+          setLoading(false);
+        }
       }
     };
-    fetchEmployeeData().catch(err => {
-      setError({
-        status: true,
-        text: err.message,
-      });
-    });
-    return () =>{
-abortController.abort();
-    }
+
+    fetchEmployeeData();
+
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
-  return { employeeData, title, loadingEmp, error };
+  const title = employeeData?.job.jobName || '';
+
+  return { 
+    employeeData, 
+    title, 
+    loadingEmp, 
+    error 
+  };
 };
+
 export default useEmployeeData;

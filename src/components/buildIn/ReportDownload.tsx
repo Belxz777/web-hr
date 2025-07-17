@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 
-export function RoutesBoss() {
+export function RoutesBoss({ position }: { position: number }) {
   const router = useRouter()
 
   return (
@@ -12,7 +12,7 @@ export function RoutesBoss() {
       <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
-            onClick={() => router.push("/dashboard/employees")}
+            onClick={() => router.push("/analytics/mydepartment/employees")}
             className="w-full h-full p-4 text-left flex flex-col items-center group relative overflow-hidden rounded-xl border border-gray-200 hover:border-[#249BA2] transition-all duration-300 shadow-sm hover:shadow-md"
           >
             <div className="absolute top-0 left-0 w-2 h-full bg-[#249BA2] group-hover:w-full opacity-10 group-hover:opacity-20 transition-all duration-500"></div>
@@ -36,7 +36,7 @@ export function RoutesBoss() {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-[#000000] group-hover:text-[#249BA2] transition-colors">
-              Аналитика сотрудников
+              Аналитика сотрудников вашего отдела
             </h3>
             <p className="text-sm text-gray-500 mt-2 text-center">
               Просмотр статистики и показателей по всем сотрудникам
@@ -47,7 +47,7 @@ export function RoutesBoss() {
           </button>
 
           <button
-            onClick={() => router.push("/dashboard/department/")}
+            onClick={() => router.push("/analytics/mydepartment")}
             className="w-full h-full p-4 text-left flex flex-col items-center group relative overflow-hidden rounded-xl border border-gray-200 hover:border-[#249BA2] transition-all duration-300 shadow-sm hover:shadow-md"
           >
             <div className="absolute top-0 left-0 w-2 h-full bg-[#249BA2] group-hover:w-full opacity-10 group-hover:opacity-20 transition-all duration-500"></div>
@@ -72,7 +72,7 @@ export function RoutesBoss() {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-[#000000] group-hover:text-[#249BA2] transition-colors">
-              Аналитика отдела
+              Аналитика вашего отдела
             </h3>
             <p className="text-sm text-gray-500 mt-2 text-center">
               Просмотр статистики и показателей по вашему отделу
@@ -81,7 +81,8 @@ export function RoutesBoss() {
               Открыть
             </div>
           </button>
-
+{
+  position >=4 && (
           <button
             onClick={() => router.push("/dashboard/general")}
             className="w-full h-full p-4 text-left flex flex-col items-center group relative overflow-hidden rounded-xl border border-gray-200 hover:border-[#FF0000] transition-all duration-300 shadow-sm hover:shadow-md"
@@ -113,6 +114,9 @@ export function RoutesBoss() {
               Открыть
             </div>
           </button>
+    
+  )
+}
         </div>
       </div>
     </section>

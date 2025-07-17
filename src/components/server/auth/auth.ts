@@ -1,56 +1,53 @@
 "use server"
+
 import { cookies } from 'next/headers';
 import { host } from '@/types';
-interface Deputy {
-    deputyId: number
-    deputyName: string
-    compulsory: boolean
-}
 
-interface Job {
-    jobName: string
-    deputy: number
-}
-
-interface User {
+interface AuthResponse {
+  user: {
     employeeId: number
     firstName: string
     lastName: string
     position: number
+  }
+  job: {
+    jobName: string
+    deputy: number
+  }
+  department: string
+  deputy: {
+    deputyId: number
+    deputyName: string
+    compulsory: boolean
+  }[]
 }
 
-interface AuthResponse {
-    user: User
-    job: Job,
-    department: string,
-    deputy: Deputy[]
-}
+export default async function authUser(): Promise<AuthResponse> {
+  const cookieStore = cookies();
+  const jwt = cookieStore.get('cf-auth-id')?.value;
+  
+  if (!jwt) {
+    throw new Error('Authentication token not found');
+  }
 
-async function authUser(): Promise<AuthResponse> {
-    const cookieStore = cookies();
-    const jwt = cookieStore.get('cf-auth-id')?.value;
-    if (!jwt) {
-        throw new Error('No token provided');
-    }
-    try{     
-    const res = await fetch(`${host}users/get_user`, {
-        credentials: 'include',
-        headers: {
-            Cookie: `jwt=${jwt}`,
-            'Content-Type': 'application/json'
-        }
+  try {
+    const response = await fetch(`${host}users/get_user`, {
+      credentials: 'include',
+      headers: {
+        Cookie: `jwt=${jwt}`,
+        'Content-Type': 'application/json'
+      },
+      next: { revalidate: 0 } // Отключаем кэширование
     });
 
-    if (!res.ok) {
-        throw new Error('Failed to fetch user data');
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to fetch user data');
     }
 
-    return res.json();
-    }
-    catch(error){
-        console.log(error)
-        throw new Error('Failed to fetch user data');
-    }
+    return await response.json();
+  } catch (error) {
+    console.error('Authentication error:', error);
+    throw error instanceof Error ? error : new Error('Authentication failed');
+  }
 }
-
-export default authUser;

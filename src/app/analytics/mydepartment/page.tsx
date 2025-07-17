@@ -1,23 +1,28 @@
 "use client"
 
+import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Header } from "@/components/ui/header"
 import UniversalFooter from "@/components/buildIn/UniversalFooter"
-import { DailyStats, Department, DepartmentDistribution } from "@/types"
+import { DailyStats, DepartmentDistribution } from "@/types"
 import { analyticsDepartments, analyticsDepartmentPercentage } from "@/components/server/analysis/departmentanalysis"
-import getAllDepartments from "@/components/server/admin/departments"
-import { ControlPanel } from "@/components/analytics/Panel"
-import { DataDisplay } from "@/components/analytics/DateDisplay"
 
+import { TabSwitcher } from "@/components/analytics/TabSwitcher"
+import { DateSelector } from "@/components/analytics/DatePicker"
+import { formatDisplayDate } from "@/components/utils/format"
+import { DataDisplay } from "@/components/analytics/DateDisplay"
 
 const getCurrentDate = () => {
   const now = new Date()
   return now.toISOString().split('T')[0]
 }
 
-export default function AnalyticsDashboard() {
+export default function DepartmentAnalyticsPage() {
+  const params = useParams()
+  const router = useRouter()
+
+
   const [dataInDay, setDataInDay] = useState<DailyStats | null>(null)
-  const [deps, setDeps] = useState<Department[]>([])
   const [dataInDayPer, setDataInDayPer] = useState<DepartmentDistribution | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -30,34 +35,21 @@ export default function AnalyticsDashboard() {
     return date.toISOString().split('T')[0]
   })
   const [endDate, setEndDate] = useState(getCurrentDate())
-  const [selectedDep, setSelectedDep] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState("day")
 
   useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const allDepartments = await getAllDepartments()
-        setDeps(allDepartments)
-        if (allDepartments.length > 0) {
-          setSelectedDep(allDepartments[0].departmentId)
-        }
-      } catch (err) {
-        console.error("Ошибка при загрузке департаментов:", err)
-        setError("Ошибка при загрузке департаментов")
-      }
-    }
 
-    fetchDepartments()
+    setShouldFetch(true)
   }, [])
 
   useEffect(() => {
-    if (selectedDep && shouldFetch) {
+    if (shouldFetch) {
       fetchData()
     }
-  }, [selectedDep, selectedDate, startDate, endDate, activeTab, shouldFetch])
+  }, [ selectedDate, startDate, endDate, activeTab, shouldFetch])
 
   const fetchData = async () => {
-    if (!selectedDep) return
+
 
     try {
       setLoading(true)
@@ -65,21 +57,21 @@ export default function AnalyticsDashboard() {
 
       const [data, dataPer] = await Promise.all([
         analyticsDepartments({
-          depId: selectedDep,
           ...(activeTab === "day" ? { date: selectedDate } : { startDate, endDate })
         }),
         analyticsDepartmentPercentage({
-          depId: selectedDep,
           ...(activeTab === "day" ? { date: selectedDate } : { startDate, endDate })
         })
       ])
 
       setDataInDay(data)
       setDataInDayPer(dataPer)
+      console.log(data, dataPer)
     } catch (err) {
       setError(`Ошибка при загрузке данных: ${err instanceof Error ? err.message : String(err)}`)
     } finally {
       setLoading(false)
+      setShouldFetch(false)
     }
   }
 
@@ -98,44 +90,53 @@ export default function AnalyticsDashboard() {
     setShouldFetch(true)
   }
 
-  const handleDepChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDep(Number(e.target.value))
-    setShouldFetch(true)
-  }
-
   const handleTabChange = (value: string) => {
     setActiveTab(value)
     setDataInDay(null)
     setDataInDayPer(null)
-    setShouldFetch(false)
+    setShouldFetch(true)
   }
 
   const getTitle = () => {
     if (activeTab === "day") {
-      return `Аналитика за ${selectedDate}`
+      return `Аналитика за ${formatDisplayDate(selectedDate)}`
     } else {
-      return `Аналитика за период ${startDate} - ${endDate}`
+      return `Аналитика за период ${formatDisplayDate(startDate)} - ${formatDisplayDate(endDate)}`
     }
   }
 
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
-      <Header title="Аналитика по отделам" showPanel={false} />
-      <div className="p-4">
-        <ControlPanel
-          activeTab={activeTab}
-          selectedDate={selectedDate}
-          startDate={startDate}
-          endDate={endDate}
-          deps={deps}
-          selectedDep={selectedDep}
-          onDateChange={handleDateChange}
-          onStartDateChange={handleStartDateChange}
-          onEndDateChange={handleEndDateChange}
-          onDepChange={handleDepChange}
-          onTabChange={handleTabChange}
-        />
-      </div>
+    <div className="min-h-screen  bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
+      <Header title="Аналитика отдела" showPanel={false} />
+      <div className=" bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 p-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
+            <span className="inline-block mr-3"></span>
+            Выбор даты
+          </h1>
+          <p className="text-muted-foreground text-lg">Выберите день или интервал дат</p>
+        </div>
+
+        <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-xl p-8">
+          <TabSwitcher
+                  activeTab={activeTab}
+                  onTabChange={handleTabChange}
+                />
+                <DateSelector
+                  activeTab={activeTab}
+                  selectedDate={selectedDate}
+                  startDate={startDate}
+                  endDate={endDate}
+                  onDateChange={handleDateChange}
+                  onStartDateChange={handleStartDateChange}
+                  onEndDateChange={handleEndDateChange}
+                />
+              
+              </div>
+            </div>
+            </div>
       <main className="px-4 my-4 space-y-2 flex-grow">
         <DataDisplay
           loading={loading}

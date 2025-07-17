@@ -1,220 +1,255 @@
-
 "use client"
 export const dynamic = "force-dynamic"
 
-
 import type React from "react"
-
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import sendReport from "@/components/server/userdata/report"
 import UniversalFooter from "@/components/buildIn/UniversalFooter"
 import { Header } from "@/components/ui/header"
-import {getAllFunctionsForReport} from "@/components/server/userdata/functions"
+import { getAllFunctionsForReport } from "@/components/server/userdata/functions"
 import { CustomSelect } from "@/components/ui/CustomSelect"
-import { useLocalStorage } from "@/hooks/useLocalstorage"
+import { formatReportDate } from "@/components/utils/format"
 import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
+import { get } from "http"
+
+
+interface Responsibility {
+  deputyId: number
+  deputyName: string
+}
+
+interface FunctionItem {
+  funcId: number
+  funcName: string
+}
+
+interface ResponsibilitiesData {
+  nonCompulsory: Responsibility[]
+  functions: FunctionItem[]
+}
+
+interface ErrorState {
+  status: boolean
+  text: string
+  success: boolean
+}
+
+interface FormData {
+  func_id: number
+  deputy_id: number
+  workingHours: string
+  comment: string
+}
 const setLocalStorageWithExpiry = (key: string, value: any) => {
   const now = new Date();
+  // Создаем новую дату для expiry (19:00 текущего дня)
+  const expiryDate = new Date(now );
+  expiryDate.setDate(expiryDate.getDate() + 1); // Следующий день
+  expiryDate.setHours(0, 0, 0, 0); // Ровно полночь
+  // В полночь удаляются значения hoursWorked и comment
+
+  if (now > expiryDate) {
+    expiryDate.setDate(expiryDate.getDate() + 1);
+  }
+
   const item = {
     value: value,
     timestamp: now.getTime(),
-    expiryDate: new Date(now).setHours(19, 0, 0, 0)
+    expiry: expiryDate.getTime() // Сохраняем timestamp expiry даты
   };
   localStorage.setItem(key, JSON.stringify(item));
-}
+};
+
+const getLocalStorageWithExpiry = (key: string) => {
+  const itemStr = localStorage.getItem(key);
+  if (!itemStr) return null;
+  
+  try {
+    const item = JSON.parse(itemStr);
+    const now = new Date();
+    
+    // Проверяем expiry timestamp
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    
+    return item.value;
+  } catch (e) {
+    console.error("Error parsing localStorage item", e);
+    return null;
+  }
+};
+
 export default function ReportPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<{ status: boolean; text: string; success: boolean }>({
+  const [error, setError] = useState<ErrorState>({
     status: false,
     success: false,
     text: "",
   })
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     func_id: 0,
     deputy_id: 0,
     workingHours: "",
     comment: "",
   })
-  const [responsibilities, setResponsibilities] = useState<{
-    length: any
-    nonCompulsory: {
-      deputyId: number
-      deputyName: string
-    }[]
-    functions: {
-      funcId: number
-      funcName: string
-    }[]
-  }>({
-    length: 0,
+  const [responsibilities, setResponsibilities] = useState<ResponsibilitiesData>({
     nonCompulsory: [],
     functions: [],
   })
-  const [type, settype] = useState<string>("main")
-  const [hoursworked,sethoursworked] = useState(0)
+  const [type, setType] = useState<string>("main")
+  const [hoursWorked, setHoursWorked] = useState<number>(0)
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getAllFunctionsForReport()
-        setResponsibilities(data || [])
-        if (data.functions.length === 1) {
-          setFormData((prev) => ({
-            ...prev,
-            func_id: data.functions[0].funcId,
-          }))
-        } else if (data.nonCompulsory.length === 1) {
-          setFormData((prev) => ({
-            ...prev,
-            deputy_id: data.nonCompulsory[0].deputyId,
-          }))
+        if (data) {
+          setResponsibilities(data)
+          
+          // Auto-select first item if only one exists
+          if (data.functions.length === 1) {
+            setFormData(prev => ({
+              ...prev,
+              func_id: data.functions[0].funcId,
+              deputy_id: 0
+            }))
+          }
+          if (data.nonCompulsory.length === 1) {
+            setFormData(prev => ({
+              ...prev,
+              deputy_id: data.nonCompulsory[0].deputyId,
+              func_id: 0
+            }))
+          }
         }
       } catch (error) {
         console.error("Failed to fetch responsibilities:", error)
+        setError({
+          status: true,
+          success: false,
+          text: "Не удалось загрузить список обязанностей"
+        })
       }
     }
-    if(typeof window !== 'undefined'){
-      const hoursToday = localStorage.getItem('hourstoday')
-      if(hoursToday){
-        let obj = JSON.parse(hoursToday)
-        sethoursworked(Number(obj.value))
-      }
+
+    // Load hours worked from localStorage
+    if (typeof window !== 'undefined') {
+      const storedHours = getLocalStorageWithExpiry('hourstoday')
+      setHoursWorked(storedHours ? Number(storedHours) : 0)
     }
+
     fetchData()
   }, [])
-
-  const formatReportDate = (date: Date) => {
-    const daysOfWeek = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]
-    const dayName = daysOfWeek[date.getDay()]
-    const formattedDate = date.toLocaleDateString("ru-RU", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })
-    return `${formattedDate}, ${dayName}`
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
 
     if (name === "workingHours") {
       const numValue = Number(value)
-      let formattedValue
-
-      if (e.target.id === "workingHoursManual") {
-        formattedValue = (numValue / 60).toFixed(2)
-      } else {
-        formattedValue = (numValue / 60).toFixed(2)
-      }
-
-      setFormData((prev) => ({
+      const formattedValue = (numValue / 60).toFixed(2)
+      
+      setFormData(prev => ({
         ...prev,
         [name]: formattedValue,
       }))
     } else {
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
         [name]: value,
       }))
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (responsibilities?.functions?.length === 1) {
-      setFormData({
-        ...formData,
-        func_id: Number(responsibilities.functions[0].funcId),
-      })
-    } else if (responsibilities?.nonCompulsory?.length === 1) {
-      setFormData({
-        ...formData,
-        deputy_id: responsibilities.nonCompulsory[0].deputyId,
-      })
-    }
-    if (responsibilities?.length) {
-      console.log("No tasks available for report")
-      alert("Нет доступных задач для отчета")
-      return
-    }
-
-    if (!formData.func_id && !formData.deputy_id) {
-      console.log("No task selected", formData)
+  const validateForm = (): boolean => {
+    if (type === "main" && !formData.func_id) {
       setError({
         status: true,
-        text: "Выберите обязанность",
-        success: false,
+        text: "Выберите основную обязанность",
+        success: false
       })
-
-      return
+      return false
     }
-
+    
+    if (type === "ext" && !formData.deputy_id) {
+      setError({
+        status: true,
+        text: "Выберите дополнительную обязанность",
+        success: false
+      })
+      return false
+    }
+    
     if (Number(formData.workingHours) <= 0) {
-      console.log("Invalid working hours:", formData.workingHours)
       setError({
         status: true,
         text: "Укажите корректное количество часов",
-        success: false,
+        success: false
       })
-      return
+      return false
     }
+    
+    return true
+  }
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     setLoading(true)
+
     try {
-      if (type === "main") {
-        const reportData = {
-          func_id: formData.func_id,
-          workingHours: Number(formData.workingHours),
-          comment: formData.comment,
-        }
-        const req = await sendReport(reportData)
-        if (req) {
-          setError({
-            status: true,
-            text: "Успешно",
-            success: true,
-          })
-          setTimeout(() => {
-            router.push("/profile")
-          }, 1000)
-        } else {
-          setError({
-            status: true,
-            text: "Ошибка",
-            success: false,
-          })
-        }
-      } else {
-        const reportData = {
-          deputy_id: formData.deputy_id,
-          workingHours: Number(formData.workingHours),
-          comment: formData.comment,
-        }
-        const req = await sendReport(reportData)
-        if (req) {
-          setError({
-            status: true,
-            text: "Успешно",
-            success: true,
-          })
-          setTimeout(() => {
-            router.push("/profile")
-          }, 1000)
-
-        } else {
-          alert("Ошибка ")
-        }
+      if (!validateForm()) {
+        return
       }
-          if (typeof window !== 'undefined' && window.localStorage) {
 
-  let hours = Number(localStorage.getItem("hourstoday")) + Number(formData.workingHours)
-setLocalStorageWithExpiry('hourstoday',hours)
-}
+      // Prepare report data based on type
+      const reportData = type === "main" 
+        ? {
+            func_id: formData.func_id,
+            workingHours: Number(formData.workingHours),
+            comment: formData.comment,
+          }
+        : {
+            deputy_id: formData.deputy_id,
+            workingHours: Number(formData.workingHours),
+            comment: formData.comment,
+          }
 
+      const req = await sendReport(reportData)
+
+      if (req) {
+        // Update hours worked in localStorage
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const newHours = (hoursWorked || 0) + Number(formData.workingHours)
+          setLocalStorageWithExpiry('hourstoday', newHours)
+          setHoursWorked(newHours)
+        }
+
+        setError({
+          status: true,
+          text: "Успешно",
+          success: true,
+        })
+
+        setTimeout(() => {
+          router.push("/profile")
+        }, 1000)
+      } else {
+        setError({
+          status: true,
+          text: "Ошибка при отправке отчета",
+          success: false,
+        })
+      }
     } catch (error) {
       console.error("Error submitting report:", error)
-      alert("Ошибка при отправке отчета")
+      setError({
+        status: true,
+        text: "Ошибка при отправке отчета",
+        success: false,
+      })
     } finally {
       setLoading(false)
     }
@@ -237,7 +272,7 @@ setLocalStorageWithExpiry('hourstoday',hours)
             Отчет за: {formatReportDate(new Date())}
           </div>
           <div className="mb-4 text-center text-foreground text-lg font-semibold">
-            Сегодня отработано: {convertDataToNormalTime(hoursworked)}
+            Сегодня отработано: {convertDataToNormalTime(hoursWorked)}
           </div>
           <div className="mb-4">
             <label htmlFor="type" className="block text-foreground mb-2">
@@ -247,15 +282,15 @@ setLocalStorageWithExpiry('hourstoday',hours)
               id="type"
               value={type}
               onChange={(e) => {
-                settype(e.target.value)
+                setType(e.target.value)
                 if (e.target.value === "ext" && responsibilities.nonCompulsory.length > 0) {
-                  setFormData((prev) => ({
+                  setFormData(prev => ({
                     ...prev,
                     deputy_id: responsibilities.nonCompulsory[0].deputyId,
                     func_id: 0,
                   }))
                 } else if (e.target.value === "main" && responsibilities.functions.length > 0) {
-                  setFormData((prev) => ({
+                  setFormData(prev => ({
                     ...prev,
                     func_id: responsibilities.functions[0].funcId,
                     deputy_id: 0,

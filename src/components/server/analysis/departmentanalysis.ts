@@ -2,106 +2,109 @@
 import { host } from "@/types";
 import { cookies } from "next/headers";
 
-async function analyticsDepartments(params: {
+interface AnalyticsParams {
   date?: string;
   depId?: number;
   startDate?: string;
   endDate?: string;
-}) {
+}
+
+async function fetchWithAuth(url: string) {
   const cookieStore = cookies();
   const jwt = cookieStore.get("cf-auth-id")?.value;
+  
   if (!jwt) {
-    throw new Error("No token provided");
+    throw new Error("No authentication token provided");
   }
 
   try {
-    let url = "";
+    const response = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Cookie: `jwt=${jwt}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Fetch error response:", errorText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    console.error("Fetch error:", error);
+    throw new Error(`Failed to fetch data from ${url}: ${error.message}`);
+  }
+}
+
+async function analyticsDepartments(params: AnalyticsParams) {
+  try {
     const { date, depId, startDate, endDate } = params;
+    const queryParams = new URLSearchParams();
 
-    // Режим analyticsDepartmentsInDay
-    if (date && depId) {
-      url = `${host}analytics/department/?department_id=${depId}&date=${date}`;
-    }
-    // Режим analyticsDepartmentInInterval
-    else if (depId && startDate && endDate) {
-      url = `${host}analytics/department/?department_id=${depId}&start_date=${startDate}&end_date=${endDate}`;
-    }
-    // Режим analyticsDepartmentsGeneral
-    else if (date && !depId && !startDate && !endDate) {
-      url = `${host}common/departments/?date=${date}`;
-    }
-    else {
-      throw new Error("Invalid parameters provided");
-    }
-
-    const response = await fetch(url, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Cookie: `jwt=${jwt}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      return data;
+    if (depId) {
+      queryParams.append('department_id', depId.toString());
     } else {
-      throw new Error(data.error || "Unknown error occurred");
+      queryParams.append('is_auto', 'true');
     }
+
+    if (date) {
+      queryParams.append('date', date);
+    } else if (startDate && endDate) {
+      if (new Date(startDate) > new Date(endDate)) {
+        throw new Error("Start date cannot be after end date");
+      }
+      queryParams.append('start_date', startDate);
+      queryParams.append('end_date', endDate);
+    }
+
+    const url = `${host}analytics/department/?${queryParams.toString()}`;
+    console.log("Request URL:", url); // Для отладки
+    
+    return await fetchWithAuth(url);
   } catch (error: any) {
-    console.error("Error fetching analytics data:", error);
-    throw new Error(error.message || "Error occurred in getting analytics data");
+    console.error("Analytics departments error:", error.message);
+    throw new Error(`Failed to get department analytics: ${error.message}`);
   }
 }
 
-async function analyticsDepartmentPercentage(params: {
-  date?: string;
-  depId: number;
-  startDate?: string;
-  endDate?: string;
-}) {
-  const cookieStore = cookies();
-  const jwt = cookieStore.get("cf-auth-id")?.value;
-  if (!jwt) {
-    throw new Error("No token provided");
-  }
-
+async function analyticsDepartmentPercentage(params: AnalyticsParams) {
   try {
-    let url = `${host}analytics/department/percentage/?department_id=${params.depId}`;
+    const { date, depId, startDate, endDate } = params;
     
-    if (params.date) {
-      // Режим analyticsDepartmentInDayPercentager (за конкретный день)
-      url += `&date=${params.date}`;
-    } else if (params.startDate && params.endDate) {
-      // Режим analyticsDepartmentInDayPercentagerInInterval (за интервал)
-      url += `&start_date=${params.startDate}&end_date=${params.endDate}`;
-    } else {
-      throw new Error("Invalid parameters: either date or startDate+endDate must be provided");
+    if (!date && !(startDate && endDate)) {
+      throw new Error("Either date or both startDate and endDate must be provided");
     }
 
-    const response = await fetch(url, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Cookie: `jwt=${jwt}`,
-        "Content-Type": "application/json",
-      },
-    });
-    
-    const data = await response.json();
+    const queryParams = new URLSearchParams();
 
-    if (response.ok) {
-      return data;
+    if (depId) {
+      queryParams.append('department_id', depId.toString());
     } else {
-      throw new Error(data.error || "Unknown error occurred");
+      queryParams.append('is_auto', 'true');
     }
+
+    if (date) {
+      queryParams.append('date', date);
+    } else {
+      if (new Date(startDate!) > new Date(endDate!)) {
+        throw new Error("Start date cannot be after end date");
+      }
+      queryParams.append('start_date', startDate!);
+      queryParams.append('end_date', endDate!);
+    }
+
+    const url = `${host}analytics/department/percentage/?${queryParams.toString()}`;
+    console.log("Request URL:", url); // Для отладки
+    
+    return await fetchWithAuth(url);
   } catch (error: any) {
-    console.error(error);
-    throw new Error(error.message || "Error occurred in getting department analytics");
+    console.error("Department percentage error:", error.message);
+    throw new Error(`Failed to get department percentage: ${error.message}`);
   }
 }
-
 
 export { analyticsDepartments, analyticsDepartmentPercentage };

@@ -169,7 +169,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
                       </svg>
                     }
                   >
-                    Админ-панель
+                    Панель для добавления данных
                   </MenuItem>
                 </>
               )}
