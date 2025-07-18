@@ -131,9 +131,7 @@ export function EmployeeResponsibilities({
                         className="text-[#249BA2] px-4 py-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all duration-200"
                       >
                         <div className="flex items-center">
-                          <span className="mr-2 bg-[#249BA2] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
-                            {index + 1}
-                          </span>
+                          
                           {item.deputyName}
                         </div>
                       </li>

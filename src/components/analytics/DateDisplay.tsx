@@ -43,6 +43,7 @@ export const DataDisplay = ({
   if (!dataInDay || !dataInDayPer) {
     return null
   }
+  dataInDay.time_period
 
   return (
     <div className="space-y-6">
@@ -56,7 +57,7 @@ export const DataDisplay = ({
         {dataInDayPer?.distribution && <Bytypes data={dataInDayPer.distribution} />}
       </div>
       <div className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
-        <EmployeeStats data={dataInDay.employee_stats} />
+        <EmployeeStats employeeStats={dataInDay.employee_stats}  time_period={dataInDay.time_period} />
       </div>
     </div>
   )

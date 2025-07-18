@@ -140,12 +140,24 @@ type DepartmentStatsProps = {
   title: string;
 };
 type EmployeeStatsProps = {
+  first_name: string;
+  last_name: string;
+  patronymic: string;
   deputy_hours: number;
   employee_id: number;
   function_hours: number;
   total_hours: number;
 };
-
+// "employee_stats": [
+//         {
+//             "employee_id": 9,
+//             "first_name": "мейн",
+//             "last_name": "Петр",
+//             "patronymic": "Ивановна",
+//             "total_hours": 29.42,
+//             "function_hours": 29.42,
+//             "deputy_hours": 0.0
+//         }
 interface StatCardProps {
   title: string;
   value: number | string;

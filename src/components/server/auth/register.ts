@@ -29,7 +29,6 @@ async function registerUser(userData: CreateUserDTO): Promise<any> {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("Server error:", errorData);
       throw new Error(
         errorData.message ||
           errorData.jobId?.[0] ||

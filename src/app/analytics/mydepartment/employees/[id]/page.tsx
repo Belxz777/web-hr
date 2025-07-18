@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Header } from "@/components/ui/header"
 import UniversalFooter from "@/components/buildIn/UniversalFooter"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import type { EmployeeDistribution, EmployeeSummary } from "@/types"
 import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
 import getEmployeeAnalytics from "@/components/server/analysis/employee"
@@ -16,8 +16,7 @@ import { StatsCards } from "@/components/analytics/employee/StatisticsEmployee"
 import { EmployeeHeader } from "@/components/analytics/employee/CommonData"
 import { ChartSection } from "@/components/analytics/employee/Chart"
 import { DailySummarySection } from "@/components/analytics/employee/Summary"
-
-// Импорт компонентов
+import Link from "next/link"
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
@@ -38,23 +37,29 @@ const getCurrentDate = () => {
 }
 
 export default function EmployeeDailyStats() {
-const params = useParams()
-  const [selectedDate, setSelectedDate] = useState(getCurrentDate())
-  const [startDate, setStartDate] = useState(() => {
+  const params = useParams()
+  const searchParams = useSearchParams()
+  
+  const empId = typeof params.id === 'string' ? params.id : params.id[0]
+  const urlDate = searchParams.get('date')
+  const urlStartDate = searchParams.get('start_date')
+  const urlEndDate = searchParams.get('end_date')
+
+  const [selectedDate, setSelectedDate] = useState(urlDate || getCurrentDate())
+  const [startDate, setStartDate] = useState(urlStartDate || (() => {
     const date = new Date()
     date.setDate(date.getDate() - 7)
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, "0")
     const day = String(date.getDate()).padStart(2, "0")
     return `${year}-${month}-${day}`
-  })
-  const [endDate, setEndDate] = useState(getCurrentDate())
+  }))
+  const [endDate, setEndDate] = useState(urlEndDate || getCurrentDate())
   const [employeeSummary, setEmployeeSummary] = useState<EmployeeSummary>()
-  const [activeTab, setActiveTab] = useState("day")
+  const [activeTab, setActiveTab] = useState(urlDate ? "day" : urlStartDate && urlEndDate ? "interval" : "day")
   const [employeeDistribution, setEmployeeDistribution] = useState<EmployeeDistribution>()
-  const empId = typeof params.id === 'string' ? params.id : params.id[0]
   const [isLoading, setIsLoading] = useState(false)
-  const [shouldFetch, setShouldFetch] = useState(false)
+  const [shouldFetch, setShouldFetch] = useState(!!urlDate || !!(urlStartDate && urlEndDate))
 
   const fetchData = async () => {
     setIsLoading(true)
@@ -78,7 +83,6 @@ const params = useParams()
             date: selectedDate,
           }),
           getEmployeeAnalytics(Number(empId), "percentage", "day", {
-            
             date: selectedDate,
           }),
         ])
@@ -97,6 +101,12 @@ const params = useParams()
       fetchData()
     }
   }, [selectedDate, startDate, endDate, activeTab, empId, shouldFetch])
+
+  useEffect(() => {
+    if (urlDate || (urlStartDate && urlEndDate)) {
+      setShouldFetch(true)
+    }
+  }, [urlDate, urlStartDate, urlEndDate])
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(e.target.value)

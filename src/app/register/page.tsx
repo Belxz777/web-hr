@@ -62,7 +62,7 @@ export default function RegisterPage() {
       setSent(true);
     } catch (err) {
       console.error("Submit error:", err);
-      setError("Произошла ошибка при регистрации");
+      setError(`Произошла ошибка при регистрации  ${err}`);
     } finally {
       setIsLoading(false);
     }

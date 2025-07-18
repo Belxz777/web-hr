@@ -100,7 +100,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
           {position !== null && position >= 2 && (
             <>
               <MenuItem
-                href="/dashboard/department/"
+                href="/analytics/mydepartment"
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +119,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
                   </svg>
                 }
               >
-                Статистика отдела
+               Аналитика моего отдела
               </MenuItem>
 
               {position >= 4 && (
