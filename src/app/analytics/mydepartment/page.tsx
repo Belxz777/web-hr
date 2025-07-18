@@ -66,7 +66,6 @@ export default function DepartmentAnalyticsPage() {
 
       setDataInDay(data)
       setDataInDayPer(dataPer)
-      console.log(data, dataPer)
     } catch (err) {
       setError(`Ошибка при загрузке данных: ${err instanceof Error ? err.message : String(err)}`)
     } finally {

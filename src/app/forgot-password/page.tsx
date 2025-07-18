@@ -7,7 +7,8 @@ import { PulseLogo } from "@/svgs/Logo";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { resetPasswordFn } from "@/components/server/auth/passchange";
 import { quickSearchUsers } from "@/components/server/useless/userdata";
-
+import Image from "next/image";
+import logo from '../../../public/logo_1_.svg'
 interface User {
   employeeId: number;
   firstName: string;
@@ -139,10 +140,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4">
       <main className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full">
         <header className="flex flex-col items-center mb-6">
-          <PulseLogo
-            className="w-16 h-16 text-[#FF0000] cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => router.push("/")}
-          />
+               <Image src={logo} alt="Logo" className="w-16 h-16 select-none" />
           <h1 className="mt-4 text-3xl font-bold text-[#000000]">
             Восстановление пароля
           </h1>
@@ -211,6 +209,10 @@ export default function ForgotPasswordPage() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
                 placeholder="Введите пароль администратора"
+                autoComplete="off"
+                spellCheck="false"
+                autoCorrect="off"
+                autoCapitalize="off"
               />
               <button
                 type="button"
@@ -340,7 +342,7 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4">
+          <div className="bg-gray-50 rounded-xl p-4 select-none">
             <h3 className="text-sm font-medium text-[#000000] mb-2">
               Требования к паролю:
             </h3>
@@ -394,7 +396,7 @@ export default function ForgotPasswordPage() {
             onClick={() => router.push("/login")}
             className="text-[#249BA2] hover:underline"
           >
-            Вернуться к входу
+            Обратно на страницу входа
           </button>
           <button
             onClick={() => router.push("/")}

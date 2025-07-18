@@ -5,7 +5,8 @@ import type React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { PulseLogo } from "@/svgs/Logo"
+import logo from "../../../public/logo_1_.svg";
+import Image from "next/image";
 import sendUserLoginData from "@/components/server/auth/login"
 
 export default function LoginPage() {
@@ -69,8 +70,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4  select-none">
       <main className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full">
         <div className="flex flex-col items-center mb-6">
-          <PulseLogo className="w-16 h-16 text-[#FF0000]" />
-          <h1 className="mt-4 text-3xl font-bold text-[#000000]">Вход в систему</h1>
+         <Image src={logo} alt="Logo" className="w-16 h-16 select-none" />
+                   <h1 className="mt-4 text-3xl font-bold text-[#000000]">Вход в систему</h1>
           <p className="mt-2 text-center text-[#6D6D6D]">Введите ваши данные для доступа к системе</p>
         </div>
 

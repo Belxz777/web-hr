@@ -10,14 +10,6 @@ const supportContacts = [
 ];
 
 export default function SettingsPage() {
-  const news = [
-    {
-      title: "Тестовый запуск приложения",
-      description:
-        "Мы запустили приложение в тестовом режиме. ",
-      date: "2025-07-25",
-    }
-  ]
   return (
     <div
       className={`min-h-screen bg-gradient-to-br from-secondary to-primary`}

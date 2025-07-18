@@ -5,8 +5,8 @@ import { cookies } from 'next/headers'
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   
-  // Декодируем параметры один раз
-  const search = decodeURIComponent(searchParams.get('search') || '')
+  // Получаем параметры как есть, без декодирования
+  const search = searchParams.get('search') || ''
   const onlyMyDepartment = searchParams.get('only_mydepartment') === 'true'
 
   try {
@@ -15,34 +15,39 @@ export async function GET(request: Request) {
 
     if (!jwt) {
       return NextResponse.json(
-        { error: 'Authentication required' },
+        { error: 'Требуется аутентификация' },
         { status: 401 }
       )
     }
 
-    // Формируем URL без повторного кодирования
-    const url = new URL(`${host}users/quicksearch/`)
-    url.searchParams.append('search', search) // Уже декодировано
-    url.searchParams.append('only_mydepartment', String(onlyMyDepartment))
+    // Формируем URL для бэкенда
+    const backendUrl = new URL(`${host}users/quicksearch/`)
+    backendUrl.searchParams.append('search', search)
+    backendUrl.searchParams.append('only_mydepartment', String(onlyMyDepartment))
 
-    const response = await fetch(url.toString(), {
+    console.log('Backend request URL:', backendUrl.toString())
+
+    const response = await fetch(backendUrl.toString(), {
       headers: {
         Cookie: `jwt=${jwt}`,
         'Content-Type': 'application/json'
-      }
+      },
+      cache: 'no-store'
     })
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      const errorText = await response.text()
+      console.error('Backend error:', errorText)
+      throw new Error(`Backend returned ${response.status}`)
     }
 
     const data = await response.json()
     return NextResponse.json(data)
     
   } catch (error) {
-    console.error('Search error:', error)
+    console.error('Search API error:', error)
     return NextResponse.json(
-      { error: 'Failed to perform search' },
+      { error: 'Ошибка при выполнении поиска' },
       { status: 500 }
     )
   }

@@ -14,7 +14,7 @@ async function fetchWithAuth(url: string) {
   const jwt = cookieStore.get("cf-auth-id")?.value;
   
   if (!jwt) {
-    throw new Error("No authentication token provided");
+    throw new Error("Не удалось получить токен (попробуйте перезайти)");
   }
 
   try {
@@ -29,14 +29,14 @@ async function fetchWithAuth(url: string) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Fetch error response:", errorText);
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.error("Ошибка:", errorText);
+      throw new Error(`http ошибка ! статус ошибки: ${response.status} сообщение ошибки: ${response.statusText}`);
     }
 
     return await response.json();
   } catch (error: any) {
-    console.error("Fetch error:", error);
-    throw new Error(`Failed to fetch data from ${url}: ${error.message}`);
+    console.error("ошибка запроса:", error);
+    throw new Error(`получить данные с сервера по адресу ${url} не получилось: ${error.message}`);
   }
 }
 
@@ -62,7 +62,6 @@ async function analyticsDepartments(params: AnalyticsParams) {
     }
 
     const url = `${host}analytics/department/?${queryParams.toString()}`;
-    console.log("Request URL:", url); // Для отладки
     
     return await fetchWithAuth(url);
   } catch (error: any) {
@@ -106,5 +105,37 @@ async function analyticsDepartmentPercentage(params: AnalyticsParams) {
     throw new Error(`Failed to get department percentage: ${error.message}`);
   }
 }
+async function getCommonDepartments(params: CommonDepartmentsParams) {
+  try {
+    const { date,  startDate, endDate } = params;
+    const queryParams = new URLSearchParams();
 
-export { analyticsDepartments, analyticsDepartmentPercentage };
+
+    if (date) {
+      queryParams.append('date', date);
+    } else if (startDate && endDate) {
+      if (new Date(startDate) > new Date(endDate)) {
+        throw new Error("Start date cannot be after end date");
+      }
+      queryParams.append('start_date', startDate);
+      queryParams.append('end_date', endDate);
+    }
+
+    const url = `${host}common/departments/?${queryParams.toString()}`;
+    console.log("Request URL:", url); // Для отладки
+    
+    return await fetchWithAuth(url);
+  } catch (error: any) {
+    console.error("Get common departments error:", error.message);
+    throw new Error(`Ошибка при получении данных: ${error.message}`);
+  }
+}
+
+// Типы для параметров функции
+interface CommonDepartmentsParams {
+  date?: string;         // Опциональная дата в формате YYYY-MM-DD
+  depId?: number;        // Опциональный ID департамента
+  startDate?: string;    // Начальная дата периода
+  endDate?: string;      // Конечная дата периода
+}
+export { analyticsDepartments, analyticsDepartmentPercentage,getCommonDepartments };

@@ -6,7 +6,8 @@ import registerUser from "@/components/server/auth/register";
 import { useRouter } from "next/navigation";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 import useGetAlldeps from "@/hooks/useDeps";
-
+import logo from "../../../public/logo_1_.svg";
+import Image from "next/image";
 export default function RegisterPage() {
   const router = useRouter();
   const { jobs, loading } = useGetAllJobs();
@@ -72,8 +73,8 @@ export default function RegisterPage() {
       <main className="bg-white rounded-3xl shadow-xl p-8 max-w-2xl w-full">
         <div className="flex flex-col items-start mb-6">
           <div className="flex items-center gap-4">
-            <PulseLogo className="w-16 h-16 text-[#FF0000] animate-pulse" />
-            <h1 className="text-3xl font-bold text-[#000000]">Регистрация</h1>
+         <Image src={logo} alt="Logo" className="w-16 h-16 select-none" />
+          <h1 className="text-3xl font-bold text-[#000000]">Регистрация</h1>
           </div>
         </div>
 
@@ -206,9 +207,9 @@ export default function RegisterPage() {
                 required
                 value={formData.jobid === 0 ? "" : formData.jobid}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none"
+                className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none"
               >
-                <option value="">Выбери должность</option>
+                <option value="">Выберите должность</option>
                 {jobs.map((job, index) => (
                   <option key={index} value={job.jobId}>
                     {job.jobName}
@@ -227,9 +228,9 @@ export default function RegisterPage() {
                 required
                 value={formData.departmentid === 0 ? "" : formData.departmentid}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none"
+                className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none"
               >
-                <option value="">Выбери отдел</option>
+                <option value="">Выберите отдел</option>
                 {deps.map((dept, index) => (
                   <option key={index} value={dept.departmentId}>
                     {dept.departmentName}

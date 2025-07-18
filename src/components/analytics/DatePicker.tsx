@@ -42,7 +42,7 @@ export const DateSelector = ({
   onEndDateChange,
 }: DateSelectorProps) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 cursor-pointer">
       {activeTab === "day" && (
         <div className="group">
           <div className="bg-gradient-to-br from-background to-background/80 backdrop-blur-sm rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-all duration-300 hover:border-border">
@@ -53,7 +53,7 @@ export const DateSelector = ({
               <div className="text-foreground font-semibold text-lg">Выберите день</div>
             </div>
 
-            <div className="relative">
+            <div className="relative  cursor-pointer">
               <input
                 type="date"
                 value={selectedDate}

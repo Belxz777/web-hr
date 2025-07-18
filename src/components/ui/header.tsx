@@ -289,9 +289,12 @@ export const Header: React.FC<{
         <CompanyLogos />
 
         <div className="flex items-center space-x-4">
-          <NavLinks />
-
-          {showPanel && <HeaderMenu position={position} />}
+         {showPanel && (
+            <>
+              <NavLinks />
+              <HeaderMenu position={position} />
+            </>
+          )}
         </div>
       </div>
 

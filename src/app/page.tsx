@@ -3,14 +3,15 @@
 import { PulseLogo } from "@/svgs/Logo"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
+import logo from "../../public/logo_1_.svg";
+import Image from "next/image";
 export default function HomePage() {
   const router = useRouter()
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col items-center justify-center p-4 select-none">
       <main className="bg-card rounded-3xl shadow-xl p-8 max-w-md w-full flex flex-col items-center">
         <header className="flex flex-col items-center">
-          <PulseLogo className="w-16 h-16 text-primary" />
+          <Image src={logo} alt="Logo" className="w-16 h-16 select-none" />
           <h1 className="mt-6 text-2xl font-bold text-foreground text-center">HR-эффективность</h1>
           <p className="mt-2 text-center text-muted-foreground text-sm">Система менеджмента трудозатрат</p>
         </header>
@@ -43,8 +44,8 @@ export default function HomePage() {
           </div>
 
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Система "HR-эффективность" предназначена для эффективного управления трудозатратами и отслеживания выполнения
-            задач.
+            Система "HR-эффективность" предназначена для  отслеживания выполнения
+            задач , а также предоставления информации о производительности сотрудников.
           </p>
         </div>
       </main>

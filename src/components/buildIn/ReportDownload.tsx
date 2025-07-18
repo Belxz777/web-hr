@@ -84,7 +84,7 @@ export function RoutesBoss({ position }: { position: number }) {
 {
   position >=4 && (
           <button
-            onClick={() => router.push("/dashboard/general")}
+            onClick={() => router.push("/analytics/")}
             className="w-full h-full p-4 text-left flex flex-col items-center group relative overflow-hidden rounded-xl border border-gray-200 hover:border-[#FF0000] transition-all duration-300 shadow-sm hover:shadow-md"
           >
             <div className="absolute top-0 left-0 w-2 h-full bg-[#FF0000] group-hover:w-full opacity-10 group-hover:opacity-20 transition-all duration-500"></div>
