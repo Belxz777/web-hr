@@ -23,6 +23,7 @@
       "@hooks/*": ["./src/hooks/*"],
       "@svgs/*": ["./src/svgs/*"],
       "@config": ["./src/config.ts"]
+      
     }
   },
   "include": [
