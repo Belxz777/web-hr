@@ -4,13 +4,16 @@ import { useState, useEffect } from "react"
 import type { BackendStatus } from "@/types"
 import { host } from "@/types"
 import { Header } from "@/components/ui/header"
+import { Symbol } from "@/components/ui/symbol"
+import LogsViewer from "@/components/admin/logsviewer"
+import { getLogs } from "@/components/server/admin/getlogs"
 
 export default function SystemStatusPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null)
   const [error, setError] = useState<string | null>(null)
-
+  const [logs, setLogs] = useState<any[]>([])
   const formatUptime = (seconds: number): string => {
     const days = Math.floor(seconds / 86400)
     const hours = Math.floor((seconds % 86400) / 3600)
@@ -45,6 +48,16 @@ export default function SystemStatusPage() {
     }
   }
 
+const fetchLogs = async (type: string) => {
+  try {
+    const data  = await getLogs(type)
+    setLogs(data)
+  }
+  catch (err) {
+    console.error("Ошибка при получении данных:", err)
+    setError(err instanceof Error ? err.message : "Произошла ошибка при получении данных")
+  }
+}
   useEffect(() => {
     fetchBackendStatus()
   }, [])
@@ -99,7 +112,7 @@ export default function SystemStatusPage() {
 
   return (
     <div className="min-h-screen bg-white text-[#000000]">
-      <Header title="Состояние системы" position={5} showPanel={false} />
+    <Symbol text="Мониторинг работы системы" />
 
       <main className="container mx-auto p-4">
         <div className="flex justify-between items-center mb-6">
@@ -255,6 +268,9 @@ export default function SystemStatusPage() {
             </pre>
           </div>
         )}
+        {
+           <LogsViewer />
+        }
       </main>
     </div>
   )

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import React from "react";
-import logo from '../../public/men.svg'
+import logo from '../../public/logo_1_.svg'
 import { ThemeProvider } from 'next-themes';
 export const metadata: Metadata = {
   title: "HR-эффективность",

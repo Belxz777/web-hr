@@ -72,8 +72,8 @@ export default function ProfilePage() {
             <div className="h-6 bg-gradient-to-r from-muted/30 via-muted/50 to-muted/30 rounded-md w-2/3 animate-shimmer bg-[length:200%_100%]" />
           </div>
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
-            <div className="h-10 bg-gradient-to-r from-secondary/30 via-secondary/50 to-secondary/30 rounded-xl w-32 animate-shimmer bg-[length:200%_100%]" />
-            <div className="h-10 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30 rounded-xl w-24 animate-shimmer bg-[length:200%_100%]" />
+            <div className="h-10 bg-gradient-to-r from-secondary/30 via-secondary/50 to-secondary/30 rounded-xl w-36 animate-shimmer bg-[length:200%_100%]" />
+            <div className="h-10 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30 rounded-xl w-36 animate-shimmer bg-[length:200%_100%]" />
           </div>
                    <h1 className=" text-red-700">{loadingEmp}</h1>
         </div>
@@ -121,13 +121,13 @@ if (employeeError.status) {
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
             <button
               onClick={() => router.push("/changePass")}
-              className="px-6 py-3 bg-secondary text-secondary-foreground rounded-xl hover:bg-secondary/90 transition-all duration-200 font-medium shadow-md hover:shadow-lg active:scale-95"
+              className="px-6 py-3 bg-secondary text-secondary-foreground rounded-xl hover:bg-secondary/90 transition-all duration-200 font-bold shadow-md hover:shadow-lg active:scale-95"
             >
               Сменить пароль
             </button>
             <button
               onClick={handleLogout}
-              className="px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all duration-200 font-medium shadow-md hover:shadow-lg active:scale-95"
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all duration-200 font-bold shadow-md hover:shadow-lg active:scale-95"
             >
               Выйти
             </button>

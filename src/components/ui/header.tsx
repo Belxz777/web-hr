@@ -3,7 +3,10 @@
 import type React from "react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-
+import Image from "next/image";
+import logo from "../../../public/logo_1_.svg";
+import heavy from "../../../public/info.png";
+import { log } from "console";
 interface MenuItemProps {
   href: string;
   icon: React.ReactNode;
@@ -151,7 +154,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
                     Статус работы приложения
                   </MenuItem>
                   <MenuItem
-                    href="/admin"
+                    href="/cr"
                     icon={
                       <svg
                         className="w-5 h-5"
@@ -250,9 +253,10 @@ export default HeaderMenu;
 
 const CompanyLogos = () => {
   return (
-    <div className="flex items-center space-x-4">
-      <Link href="/profile">
-        <img src="/info.png" alt="Info" className="w-auto h-16" />
+    <div className="flex items-center space-x-4 select-none">
+      <Link href="/profile" className="flex items-center">
+        <Image src={logo} alt="Logo" width={100} height={100} className="" />
+        <span className="ml-2 ttext-5xl font-bold mb-4 text-[#000000] my-4">Ижевский Механический Завод</span>
       </Link>
     </div>
   );

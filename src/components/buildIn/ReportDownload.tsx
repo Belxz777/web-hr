@@ -41,7 +41,7 @@ export function RoutesBoss({ position }: { position: number }) {
             <p className="text-sm text-gray-500 mt-2 text-center">
               Просмотр статистики и показателей по всем сотрудникам
             </p>
-            <div className="mt-4 px-4 py-2 bg-[#249BA2] text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="mt-4 px-4 py-2 bg-[#249BA2] text-white rounded-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity">
               Открыть
             </div>
           </button>
@@ -77,7 +77,7 @@ export function RoutesBoss({ position }: { position: number }) {
             <p className="text-sm text-gray-500 mt-2 text-center">
               Просмотр статистики и показателей по вашему отделу
             </p>
-            <div className="mt-4 px-4 py-2 bg-[#249BA2] text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="mt-4 px-4 py-2 bg-[#249BA2] text-white rounded-xl opacity-0 group-hover:opacity-100 font-bold transition-opacity">
               Открыть
             </div>
           </button>
@@ -110,7 +110,7 @@ export function RoutesBoss({ position }: { position: number }) {
               Общий анализ
             </h3>
             <p className="text-sm text-gray-500 mt-2 text-center">Просмотр общей статистики и аналитических данных</p>
-            <div className="mt-4 px-4 py-2 bg-[#FF0000] text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="mt-4 px-4 py-2 bg-[#FF0000] text-white rounded-xl opacity-0 group-hover:opacity-100 font-bold transition-opacity">
               Открыть
             </div>
           </button>

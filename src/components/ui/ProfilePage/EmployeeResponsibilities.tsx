@@ -84,7 +84,7 @@ export function EmployeeResponsibilities({
               <h3 className="text-xl font-bold">Основная</h3>
               <button
                 onClick={() => setShowMainResponsibilities(!showMainResponsibilities)}
-                className="px-3 py-1 bg-white text-[#249BA2] rounded-xl hover:bg-gray-100 transition-colors text-sm font-medium flex items-center"
+                className="px-3 py-1 bg-white text-[#249BA2] rounded-xl hover:bg-gray-100 transition-colors text-sm font-bold flex items-center"
               >
                 {showMainResponsibilities ? "Скрыть" : `Показать (${mainResponsibilities.length})`}
               </button>
@@ -115,7 +115,7 @@ export function EmployeeResponsibilities({
               <h3 className="text-xl font-bold text-[#000000]">Дополнительные</h3>
               <button
                 onClick={() => setShowAdditionalResponsibilities(!showAdditionalResponsibilities)}
-                className="px-3 py-1 bg-[#249BA2] text-white rounded-xl hover:bg-[#1e8a90] transition-colors text-sm font-medium flex items-center"
+                className="px-3 py-1 bg-[#249BA2] text-white rounded-xl hover:bg-[#1e8a90] transition-colors text-sm font-bold   flex items-center"
               >
                 {showAdditionalResponsibilities ? "Скрыть" : `Показать (${additionalResponsibilities.length})`}
               </button>

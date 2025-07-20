@@ -5,13 +5,6 @@ export default function DocsPage() {
       <h1 className="text-3xl font-bold mb-6">Документация</h1>
       <div className="prose max-w-none">
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Общая информация</h2>
-          <p className="mb-4">
-            Общие технические и не только параметры и свойства системы
-          </p>
-        </section>
-
-        <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Уровни доступа к системе</h2>
           <ul className="list-disc pl-6 mb-4">
             <li className="mb-2">Уровень доступа 1 (сотрудники) <pre>
@@ -33,7 +26,23 @@ export default function DocsPage() {
             </li>
           </ul>
         </section>
+<section className="flex flex-col">
+  <h2 className="text-2xl font-semibold mb-4">Общие сведения</h2>
 
+<ul className="list-disc pl-6 mb-4">
+  <li>Все вычислительные программы расположенны на одном сервере(микросервисов нет) </li>
+
+  <li>На сервере работает система кеширования , в связи с этим изменения внесенные в панели администратора не применяются моментально</li>
+
+  <li>В панели управления приложением вы можете найти статистику по задействованию ресурсов сервера , а также логи разных типо с приложения django</li>
+
+  <li>Функция продвинутого мониторинга (ресурсы бд , redis ) трекер трафика на фронтенд часть находятся в разработке</li>
+
+  <li>При возникновении ошибки в приложении пожалуйста при обращении в поддержку указывайте ее статус</li>
+
+  <li>Все данные хранятся на сервере и не передаются в открытый доступ</li>
+    </ul>
+</section>
       </div>
     </div>
   );

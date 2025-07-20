@@ -45,8 +45,8 @@ export default function SettingsPage() {
             onClick={() => {
                 window.location.href = "/docs";
               }}
-              className="px-6 py-3 bg-foreground text-primary-foreground rounded-xl hover:bg-foreground/90 transition-all duration-200 font-medium shadow-md hover:shadow-lg active:scale-95"
-            >
+              className="px-6 py-3 bg-secondary text-secondary-foreground rounded-xl hover:bg-secondary/90 transition-all duration-200 font-bold shadow-md hover:shadow-lg active:scale-95"
+>
               Техническая документация
             </button>
         </section>

@@ -79,13 +79,16 @@ export default function UserSearch() {
           Поиск сотрудников вашего отдела
         </h1>
         <p className="text-muted-foreground">Найдите сотрудников своего отдела и посмотрите статистику </p>
+        
+              
+        
       </div>
 
       {/* Search Card */}
-      <div className="bg-card/95 backdrop-blur-sm rounded-2xl shadow-lg border border-border mb-6">
+      <div className="bg-card/95 backdrop-blur-sm rounded-2xl shadow-lg border border-border mb-6 flex-row">
         <div className="p-6">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none ">
             
             </div>
             <input
@@ -97,6 +100,18 @@ export default function UserSearch() {
             />
           </div>
         </div>
+         <div className="group relative inline-block">
+                  <button className="ml-2 text-muted-foreground hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                    </svg>
+                  </button>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-80">
+                    <div className="bg-popover rounded-xl shadow-lg p-4 border border-border">
+                      <p className='text-lg text-foreground mb-2'>Если вы имеете доступ к общим отчетам вы сможете найти любого сотрудника</p>
+                    </div>
+                  </div>
+                </div>
       </div>
 
       {/* Results Card */}
@@ -186,6 +201,7 @@ export default function UserSearch() {
                 <div className="text-6xl mb-4 ">🔍</div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Начните поиск</h3>
                 <p className="text-muted-foreground">Введите фамилию сотрудника для поиска</p>
+              
               </div>
             )}
           </div>

@@ -2,12 +2,12 @@
 import { host } from "@/types";
 import { cookies } from "next/headers";
 
-async function getAllDeputies(): Promise<any> {
+async function getAllDeputies(onlycompulsory:boolean): Promise<any> {
   try {
     const cookieStore = cookies();
     const jwt = cookieStore.get("cf-auth-id")?.value;
 
-    const response = await fetch(`${host}entities/deputy/`, {
+    const response = await fetch(`${host}entities/deputy/?only_compulsory=${onlycompulsory}`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -33,7 +33,13 @@ async function getAllDeputies(): Promise<any> {
   }
 }
 
-async function createDeputyFn(deputyName: string): Promise<any> {
+async function createDeputyFn({
+  deputyName,
+  compulsory,
+}: {
+  deputyName: string;
+  compulsory: boolean;
+}): Promise<any> {
   try {
     const cookieStore = cookies();
     const jwt = cookieStore.get("cf-auth-id")?.value;
@@ -45,7 +51,7 @@ async function createDeputyFn(deputyName: string): Promise<any> {
         Cookie: `jwt=${jwt}; cf-auth-id=${jwt}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ deputyName }),
+      body: JSON.stringify({ deputyName,compulsory}),
     });
 
     if (!response.ok) {
