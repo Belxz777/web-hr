@@ -68,9 +68,7 @@ export default function DeputyManagement({
               <div className="font-medium">{func.funcName}</div>
               <div className="text-sm text-gray-600">funcId: {func.funcId}</div>
               <div className="text-sm text-gray-600">consistent: {func.consistent}</div>
-              <div className="text-sm text-gray-600">
-                В deputy_functions: {deputy.deputy_functions.includes(func.funcId) ? "Да" : "Нет"}
-              </div>
+            
             </div>
             <button
               onClick={() => onDeleteFunction(func.funcId)}

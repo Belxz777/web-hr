@@ -1,6 +1,5 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { PulseLogo } from "@/svgs/Logo";
 export default function Custom404() {
   const router = useRouter()
     return (

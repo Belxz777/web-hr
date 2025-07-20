@@ -6,7 +6,7 @@ import { useState } from "react"
 import {changePassword} from "@/components/server/auth/passchange"
 import { useRouter } from "next/navigation"
 import type { changePass } from "@/types"
-import { PulseLogo } from "@/svgs/Logo"
+import { Symbol } from "@/components/ui/symbol"
 import UniversalFooter from "@/components/buildIn/UniversalFooter"
 
 export default function ChangePassword() {
@@ -75,10 +75,7 @@ export default function ChangePassword() {
     <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4">
       <main className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full">
         <header className="flex flex-col items-center mb-6">
-          <PulseLogo
-            className="w-16 h-16 text-[#FF0000] cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => router.push("/profile")}
-          />
+       <Symbol text="Смена пароля" />
           <h1 className="mt-4 text-3xl font-bold text-[#000000]">Смена пароля</h1>
           <p className="mt-2 text-center text-[#6D6D6D]">Введите старый и новый пароль для изменения</p>
         </header>

@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { PulseLogo } from "@/svgs/Logo";
+import { Symbol } from "@/components/ui/symbol";
 import UniversalFooter from "@/components/buildIn/UniversalFooter";
 import { resetPasswordFn } from "@/components/server/auth/passchange";
 import { quickSearchUsers } from "@/components/server/useless/userdata";

@@ -1,6 +1,6 @@
 "use client";
 import React, {  useState } from "react";
-import { PulseLogo } from "@/svgs/Logo";
+
 import Link from "next/link";
 import registerUser from "@/components/server/auth/register";
 import { useRouter } from "next/navigation";

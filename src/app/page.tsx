@@ -1,6 +1,6 @@
 "use client"
 
-import { PulseLogo } from "@/svgs/Logo"
+
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import logo from "../../public/logo_1_.svg";
