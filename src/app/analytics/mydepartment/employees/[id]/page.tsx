@@ -16,7 +16,6 @@ import { StatsCards } from "@/components/analytics/employee/StatisticsEmployee"
 import { EmployeeHeader } from "@/components/analytics/employee/CommonData"
 import { ChartSection } from "@/components/analytics/employee/Chart"
 import { DailySummarySection } from "@/components/analytics/employee/Summary"
-import Link from "next/link"
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)

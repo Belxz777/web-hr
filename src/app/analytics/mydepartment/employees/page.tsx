@@ -1,6 +1,5 @@
 'use client'
 
-import UniversalFooter from '@/components/buildIn/UniversalFooter'
 import { Header } from '@/components/ui/header'
 
 
