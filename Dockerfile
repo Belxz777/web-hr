@@ -1,38 +1,34 @@
-# Базовый образ для сборки
 FROM node:18-alpine AS builder
 
-# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем файлы зависимостей
-COPY package.json package-lock.json ./
+# 1. Копируем системные файлы
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY next.config.mjs ./
 
-# Чистая установка production зависимостей
-RUN npm ci --only=production
+# 2. Устанавливаем зависимости
+RUN npm ci
 
-# Копируем остальные файлы проекта
-COPY . .
+# 3. Копируем исходный код
+COPY src ./src
+COPY public ./public
+COPY app ./app
+COPY .env ./
 
-# Собираем приложение
+# 4. Собираем приложение
 RUN npm run build
 
-# Финальный образ
+# Production образ
 FROM node:18-alpine
 WORKDIR /app
 
-# Копируем только необходимое из builder
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.env ./.env
+COPY --from=builder /app/.env ./
 
-# Переменные окружения по умолчанию
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-# Открываем порт
+ENV NODE_ENV=production
 EXPOSE 3000
-
-# Запускаем приложение
 CMD ["npm", "start"]
