@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "pnpm dev",
+    "build": "pnpm build",
+    "start": "pnpm start",
     "lint": "next lint"
   },
   "dependencies": {
