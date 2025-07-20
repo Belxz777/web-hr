@@ -1,3 +1,4 @@
+import {urlenv }from "./config";
 interface department {
   id: number;
   name: string;
@@ -120,9 +121,8 @@ interface changePass {
   old_password: string;
   new_password: string;
 }
-// const host ="https://projects.bell-x.ru/pulse/";
-// const host ="https://backend-pulse-1.onrender.com/api/v1/";
-const host = "http://127.0.0.1:8000/api/v1/"
+// const host =".../api/v1/";
+const host = urlenv
 interface statusType {
   code: string | number;
   text: string;
