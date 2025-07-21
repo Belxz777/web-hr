@@ -34,6 +34,7 @@ COPY --from=builder /app/.env ./
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV API_URL http://5.129.207.182:8000/api/v1/
 
 EXPOSE 3000
 CMD ["pnpm", "start"]
