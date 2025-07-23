@@ -1,6 +1,5 @@
 
 import type { Config } from "tailwindcss"
-import { object } from "zod"
 
 const config = {
 darkMode: ["class"],
@@ -165,7 +164,6 @@ backgroundColor:{
 // },
 },
 },
-plugins: [require("tailwindcss-animate")],
 } satisfies Config
 
 export default config
