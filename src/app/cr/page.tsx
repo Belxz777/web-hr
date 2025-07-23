@@ -18,7 +18,6 @@ import FunctionForm from "@/components/admin/functionscrud"
 import EditDeputyForm from "@/components/admin/editdeputy"
 import EditJobForm from "@/components/admin/editjob"
 import EditDepartmentForm from "@/components/admin/editdepartment"
-import { set } from "zod"
 import PromotionsView from "@/components/admin/prmotion"
 
 export default function AdminPanel() {
