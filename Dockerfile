@@ -1,5 +1,5 @@
 # Базовый образ
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Устанавливаем pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
@@ -19,7 +19,7 @@ COPY . .
 RUN pnpm build
 
 # Production образ
-FROM node:18-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 # Устанавливаем pnpm для production
@@ -34,7 +34,7 @@ COPY --from=builder /app/.env ./
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV API_URL http://5.129.207.182:8000/api/v1/
+ENV API_URL http://localhost:8000/api/v1/
 
 EXPOSE 3000
 CMD ["pnpm", "start"]
