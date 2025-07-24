@@ -8,6 +8,9 @@ import useGetAllJobs from "@/hooks/useGetAllJobs";
 import useGetAlldeps from "@/hooks/useDeps";
 import logo from "../../../public/logo_1_.svg";
 import Image from "next/image";
+type error =  {
+  error:string
+}
 export default function RegisterPage() {
   const router = useRouter();
   const { jobs, loading } = useGetAllJobs();
@@ -62,7 +65,7 @@ export default function RegisterPage() {
       setSent(true);
     } catch (err) {
       console.error("Submit error:", err);
-      setError(`Произошла ошибка при регистрации  ${err}`);
+      setError(`Произошла ошибка при регистрации (возможно логин уже занят) если ошибка не пропадает обратитесь в поддержку`);
     } finally {
       setIsLoading(false);
     }
