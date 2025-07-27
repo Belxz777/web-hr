@@ -1,21 +1,21 @@
-"use client";
-import React, {  useState } from "react";
+"use client"
 
-import Link from "next/link";
-import registerUser from "@/components/server/auth/register";
-import { useRouter } from "next/navigation";
-import useGetAllJobs from "@/hooks/useGetAllJobs";
-import useGetAlldeps from "@/hooks/useDeps";
-import logo from "../../../public/logo_1_.svg";
-import Image from "next/image";
-type error =  {
-  error:string
-}
+import type React from "react"
+import { useState, useCallback } from "react"
+import Link from "next/link"
+import registerUser from "@/components/server/auth/register"
+import { useRouter } from "next/navigation"
+import useGetAllJobs from "@/hooks/useGetAllJobs"
+import useGetAlldeps from "@/hooks/useDeps"
+import logo from "../../../public/logo_1_.svg"
+import Image from "next/image"
+import ToastComponent from "@/components/toast/toast"
+
 export default function RegisterPage() {
-  const router = useRouter();
-  const { jobs, loading } = useGetAllJobs();
-  const { deps } = useGetAlldeps();
-  const [sended, setSent] = useState(false);
+  const router = useRouter()
+  const { jobs, loading: jobsLoading } = useGetAllJobs()
+  const { deps, loading: depsLoading } = useGetAlldeps()
+
   const [formData, setFormData] = useState({
     login: "",
     password: "",
@@ -24,67 +24,165 @@ export default function RegisterPage() {
     patronymic: "",
     jobid: 0,
     departmentid: 0,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  })
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
+  // Функция для капитализации имен
+  const capitalizeName = (name: string): string => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ")
+  }
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+
+    let processedValue = value
+
+    // Автоматическая капитализация для имен
+    if (name === "firstName" || name === "lastName" || name === "patronymic") {
+      processedValue = capitalizeName(value)
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        name === "jobid" || name === "departmentid"
-          ? parseInt(value) || 0
-          : value,
-    }));
-  };
+      [name]: name === "jobid" || name === "departmentid" ? Number.parseInt(value) || 0 : processedValue,
+    }))
+  }, [])
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+  const validateForm = useCallback((): { isValid: boolean; message?: string } => {
+    if (!formData.login.trim()) {
+      return { isValid: false, message: "Введите логин" }
+    }
 
-    if (formData.jobid === 0 || formData.departmentid === 0) {
-      setError("Пожалуйста, выберите должность и отдел");
-      setIsLoading(false);
-      return;
+    if (formData.login.length < 3) {
+      return { isValid: false, message: "Логин должен содержать минимум 3 символа" }
     }
 
     if (formData.password.length < 12) {
-      setError("Пароль должен содержать минимум 12 символов, буквы и цифры");
-      setIsLoading(false);
-      return;
+      return { isValid: false, message: "Пароль должен содержать минимум 12 символов" }
     }
 
-    try {
-      const response = await registerUser(formData);
-      router.push("/profile");
-      setSent(true);
-    } catch (err) {
-      console.error("Submit error:", err);
-      setError(`Произошла ошибка при регистрации (возможно логин уже занят) если ошибка не пропадает обратитесь в поддержку`);
-    } finally {
-      setIsLoading(false);
+    if (!formData.firstName.trim()) {
+      return { isValid: false, message: "Введите имя" }
     }
-  };
+
+    if (!formData.lastName.trim()) {
+      return { isValid: false, message: "Введите фамилию" }
+    }
+
+    if (formData.jobid === 0) {
+      return { isValid: false, message: "Выберите должность" }
+    }
+
+    if (formData.departmentid === 0) {
+      return { isValid: false, message: "Выберите отдел" }
+    }
+
+    return { isValid: true }
+  }, [formData])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const validation = validateForm()
+    if (!validation.isValid) {
+      window.toast?.error(validation.message || "Проверьте правильность данных")
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      await registerUser(formData)
+      window.toast?.info("Регистрация успешна! Перенаправление...")
+      setTimeout(() => {
+        router.push("/profile")
+      }, 1500)
+    } catch (err) {
+      console.error("Submit error:", err)
+      window.toast?.error("Ошибка регистрации. Возможно, логин уже занят")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const renderJobSelect = () => {
+    if (jobsLoading) {
+      return (
+        <div className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl animate-pulse">
+          <div className="h-5 bg-gray-200 rounded"></div>
+        </div>
+      )
+    }
+
+    return (
+      <select
+        id="jobid"
+        name="jobid"
+        required
+        value={formData.jobid === 0 ? "" : formData.jobid}
+        onChange={handleChange}
+        className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none transition-all duration-200 hover:border-[#249BA2]"
+      >
+        <option value="">Выберите должность</option>
+        {jobs.map((job, index) => (
+          <option key={index} value={job.jobId}>
+            {job.jobName}
+          </option>
+        ))}
+      </select>
+    )
+  }
+
+  const renderDepartmentSelect = () => {
+    if (depsLoading) {
+      return (
+        <div className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl animate-pulse">
+          <div className="h-5 bg-gray-200 rounded"></div>
+        </div>
+      )
+    }
+
+    return (
+      <select
+        id="departmentid"
+        name="departmentid"
+        required
+        value={formData.departmentid === 0 ? "" : formData.departmentid}
+        onChange={handleChange}
+        className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none transition-all duration-200 hover:border-[#249BA2]"
+      >
+        <option value="">Выберите отдел</option>
+        {deps.map((dept, index) => (
+          <option key={index} value={dept.departmentId}>
+            {dept.departmentName}
+          </option>
+        ))}
+      </select>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4">
-      <main className="bg-white rounded-3xl shadow-xl p-8 max-w-2xl w-full">
+      <ToastComponent />
+
+      <main className="bg-white rounded-3xl shadow-xl p-8 max-w-2xl w-full transform transition-all duration-300 ease-in-out hover:shadow-2xl">
         <div className="flex flex-col items-start mb-6">
           <div className="flex items-center gap-4">
-         <Image src={logo} alt="Logo" className="w-16 h-16 select-none" />
-          <h1 className="text-3xl font-bold text-[#000000]">Регистрация</h1>
+            <Image src={logo || "/placeholder.svg"} alt="Logo" className="w-16 h-16 select-none" />
+            <h1 className="text-3xl font-bold text-[#000000]">Регистрация</h1>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="w-full space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="login" className="block text-sm font-medium text-[#6D6D6D] mb-1">
+        <form onSubmit={handleSubmit} className="w-full space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Логин */}
+            <div className="space-y-2">
+              <label htmlFor="login" className="block text-sm font-medium text-[#6D6D6D]">
                 Логин
               </label>
               <input
@@ -94,13 +192,15 @@ export default function RegisterPage() {
                 required
                 value={formData.login}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
+                placeholder="Введите логин"
               />
             </div>
 
-            <div className="relative">
-              <label htmlFor="password" className="block text-sm font-medium text-[#6D6D6D] mb-1">
-                Пароль (минимальная длина: 12 символов)
+            {/* Пароль */}
+            <div className="relative space-y-2">
+              <label htmlFor="password" className="block text-sm font-medium text-[#6D6D6D]">
+                Пароль (минимум 12 символов)
               </label>
               <input
                 id="password"
@@ -109,21 +209,16 @@ export default function RegisterPage() {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
+                className="w-full px-4 py-3 pr-12 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
+                placeholder="Введите пароль"
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6"
+                className="absolute right-3 top-9 flex items-center text-gray-500 hover:text-gray-700 transition-colors duration-200"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <svg
-                    className="w-5 h-5 text-gray-500 hover:text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -138,13 +233,7 @@ export default function RegisterPage() {
                     />
                   </svg>
                 ) : (
-                  <svg
-                    className="w-5 h-5 text-gray-500 hover:text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -156,8 +245,9 @@ export default function RegisterPage() {
               </button>
             </div>
 
-            <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-[#6D6D6D] mb-1">
+            {/* Имя */}
+            <div className="space-y-2">
+              <label htmlFor="firstName" className="block text-sm font-medium text-[#6D6D6D]">
                 Имя
               </label>
               <input
@@ -167,12 +257,14 @@ export default function RegisterPage() {
                 required
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
+                placeholder="Введите имя"
               />
             </div>
 
-            <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-[#6D6D6D] mb-1">
+            {/* Фамилия */}
+            <div className="space-y-2">
+              <label htmlFor="lastName" className="block text-sm font-medium text-[#6D6D6D]">
                 Фамилия
               </label>
               <input
@@ -182,12 +274,14 @@ export default function RegisterPage() {
                 required
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
+                placeholder="Введите фамилию"
               />
             </div>
 
-            <div>
-              <label htmlFor="patronymic" className="block text-sm font-medium text-[#6D6D6D] mb-1">
+            {/* Отчество */}
+            <div className="space-y-2">
+              <label htmlFor="patronymic" className="block text-sm font-medium text-[#6D6D6D]">
                 Отчество
               </label>
               <input
@@ -196,101 +290,81 @@ export default function RegisterPage() {
                 type="text"
                 value={formData.patronymic}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
+                placeholder="Введите отчество "
               />
             </div>
 
-            <div>
-              <label htmlFor="jobid" className="block text-sm font-medium text-[#6D6D6D] mb-1">
+            {/* Должность */}
+            <div className="space-y-2">
+              <label htmlFor="jobid" className="block text-sm font-medium text-[#6D6D6D]">
                 Должность
               </label>
-              <select
-                id="jobid"
-                name="jobid"
-                required
-                value={formData.jobid === 0 ? "" : formData.jobid}
-                onChange={handleChange}
-                className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none"
-              >
-                <option value="">Выберите должность</option>
-                {jobs.map((job, index) => (
-                  <option key={index} value={job.jobId}>
-                    {job.jobName}
-                  </option>
-                ))}
-              </select>
+              {renderJobSelect()}
             </div>
 
-            <div>
-              <label htmlFor="departmentid" className="block text-sm font-medium text-[#6D6D6D] mb-1">
+            {/* Отдел */}
+            <div className="space-y-2">
+              <label htmlFor="departmentid" className="block text-sm font-medium text-[#6D6D6D]">
                 Отдел
               </label>
-              <select
-                id="departmentid"
-                name="departmentid"
-                required
-                value={formData.departmentid === 0 ? "" : formData.departmentid}
-                onChange={handleChange}
-                className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none"
-              >
-                <option value="">Выберите отдел</option>
-                {deps.map((dept, index) => (
-                  <option key={index} value={dept.departmentId}>
-                    {dept.departmentName}
-                  </option>
-                ))}
-              </select>
+              {renderDepartmentSelect()}
             </div>
           </div>
 
-          {error && <p className="text-[#FF0000] text-sm">{error}</p>}
-
-          <div className="mt-6">
-            <button
-              type="submit"
-              disabled={isLoading || sended}
-              className="w-full py-3 px-4 rounded-xl shadow-sm text-base font-medium text-white bg-[#FF0000] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Регистрация...
-                </>
-              ) : (
-                "Регистрация"
-              )}
-            </button>
+          {/* Требования к паролю */}
+          <div className="bg-gray-50 rounded-xl p-4">
+            <h3 className="text-sm font-medium text-[#000000] mb-2">Требования к паролю:</h3>
+            <ul className="text-xs text-[#6D6D6D] space-y-1">
+              <li className="flex items-center">
+                <span className="mr-2">•</span>
+                Минимум 12 символов
+              </li>
+              <li className="flex items-center">
+                <span className="mr-2">•</span>
+                Рекомендуется использовать буквы и цифры
+              </li>
+            </ul>
           </div>
+
+          {/* Кнопка регистрации */}
+          <button
+            type="submit"
+            disabled={isLoading || jobsLoading || depsLoading}
+            className="w-full py-3 px-4 rounded-xl shadow-sm text-base font-medium text-white bg-[#FF0000] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+          >
+            {isLoading ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Регистрация...
+              </>
+            ) : (
+              "Зарегистрироваться"
+            )}
+          </button>
         </form>
 
-        <div className="mt-4 text-center">
+        <div className="mt-6 text-center">
           <p className="text-[#6D6D6D]">
             Уже есть аккаунт?{" "}
-            <Link href="/login" className="text-[#249BA2] hover:underline">
+            <Link href="/login" className="text-[#249BA2] hover:underline transition-colors duration-200">
               Войти
             </Link>
           </p>
         </div>
       </main>
     </div>
-  );
+  )
 }

@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "web-hr": "file:",
     "@material-tailwind/react": "^2.1.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -18,7 +17,8 @@
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwind-merge": "^2.3.0"
+    "tailwind-merge": "^2.3.0",
+    "web-hr": "file:"
   },
   "devDependencies": {
     "@types/node": "^20.12.10",

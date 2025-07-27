@@ -127,7 +127,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
 
               {position >= 4 && (
                 <>
-                  <MenuItem
+                  {/* <MenuItem
                     href="/stats"
                     icon={
                       <svg
@@ -152,7 +152,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
                     }
                   >
                     Статус работы приложения
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem
                     href="/cr"
                     icon={
@@ -255,7 +255,9 @@ const CompanyLogos = () => {
   return (
     <div className="flex items-center space-x-4 select-none">
       <Link href="/profile" className="flex items-center">
-        <Image src={logo} alt="Logo" width={100} height={100} className="" />
+        <Image src={logo} alt="Logo" width={100} height={100} className=""
+        unoptimized
+	priority />
         <span className="ml-2 ttext-5xl font-bold mb-4 text-[#000000] my-4">Ижевский Механический Завод</span>
       </Link>
     </div>

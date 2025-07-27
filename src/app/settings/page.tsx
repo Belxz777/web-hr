@@ -20,9 +20,9 @@ export default function SettingsPage() {
         <section
           className={`mb-8  bg-card rounded-xl p-6`}
         >
-          <h2 className="text-2xl font-bold mb-4  text-left">
+          <h1 className="text-4xl font-bold mb-4  text-left">
            Настройки
-          </h2>
+          </h1>
       
                 <div className="mb-6">
                   <h3 className="text-2xl font-semibold mb-2">Версия приложения</h3>
@@ -30,24 +30,14 @@ export default function SettingsPage() {
                 </div>
       
         
-         <section>
-          <h2 className="text-2xl font-bold mb-4">Поддержка</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {supportContacts.map((contact, index) => (
-              <div key={index} className="bg-secondary-foreground rounded-lg p-4">
-                <h3 className="text-lg font-semibold">{contact.name}</h3>
-                <p className=" text-secondary font-extrabold text-2xl">{contact.email}</p>
-              </div>
-            ))}
-            </div>
-        </section>
+   
           <button
             onClick={() => {
                 window.location.href = "/docs";
               }}
               className="px-6 py-3 bg-secondary text-secondary-foreground rounded-xl hover:bg-secondary/90 transition-all duration-200 font-bold shadow-md hover:shadow-lg active:scale-95"
 >
-              Техническая документация
+              Документация
             </button>
         </section>
 

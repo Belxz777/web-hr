@@ -3,7 +3,7 @@
 interface Report {
 
     laborCostId: number;
-    departmentId: number;
+    department: number;
     function__funcName: string | null;
     deputy__deputyName: string | null;
     compulsory: boolean;

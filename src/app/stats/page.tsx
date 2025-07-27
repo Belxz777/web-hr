@@ -268,9 +268,9 @@ const fetchLogs = async (type: string) => {
             </pre>
           </div>
         )}
-        {
+        {/* {
            <LogsViewer />
-        }
+        } */}
       </main>
     </div>
   )

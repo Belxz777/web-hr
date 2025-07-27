@@ -1,4 +1,5 @@
 "use server"
+import { getExpiresDate } from '@/components/utils/format';
 import { host } from '@/types';
 import { cookies} from 'next/headers';
 
@@ -19,26 +20,17 @@ import { cookies} from 'next/headers';
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
         throw new Error(`Ошибка при входе попробуйте еще раз , статус ${res.statusText} |
-            попытка входа под логином ${data.login} `,); 
+            попытка входа под логином ${data.login} `); 
     }
     const receiveddata = await res.json();
     const cookiesApi = cookies()
-
+    let expiration = getExpiresDate(receiveddata.time) || new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
     cookiesApi.set('cf-auth-id', receiveddata.token,{
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        expires: expiration,
         httpOnly: true,
-        secure: true,
+
     })
-    cookiesApi.set('cf-pos-x',receiveddata.isBoss,{
-        secure: true,
-        httpOnly: true,
-    })
-    if(receiveddata.isBoss){
-        cookiesApi.set('cf-dep-x',receiveddata.departmentId,{
-            secure: true,
-            httpOnly: true,
-        })
-    }
+
     
 
     return receiveddata

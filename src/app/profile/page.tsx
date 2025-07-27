@@ -1,123 +1,85 @@
-"use client";
+"use client"
 
-import { useCallback, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import useEmployeeData from "@/hooks/useGetUserData";
-import { logout } from "@/components/server/auth/logout";
-import UniversalFooter from "@/components/buildIn/UniversalFooter";
-import { Header } from "@/components/ui/header";
-import { EmployeeResponsibilities } from "@/components/ui/ProfilePage/EmployeeResponsibilities";
-import { RoutesBoss } from "@/components/buildIn/ReportDownload";
-
-
-// Вынесена в отдельную утилиту для повторного использования
-const checkAndClearExpiredLocalStorage = () => {
-  const now = new Date().getTime();
-
-  Object.keys(localStorage).forEach((key) => {
-    try {
-      const itemStr = localStorage.getItem(key);
-      if (!itemStr) return;
-
-      const item = JSON.parse(itemStr);
-      if (item?.expiryDate && now > item.expiryDate) {
-        localStorage.removeItem(key);
-      }
-    } catch (e) {
-      console.error(`Error processing localStorage key ${key}:`, e);
-    }
-  });
-};
+import { useCallback } from "react"
+import { useRouter } from "next/navigation"
+import useEmployeeData from "@/hooks/useGetUserData"
+import { logout } from "@/components/server/auth/logout"
+import UniversalFooter from "@/components/buildIn/UniversalFooter"
+import { Header } from "@/components/ui/header"
+import { EmployeeResponsibilities } from "@/components/ui/ProfilePage/EmployeeResponsibilities"
+import { RoutesBoss } from "@/components/buildIn/ReportDownload"
+import ToastComponent from "@/components/toast/toast"
 
 export default function ProfilePage() {
-  const router = useRouter();
-  const {
-    employeeData,
-    loadingEmp:loadingEmp,
-    error: employeeError,
-  } = useEmployeeData();
+  const router = useRouter()
+  const { employeeData, loadingEmp, error: employeeError } = useEmployeeData()
 
-  const position = useMemo(() => employeeData?.user?.position, [employeeData]);
-  const isLoading = useMemo(() => loadingEmp || !employeeData || !position, 
-    [loadingEmp, employeeData, position]);
+  const position = employeeData?.user?.position
+  const isLoading = loadingEmp || !employeeData || !position
 
-  // Обработчик выхода
   const handleLogout = useCallback(async () => {
-    const isConfirmed = confirm("Вы уверены что хотите выйти?");
-    if (!isConfirmed) return;
+    const isConfirmed = confirm("Вы уверены что хотите выйти?")
+    if (!isConfirmed) return
 
     try {
-      // Сохраняем заметки перед очисткой
-
-      await logout();
-      
-      // Очищаем localStorage, сохраняя заметки
-      router.push("/");
+      await logout()
+      router.push("/")
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Logout failed:", error)
     }
-  }, [router]);
+  }, [router])
 
-  // Данные для отображения
-  const profileContent = useMemo(() => {
+  const renderProfileContent = () => {
     if (isLoading && !employeeData) {
       return (
-        <div className="animate-pulse space-y-4">
-          <div className="space-y-2">
-            <div className="h-8 bg-gradient-to-r from-muted/40 via-muted/60 to-muted/40 rounded-lg w-3/4 animate-shimmer bg-[length:200%_100%]" />
-            <div className="h-8 bg-gradient-to-r from-muted/40 via-muted/60 to-muted/40 rounded-lg w-2/3 animate-shimmer bg-[length:200%_100%]" />
+        <div className="opacity-100 transition-opacity duration-500 ease-in-out">
+          <div className="animate-pulse space-y-4">
+            {/* Имитируем структуру готового контента */}
+            <div className="space-y-2">
+              <div className="h-8 bg-gradient-to-r from-muted/40 via-muted/60 to-muted/40 rounded-lg w-3/4 animate-shimmer bg-[length:200%_100%]" />
+              <div className="h-8 bg-gradient-to-r from-muted/40 via-muted/60 to-muted/40 rounded-lg w-2/3 animate-shimmer bg-[length:200%_100%]" />
+            </div>
+            <div className="space-y-2 mt-4">
+              <div className="h-6 bg-gradient-to-r from-muted/30 via-muted/50 to-muted/30 rounded-md w-1/2 animate-shimmer bg-[length:200%_100%]" />
+              <div className="h-6 bg-gradient-to-r from-muted/30 via-muted/50 to-muted/30 rounded-md w-2/3 animate-shimmer bg-[length:200%_100%]" />
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              <div className="h-12 bg-gradient-to-r from-secondary/30 via-secondary/50 to-secondary/30 rounded-xl w-36 animate-shimmer bg-[length:200%_100%]" />
+              <div className="h-12 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30 rounded-xl w-36 animate-shimmer bg-[length:200%_100%]" />
+            </div>
           </div>
-          <div className="space-y-2">
-            <div className="h-6 bg-gradient-to-r from-muted/30 via-muted/50 to-muted/30 rounded-md w-1/2 animate-shimmer bg-[length:200%_100%]" />
-            <div className="h-6 bg-gradient-to-r from-muted/30 via-muted/50 to-muted/30 rounded-md w-2/3 animate-shimmer bg-[length:200%_100%]" />
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 mt-6">
-            <div className="h-10 bg-gradient-to-r from-secondary/30 via-secondary/50 to-secondary/30 rounded-xl w-36 animate-shimmer bg-[length:200%_100%]" />
-            <div className="h-10 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30 rounded-xl w-36 animate-shimmer bg-[length:200%_100%]" />
-          </div>
-                   <h1 className=" text-red-700">{loadingEmp}</h1>
         </div>
-        
-      );
+      )
     }
-if (employeeError.status) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <div className="text-primary font-medium text-lg mb-2">
-            Ошибка загрузки
-          </div>
-          <div className="text-muted-foreground">
-            {employeeError.text}
+
+    if (employeeError.status) {
+      return (
+        <div className="opacity-100 transition-opacity duration-500 ease-in-out flex items-center justify-center h-full min-h-[200px]">
+          <div className="text-center">
+            <div className="text-primary font-medium text-lg mb-2">Ошибка загрузки</div>
+            <div className="text-muted-foreground">{employeeError.text}</div>
           </div>
         </div>
-      </div>
-    );
-  }
-    if (employeeData?.user && employeeError.status===false) {
+      )
+    }
+
+    if (employeeData?.user && employeeError.status === false) {
       return (
-        <div className="space-y-4">
+        <div className="opacity-100 transition-opacity duration-500 ease-in-out space-y-4">
           <div className="cursor-pointer group">
             <h2 className="text-2xl text-foreground font-bold mb-2 select-none transition-colors duration-200">
               {employeeData.user.firstName} <br />
               {employeeData.user.lastName}
             </h2>
-            <div className="space-y-1">
+            <div className="space-y-1 mt-4">
               <p className="text-muted-foreground select-none">
-                Должность:{" "}
-                <span className="font-bold text-foreground">
-                  {employeeData.job?.jobName}
-                </span>
+                Должность: <span className="font-bold text-foreground">{employeeData.job?.jobName}</span>
               </p>
               <p className="text-muted-foreground select-none">
-                Отдел:{" "}
-                <span className="font-bold text-foreground">
-                  {employeeData.department}
-                </span>
+                Отдел: <span className="font-bold text-foreground">{employeeData.department}</span>
               </p>
             </div>
           </div>
-
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
             <button
               onClick={() => router.push("/changePass")}
@@ -133,39 +95,42 @@ if (employeeError.status) {
             </button>
           </div>
         </div>
-      );
+      )
     }
 
-    return null;
-  }, [isLoading, employeeError, employeeData, router, handleLogout]);
+    return null
+  }
 
   return (
     <div className="mainProfileDiv">
-      <Header
-        title="Личный кабинет"
-        position={position || 1}
-        showPanel
-      />
+      <ToastComponent />
+      <Header title="Личный кабинет" position={position || 1} showPanel />
       <main className="container mx-auto p-4">
-        <section className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg">
-          <div className="min-h-[160px] w-full">
-            {profileContent}
+        <section className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg transition-all duration-300 ease-in-out">
+          {/* Фиксированная высота контейнера для предотвращения прыжков */}
+          <div className="min-h-[240px] w-full flex flex-col justify-start transition-all duration-500 ease-in-out">
+            {renderProfileContent()}
           </div>
         </section>
-        <div>
+
+        {/* Плавное появление дополнительных секций */}
+        <div
+          className={`transition-all duration-700 ease-in-out ${employeeData ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+        >
           <EmployeeResponsibilities
             responsibilitiesFs={employeeData?.deputy || []}
             position={employeeData?.user?.position}
-            isLoading={!employeeData || !employeeData.user.position}
+            isLoading={!employeeData || !employeeData.user?.position}
           />
         </div>
-        {(employeeData?.user.position !== 1 ) && employeeData ? (
-          <RoutesBoss  position={employeeData.user.position} />
-        ) : null}
 
-        <div></div>
+        {employeeData?.user.position !== 1 && employeeData ? (
+          <div className="transition-all duration-700 ease-in-out delay-100 opacity-100 translate-y-0">
+            <RoutesBoss position={employeeData.user.position} />
+          </div>
+        ) : null}
       </main>
       <UniversalFooter />
     </div>
-  );
+  )
 }

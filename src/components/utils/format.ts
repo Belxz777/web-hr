@@ -20,3 +20,23 @@
     const [year, month, day] = dateString.split("-")
     return `${day}.${month}.${year}`
   }
+
+
+export const getExpiresDate = (date:string):Date =>{
+// const loginTime = "14:30:45"; // Пример из Django (datetime.now().strftime("%H:%M:%S"))
+
+// Преобразуем в объект Date
+const today = new Date();
+const [hours, minutes, seconds] = date.split(':').map(Number);
+const loginDate = new Date(
+  today.getFullYear(),
+  today.getMonth(),
+  today.getDate(),
+  hours,
+  minutes,
+  seconds
+);
+
+const expirationDate = new Date(loginDate.getTime() + 1000 * 60 * 60 * 24 * 14);
+return expirationDate
+  }

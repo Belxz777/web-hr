@@ -148,16 +148,6 @@ type EmployeeStatsProps = {
   function_hours: number;
   total_hours: number;
 };
-// "employee_stats": [
-//         {
-//             "employee_id": 9,
-//             "first_name": "мейн",
-//             "last_name": "Петр",
-//             "patronymic": "Ивановна",
-//             "total_hours": 29.42,
-//             "function_hours": 29.42,
-//             "deputy_hours": 0.0
-//         }
 interface StatCardProps {
   title: string;
   value: number | string;
@@ -257,127 +247,87 @@ interface DepartmentDistribution {
     }>;
   };
 }
-
-type EmployeeSummary = {
+ interface EmployeeSummary {
   employee: {
-    employee_id: string;
-    employee_name: string;
-    employee_patronymic: string;
-    employee_surname: string;
-    job_title: string;
-  };
+    employee_id: string
+    employee_name: string
+    employee_surname: string
+    employee_patronymic: string
+    job_title: string
+  }
   summary: {
-    total_hours: number;
-    function_hours: number;
-    deputy_hours: number;
-    compulsory_hours: number;
-    non_compulsory_hours: number;
-  };
+    total_hours: number
+    function_hours: number
+    deputy_hours: number
+    compulsory_hours: number
+    non_compulsory_hours: number
+  }
   reports: Array<{
-    laborCostId: number;
-    departmentId: number;
-    function__funcName: string | null;
-    deputy__deputyName: string | null;
-    compulsory: boolean;
-    worked_hours: number;
-    comment: string;
-    date: string;
-  }>;
-  reports_count: number;
-  daily_summary: Array<{
-    date: string;
-    total_hours: number;
-    function_hours: number;
-    deputy_hours: number;
-  }>;
+    laborCostId: number
+    department: number
+    function__funcName: string | null
+    deputy__deputyName: string | null
+    compulsory: boolean
+    worked_hours: number
+    comment: string
+    date: string
+  }>
+  reports_count: number
   query_params: {
-    date: string;
-    start_date: string | null;
-    end_date: string | null;
-  };
+    date: string | null
+    start_date: string | null
+    end_date: string | null
+  }
+  daily_summary?: Array<any>
+}
+
+interface EmployeeDistribution {
+  employee: {
+    employee_id: string
+    employee_name: string
+    employee_surname: string
+    employee_patronymic: string
+  }
+  time_period: {
+    type: string
+    date: string | null
+    start_date: string | null
+    end_date: string | null
+  }
+  total_hours: number
+  total_reports: number
   distribution: {
-    by_type: {
-      by_functions: {
-        typical: Array<{
-          function_id: number;
-          function_name: string;
-          hours: number;
-          percent: number;
-          entries_count: number;
-        }>;
-        non_typical: Array<{
-          function_id: number;
-          function_name: string;
-          hours: number;
-          percent: number;
-          entries_count: number;
-        }>;
-      };
-      non_compulsory: {
-        hours: number;
-        percent: number;
-      };
-      typical: {
-        hours: number;
-        percent: number;
-      };
-      non_typical: {
-        hours: number;
-        percent: number;
-      };
-    };
     by_functions: {
       typical: Array<{
-        function_id: number;
-        function_name: string;
-        hours: number;
-        percent: number;
-      }>;
+        function_id: number
+        function_name: string
+        hours: number
+        percent: number
+        entries_count: number
+      }>
       non_typical: Array<{
-        function_id: number;
-        function_name: string;
-        hours: number;
-        percent: number;
-      }>;
-    };
-    by_deputies: Array<{
-      deputy_id: number;
-      deputy_name: string;
-      hours: number;
-      percent: number;
-    }>;
+        function_id: number
+        function_name: string
+        hours: number
+        percent: number
+        entries_count: number
+      }>
+    }
+    extra: Array<{
+      type: string
+      deputy_id: number
+      deputy_name: string
+      hours: number
+      percent: number
+      entries_count: number
+    }>
   }
-};
-
-type EmployeeDistribution = {
-  employee: {
-    employee_id: string;
-    employee_name: string;
-    employee_patronymic: string;
-    employee_surname: string;
-  };
   query_params: {
-    date: string;
-    end_date: string | null;
-    start_date: string | null;
-    days_count: number;
-  };
-  reports: Array<{
-    laborCostId: number;
-    department: number;
-    function: number | null;
-    deputy: number | null;
-    compulsory: boolean;
-  }>;
-  reports_count: number;
-  summary: {
-    compulsory_hours: number;
-    deputy_hours: number;
-    function_hours: number;
-    non_compulsory_hours: number;
-    total_hours: number;
-  };
-};
+    date: string | null
+    start_date: string | null
+    end_date: string | null
+  }
+}
 
 type EmployeeInfo = {
   employeeId: number
@@ -429,9 +379,27 @@ type BackendStatus = {
   active_connections: number
   last_updated: string
 }
+export interface Toast {
+  id: string
+  message: string
+  type: "info" | "error"
+  duration?: number
+}
+
+export interface ToastOptions {
+  duration?: number
+}
 
 
 export { host };
+declare global {
+  interface Window {
+    toast: {
+      info: (message: string, options?: { duration?: number  }) => string
+      error: (message: string, options?: { duration?: number }) => string
+    }
+  }
+}
 export type {
   BackendStatus,
   department,

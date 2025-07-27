@@ -43,7 +43,7 @@ export const EmployeeStats: React.FC<EmployeeStatsProps> = ({ employeeStats, tim
 
   return (
     <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border border-border shadow-lg m-2">
-      <h2 className="text-xl font-bold mb-4">Статистика сотрудников</h2>
+      <h2 className="text-2xl font-bold mb-8">Краткая статистика сотрудников</h2>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>

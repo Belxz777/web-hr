@@ -1,6 +1,5 @@
 
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { host } from '@/types';
 
 export async function GET() {

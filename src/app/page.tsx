@@ -23,14 +23,21 @@ export default function HomePage() {
           >
             Регистрация
           </Link>
-          <button
+          {/* <button
             className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm text-base font-medium text-secondary bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary"
             onClick={() => {
               router.push("/login")
             }}
           >
             Вход
-          </button>
+          </button> */}
+              <Link
+            href="/login"
+            prefetch={false}
+            className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm text-base font-medium text-secondary bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary"
+          >
+            Вход
+          </Link>
         </nav>
 
         <div className="mt-10 w-full">

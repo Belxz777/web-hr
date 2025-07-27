@@ -21,11 +21,11 @@ export const ProgressBar = ({
 
   return (
     <div
-      className={`${isSubItem ? "bg-background/30" : "bg-background/50"} backdrop-blur-sm rounded-lg p-4 border border-border/50 transition-all duration-200 ${showClickHint ? "hover:shadow-md" : ""}`}
+      className={`py-6 ${isSubItem ? "bg-background/30" : "bg-background/50"} backdrop-blur-sm rounded-lg p-4 border border-border/50 transition-all duration-200 ${showClickHint ? "hover:shadow-md" : ""}`}
     >
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          <span className={`font-medium ${isSubItem ? "text-sm text-foreground/80" : "text-foreground"}`}>{label}</span>
+          <span className={`font-medium  text-xl ${isSubItem ? " text-foreground/80" : "text-foreground"}`}>{label}</span>
           {showClickHint && (
             <span className="text-xs text-muted-foreground bg-secondary/10 px-2 py-1 rounded-full">
               Кликните для детализации
@@ -33,8 +33,8 @@ export const ProgressBar = ({
           )}
         </div>
         <div className="text-right">
-          <div className={`font-bold ${isSubItem ? "text-sm" : "text-base"} text-foreground`}>{value.toFixed(1)}%</div>
-          <div className="text-xs text-muted-foreground">{convertedTime}</div>
+          <div className={`font-bold ${isSubItem ? "text-2xl" : "text-3xl"} text-foreground`}>{value.toFixed(1)}%</div>
+          <div className="text-lg text-muted-foreground">{convertedTime}</div>
         </div>
       </div>
 

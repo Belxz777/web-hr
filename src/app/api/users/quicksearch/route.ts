@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { host } from '@/types'
 import { cookies } from 'next/headers'
 
+export const dynamic = 'force-dynamic' 
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   
@@ -24,8 +26,6 @@ export async function GET(request: Request) {
     const backendUrl = new URL(`${host}users/quicksearch/`)
     backendUrl.searchParams.append('search', search)
     backendUrl.searchParams.append('only_mydepartment', String(onlyMyDepartment))
-
-    console.log('Backend request URL:', backendUrl.toString())
 
     const response = await fetch(backendUrl.toString(), {
       headers: {

@@ -74,12 +74,8 @@ export default function ChangePassword() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4">
       <main className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full">
-        <header className="flex flex-col items-center mb-6">
-       <Symbol text="Смена пароля" />
-          <h1 className="mt-4 text-3xl font-bold text-[#000000]">Смена пароля</h1>
-          <p className="mt-2 text-center text-[#6D6D6D]">Введите старый и новый пароль для изменения</p>
-        </header>
 
+       <Symbol text="Смена пароля" />
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="pass" className="block text-sm font-medium text-[#6D6D6D] mb-1 select-none">

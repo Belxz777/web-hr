@@ -1,162 +1,156 @@
-"use client";
+"use client"
 
-import type React from "react";
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { Symbol } from "@/components/ui/symbol";
-import UniversalFooter from "@/components/buildIn/UniversalFooter";
-import { resetPasswordFn } from "@/components/server/auth/passchange";
-import { quickSearchUsers } from "@/components/server/useless/userdata";
-import Image from "next/image";
-import logo from '../../../public/logo_1_.svg'
+import type React from "react"
+import { useState, useCallback } from "react"
+import { useRouter } from "next/navigation"
+import UniversalFooter from "@/components/buildIn/UniversalFooter"
+import { resetPasswordFn } from "@/components/server/auth/passchange"
+import { quickSearchUsers } from "@/components/server/useless/userdata"
+import Image from "next/image"
+import logo from "../../../public/logo_1_.svg"
+import ToastComponent from "@/components/toast/toast"
+
 interface User {
-  employeeId: number;
-  firstName: string;
-  lastName: string;
-  position: number;
+  employeeId: number
+  firstName: string
+  lastName: string
+  position: number
 }
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [searchLoading, setSearchLoading] = useState<boolean>(false)
+
   const [showPassword, setShowPassword] = useState({
     adminPassword: false,
     newPassword: false,
-  });
+  })
+
   const [formData, setFormData] = useState({
     admin_password: "",
     new_password: "",
     user_id: 0,
-  });
-  const [error, setError] = useState<{ status: boolean; text: string }>({
-    status: false,
-    text: "",
-  });
-  const [showPopup, setShowPopup] = useState(false);
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [surnameInput, setSurnameInput] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
+  })
+
+  const [surnameInput, setSurnameInput] = useState("")
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([])
+  const [showDropdown, setShowDropdown] = useState(false)
 
   const handleSearch = useCallback(async () => {
     if (surnameInput.length === 0) {
-      setFilteredUsers([]);
-      setShowDropdown(false);
-      return;
+      setFilteredUsers([])
+      setShowDropdown(false)
+      return
     }
+
+    setSearchLoading(true)
     try {
-      const data = await quickSearchUsers(surnameInput);
-      setFilteredUsers(data);
-      setShowDropdown(true);
+      const data = await quickSearchUsers(surnameInput)
+      setFilteredUsers(data)
+      setShowDropdown(true)
     } catch (err) {
-      console.error("Ошибка поиска пользователей:", err);
-      setError({
-        status: true,
-        text: "Не удалось выполнить поиск пользователей. Попробуйте снова.",
-      });
-      setShowPopup(true);
-      setTimeout(() => setIsPopupVisible(true), 50);
-      setFilteredUsers([]);
-      setShowDropdown(false);
+      console.error("Ошибка поиска пользователей:", err)
+      window.toast?.error("Не удалось выполнить поиск пользователей")
+      setFilteredUsers([])
+      setShowDropdown(false)
+    } finally {
+      setSearchLoading(false)
     }
-  }, [surnameInput]);
+  }, [surnameInput])
 
-  const resetPassword = async (data: {
-    admin_password: string;
-    new_password: string;
-    user_id: number;
-  }) => {
-    if (data.new_password.length < 12) {
-      setError({ status: true, text: "Ваш пароль содержит меньше 12 символов" });
-      alert("Ваш пароль содержит меньше 12 символов");
-      return;
+  const validateForm = useCallback((): { isValid: boolean; message?: string } => {
+    if (formData.new_password.length < 12) {
+      return { isValid: false, message: "Пароль должен содержать минимум 12 символов" }
     }
-    if (data.user_id === 0) {
-      setError({ status: true, text: "Пожалуйста, выберите пользователя" });
-      alert("Пожалуйста, выберите пользователя");
-      return;
+
+    if (formData.user_id === 0) {
+      return { isValid: false, message: "Пожалуйста, выберите пользователя" }
     }
-    setLoading(true);
-    setError({ status: false, text: "" });
+
+    if (!formData.admin_password.trim()) {
+      return { isValid: false, message: "Введите пароль администратора" }
+    }
+
+    return { isValid: true }
+  }, [formData])
+
+  const resetPassword = async () => {
+    const validation = validateForm()
+    if (!validation.isValid) {
+      window.toast?.error(validation.message || "Проверьте правильность данных")
+      return
+    }
+
+    setLoading(true)
 
     try {
-      const res = await resetPasswordFn({
-        ...data,
-        user_id: Number(data.user_id),
-      });
+      await resetPasswordFn({
+        ...formData,
+        user_id: Number(formData.user_id),
+      })
 
-      if (!res) {
-        setError({
-          status: true,
-          text: "Не удалось восстановить пароль. Попробуйте снова.",
-        });
-        setLoading(false);
-      }
-      alert("Пароль успешно изменен!");
-      setFormData({ admin_password: "", new_password: "", user_id: 0 });
-      setSurnameInput("");
-      setFilteredUsers([]);
-      setShowDropdown(false);
-      router.push("/login");
+      window.toast?.info("Пароль успешно изменен!")
+
+      // Очистка формы
+      setFormData({ admin_password: "", new_password: "", user_id: 0 })
+      setSurnameInput("")
+      setFilteredUsers([])
+      setShowDropdown(false)
+
+      setTimeout(() => {
+        router.push("/login")
+      }, 2000)
     } catch (err: any) {
-      console.error("Ошибка при восстановлении пароля:", err);
-      setError({
-        status: true,
-        text:
-          err.message || "Не удалось восстановить пароль. Попробуйте снова.",
-      });
-      setShowPopup(true);
-      setTimeout(() => setIsPopupVisible(true), 50);
+      console.error("Ошибка при восстановлении пароля:", err)
+      window.toast?.error(err.message || "Не удалось восстановить пароль")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await resetPassword(formData);
-  };
+    e.preventDefault()
+    await resetPassword()
+  }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }, [])
 
-  const handleSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSurnameInput(e.target.value);
-    setShowDropdown(false);
-  };
+  const handleSurnameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSurnameInput(e.target.value)
+    setShowDropdown(false)
+  }, [])
 
-  const handleUserSelect = (user: User) => {
-    setFormData((prev) => ({ ...prev, user_id: user.employeeId }));
-    setSurnameInput(`${user.lastName} ${user.firstName}`);
-    setShowDropdown(false);
-  };
+  const handleUserSelect = useCallback((user: User) => {
+    setFormData((prev) => ({ ...prev, user_id: user.employeeId }))
+    setSurnameInput(`${user.lastName} ${user.firstName}`)
+    setShowDropdown(false)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4">
-      <main className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full">
+      <ToastComponent />
+
+      <main className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full transform transition-all duration-300 ease-in-out hover:shadow-2xl">
         <header className="flex flex-col items-center mb-6">
-               <Image src={logo} alt="Logo" className="w-16 h-16 select-none" />
-          <h1 className="mt-4 text-3xl font-bold text-[#000000]">
-            Восстановление пароля
-          </h1>
-          <p className="mt-2 text-center text-[#6D6D6D]">
-            Попросите специальный пароль у администратора и введите новый пароль для восстановления
-            доступа
+          <Image src={logo || "/placeholder.svg"} alt="Logo" className="w-16 h-16 select-none" />
+          <h1 className="mt-4 text-3xl font-bold text-[#000000]">Восстановление пароля</h1>
+          <p className="mt-2 text-center text-[#6D6D6D] text-sm">
+            Попросите специальный пароль у администратора и введите новый пароль для восстановления доступа
           </p>
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="relative">
-            <label
-              htmlFor="surname"
-              className="block text-sm font-medium text-[#6D6D6D] mb-1"
-            >
-              Введите свою фамилию
+          {/* Поиск пользователя */}
+          <div className="relative space-y-2">
+            <label htmlFor="surname" className="block text-sm font-medium text-[#6D6D6D]">
+              Поиск пользователя
             </label>
             <div className="flex gap-2">
               <input
@@ -166,23 +160,37 @@ export default function ForgotPasswordPage() {
                 required
                 value={surnameInput}
                 onChange={handleSurnameChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
-                placeholder="Введите фамилию пользователя"
+                className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
+                placeholder="Введите фамилию"
               />
               <button
                 type="button"
                 onClick={handleSearch}
-                className="px-4 py-3 bg-[#249BA2] text-white rounded-xl shadow-sm hover:bg-[#1e8287] focus:outline-none focus:ring-2 focus:ring-[#249BA2]"
+                disabled={searchLoading}
+                className="px-4 py-3 bg-[#249BA2] text-white rounded-xl shadow-sm hover:bg-[#1e8287] focus:outline-none focus:ring-2 focus:ring-[#249BA2] disabled:opacity-50 transition-all duration-200 transform hover:scale-105 active:scale-95"
               >
-                Поиск
+                {searchLoading ? (
+                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                ) : (
+                  "Поиск"
+                )}
               </button>
             </div>
+
+            {/* Dropdown с результатами поиска */}
             {showDropdown && filteredUsers.length > 0 && (
-              <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-xl mt-1 max-h-60 overflow-auto shadow-lg">
+              <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-xl mt-1 max-h-60 overflow-auto shadow-lg transition-all duration-200">
                 {filteredUsers.map((user) => (
                   <li
                     key={user.employeeId}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    className="px-4 py-3 hover:bg-gray-100 cursor-pointer transition-colors duration-150 first:rounded-t-xl last:rounded-b-xl"
                     onClick={() => handleUserSelect(user)}
                   >
                     {user.lastName} {user.firstName}
@@ -192,11 +200,9 @@ export default function ForgotPasswordPage() {
             )}
           </div>
 
-          <div>
-            <label
-              htmlFor="admin_password"
-              className="block text-sm font-medium text-[#6D6D6D] mb-1"
-            >
+          {/* Пароль администратора */}
+          <div className="space-y-2">
+            <label htmlFor="admin_password" className="block text-sm font-medium text-[#6D6D6D]">
               Пароль администратора
             </label>
             <div className="relative">
@@ -207,36 +213,22 @@ export default function ForgotPasswordPage() {
                 required
                 value={formData.admin_password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
+                className="w-full px-4 py-3 pr-12 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
                 placeholder="Введите пароль администратора"
                 autoComplete="off"
-                spellCheck="false"
-                autoCorrect="off"
-                autoCapitalize="off"
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200"
                 onClick={() =>
                   setShowPassword({
                     ...showPassword,
                     adminPassword: !showPassword.adminPassword,
                   })
                 }
-                aria-label={
-                  showPassword.adminPassword
-                    ? "Скрыть пароль"
-                    : "Показать пароль"
-                }
               >
                 {showPassword.adminPassword ? (
-                  <svg
-                    className="w-5 h-5 text-gray-500 hover:text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -251,13 +243,7 @@ export default function ForgotPasswordPage() {
                     />
                   </svg>
                 ) : (
-                  <svg
-                    className="w-5 h-5 text-gray-500 hover:text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -270,11 +256,9 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="new_password"
-              className="block text-sm font-medium text-[#6D6D6D] mb-1"
-            >
+          {/* Новый пароль */}
+          <div className="space-y-2">
+            <label htmlFor="new_password" className="block text-sm font-medium text-[#6D6D6D]">
               Новый пароль
             </label>
             <div className="relative">
@@ -285,30 +269,21 @@ export default function ForgotPasswordPage() {
                 required
                 value={formData.new_password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
+                className="w-full px-4 py-3 pr-12 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
                 placeholder="Введите новый пароль"
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200"
                 onClick={() =>
                   setShowPassword({
                     ...showPassword,
                     newPassword: !showPassword.newPassword,
                   })
                 }
-                aria-label={
-                  showPassword.newPassword ? "Скрыть пароль" : "Показать пароль"
-                }
               >
                 {showPassword.newPassword ? (
-                  <svg
-                    className="w-5 h-5 text-gray-500 hover:text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -323,13 +298,7 @@ export default function ForgotPasswordPage() {
                     />
                   </svg>
                 ) : (
-                  <svg
-                    className="w-5 h-5 text-gray-500 hover:text-gray-700"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -342,10 +311,9 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4 select-none">
-            <h3 className="text-sm font-medium text-[#000000] mb-2">
-              Требования к паролю:
-            </h3>
+          {/* Требования к паролю */}
+          <div className="bg-gray-50 rounded-xl p-4">
+            <h3 className="text-sm font-medium text-[#000000] mb-2">Требования к паролю:</h3>
             <ul className="text-xs text-[#6D6D6D] space-y-1">
               <li className="flex items-center">
                 <span className="mr-2">•</span>
@@ -354,99 +322,53 @@ export default function ForgotPasswordPage() {
             </ul>
           </div>
 
-          <div className="mt-6">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 px-4 rounded-xl shadow-sm text-base font-medium text-white bg-[#FF0000] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Восстановление...
-                </>
-              ) : (
-                "Восстановить пароль"
-              )}
-            </button>
-          </div>
+          {/* Кнопка отправки */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 px-4 rounded-xl shadow-sm text-base font-medium text-white bg-[#FF0000] hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+          >
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Восстановление...
+              </>
+            ) : (
+              "Восстановить пароль"
+            )}
+          </button>
         </form>
 
-        <div className="mt-4 flex justify-between items-center text-sm">
+        {/* Навигация */}
+        <div className="mt-6 flex justify-between items-center text-sm">
           <button
             onClick={() => router.push("/login")}
-            className="text-[#249BA2] hover:underline"
+            className="text-[#249BA2] hover:underline transition-colors duration-200"
           >
             Обратно на страницу входа
           </button>
           <button
             onClick={() => router.push("/")}
-            className="text-[#249BA2] hover:underline"
+            className="text-[#249BA2] hover:underline transition-colors duration-200"
           >
             На главную
           </button>
         </div>
       </main>
 
-      {showPopup && (
-        <div
-          className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out flex items-center justify-center z-50`}
-        >
-          <div className="bg-white p-6 rounded-xl shadow-xl transform transition-all duration-300 ease-in-out max-w-md mx-4">
-            <div className="flex items-center mb-4">
-              <svg
-                className="w-6 h-6 text-[#FF0000] mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                />
-              </svg>
-              <h2 className="text-xl font-bold text-[#000000]">
-                {error.status ? "Ошибка" : "Успех"}
-              </h2>
-            </div>
-            <p className="text-[#6D6D6D] mb-6">
-              {error.status
-                ? error.text
-                : "Пароль успешно изменен! Вы будете перенаправлены на страницу входа."}
-            </p>
-            <button
-              onClick={() => setShowPopup(false)}
-              className="w-full py-2 px-4 rounded-xl shadow-sm text-base font-medium text-white bg-[#FF0000] hover:bg-red-700 focus:outline-none"
-            >
-              Закрыть
-            </button>
-          </div>
-        </div>
-      )}
-
       <UniversalFooter />
     </div>
-  );
+  )
 }
