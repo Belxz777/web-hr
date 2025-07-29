@@ -33,8 +33,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Проверка позиции для специальных путей
-
  if (pathname === "/login" || pathname==="/register") {
       return NextResponse.redirect(new URL("/profile", request.url));
     } 

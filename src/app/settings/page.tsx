@@ -30,7 +30,7 @@ export default function SettingsPage() {
                 </div>
       
         
-   
+   <h1> Контакты : напишите письмо на имя Белых Роман Александрович(отдел обучения)</h1>
           <button
             onClick={() => {
                 window.location.href = "/docs";
