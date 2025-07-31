@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, useRef } from 'react';
 import authUser from '@/components/server/auth/auth';
 import { checkAndClearStorage } from '@/components/utils/checktime';
@@ -10,7 +12,7 @@ interface Deputy {
 
 interface Job {
   jobName: string;
-  deputy: number;
+  deputy?: number; // Made optional to match your response
 }
 
 interface User {
@@ -20,11 +22,16 @@ interface User {
   position: number;
 }
 
-interface AuthResponse {
+interface AuthResponseData {
   user: User;
-  job: Job;
   department: string;
-  deputy: Deputy[];
+  job: Job;
+  deputy?: Deputy[];
+}
+
+interface AuthResponse {
+  message: string;
+  data: AuthResponseData;
 }
 
 interface ErrorState {
@@ -33,7 +40,7 @@ interface ErrorState {
 }
 
 const useEmployeeData = () => {
-  const [employeeData, setData] = useState<AuthResponse | null>(null);
+  const [employeeData, setData] = useState<AuthResponseData | null>(null);
   const [loadingEmp, setLoading] = useState(true);
   const [error, setError] = useState<ErrorState>({
     status: false,
@@ -77,11 +84,8 @@ const useEmployeeData = () => {
     };
   }, []);
 
-  const title = employeeData?.job.jobName || '';
-
   return { 
     employeeData, 
-    title, 
     loadingEmp, 
     error 
   };

@@ -29,8 +29,7 @@ export default function SettingsPage() {
                   <p className="text-gray-600 text-xl">v1.0.0</p>
                 </div>
       
-        
-   <h1> Контакты : напишите письмо на имя Белых Роман Александрович(отдел обучения)</h1>
+      
           <button
             onClick={() => {
                 window.location.href = "/docs";

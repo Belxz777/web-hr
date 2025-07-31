@@ -15,15 +15,10 @@ export async function GET(request: Request) {
     const cookieStore = cookies()
     const jwt = cookieStore.get('cf-auth-id')?.value
 
-    if (!jwt) {
-      return NextResponse.json(
-        { error: 'Требуется аутентификация' },
-        { status: 401 }
-      )
-    }
+    
 
     // Формируем URL для бэкенда
-    const backendUrl = new URL(`${host}users/quicksearch/`)
+    const backendUrl = new URL(`${host}users/quicksearch`)
     backendUrl.searchParams.append('search', search)
     backendUrl.searchParams.append('only_mydepartment', String(onlyMyDepartment))
 

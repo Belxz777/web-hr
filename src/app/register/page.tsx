@@ -13,17 +13,17 @@ import ToastComponent from "@/components/toast/toast"
 
 export default function RegisterPage() {
   const router = useRouter()
-  const { jobs, loading: jobsLoading } = useGetAllJobs()
+  const { jobs, loading: jobsLoading } = useGetAllJobs() 
   const { deps, loading: depsLoading } = useGetAlldeps()
 
   const [formData, setFormData] = useState({
     login: "",
     password: "",
-    firstName: "",
-    lastName: "",
+    name: "",
+    surname: "",
     patronymic: "",
-    jobid: 0,
-    departmentid: 0,
+    job_id: 0,
+    department_id: 0,
   })
 
   const [isLoading, setIsLoading] = useState(false)
@@ -43,13 +43,13 @@ export default function RegisterPage() {
     let processedValue = value
 
     // Автоматическая капитализация для имен
-    if (name === "firstName" || name === "lastName" || name === "patronymic") {
+    if (name === "name" || name === "surname" || name === "patronymic") {
       processedValue = capitalizeName(value)
     }
 
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "jobid" || name === "departmentid" ? Number.parseInt(value) || 0 : processedValue,
+      [name]: name === "job_id" || name === "department_id" ? Number.parseInt(value) || 0 : processedValue,
     }))
   }, [])
 
@@ -66,19 +66,19 @@ export default function RegisterPage() {
       return { isValid: false, message: "Пароль должен содержать минимум 12 символов" }
     }
 
-    if (!formData.firstName.trim()) {
+    if (!formData.name.trim()) {
       return { isValid: false, message: "Введите имя" }
     }
 
-    if (!formData.lastName.trim()) {
+    if (!formData.surname.trim()) {
       return { isValid: false, message: "Введите фамилию" }
     }
 
-    if (formData.jobid === 0) {
+    if (formData.job_id === 0) {
       return { isValid: false, message: "Выберите должность" }
     }
 
-    if (formData.departmentid === 0) {
+    if (formData.department_id === 0) {
       return { isValid: false, message: "Выберите отдел" }
     }
 
@@ -121,17 +121,17 @@ export default function RegisterPage() {
 
     return (
       <select
-        id="jobid"
-        name="jobid"
+        id="job_id"
+        name="job_id"
         required
-        value={formData.jobid === 0 ? "" : formData.jobid}
+        value={formData.job_id === 0 ? "" : formData.job_id}
         onChange={handleChange}
         className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none transition-all duration-200 hover:border-[#249BA2]"
       >
         <option value="">Выберите должность</option>
         {jobs.map((job, index) => (
-          <option key={index} value={job.jobId}>
-            {job.jobName}
+          <option key={index} value={job.id}>
+            {job.name}
           </option>
         ))}
       </select>
@@ -149,17 +149,17 @@ export default function RegisterPage() {
 
     return (
       <select
-        id="departmentid"
-        name="departmentid"
+        id="department_id"
+        name="department_id"
         required
-        value={formData.departmentid === 0 ? "" : formData.departmentid}
+        value={formData.department_id === 0 ? "" : formData.department_id}
         onChange={handleChange}
         className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none transition-all duration-200 hover:border-[#249BA2]"
       >
         <option value="">Выберите отдел</option>
         {deps.map((dept, index) => (
-          <option key={index} value={dept.departmentId}>
-            {dept.departmentName}
+          <option key={index} value={dept.id}>
+            {dept.name}
           </option>
         ))}
       </select>
@@ -247,15 +247,15 @@ export default function RegisterPage() {
 
             {/* Имя */}
             <div className="space-y-2">
-              <label htmlFor="firstName" className="block text-sm font-medium text-[#6D6D6D]">
+              <label htmlFor="name" className="block text-sm font-medium text-[#6D6D6D]">
                 Имя
               </label>
               <input
-                id="firstName"
-                name="firstName"
+                id="name"
+                name="name"
                 type="text"
                 required
-                value={formData.firstName}
+                value={formData.name}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
                 placeholder="Введите имя"
@@ -264,15 +264,15 @@ export default function RegisterPage() {
 
             {/* Фамилия */}
             <div className="space-y-2">
-              <label htmlFor="lastName" className="block text-sm font-medium text-[#6D6D6D]">
+              <label htmlFor="surname" className="block text-sm font-medium text-[#6D6D6D]">
                 Фамилия
               </label>
               <input
-                id="lastName"
-                name="lastName"
+                id="surname"
+                name="surname"
                 type="text"
                 required
-                value={formData.lastName}
+                value={formData.surname}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
                 placeholder="Введите фамилию"
@@ -297,7 +297,7 @@ export default function RegisterPage() {
 
             {/* Должность */}
             <div className="space-y-2">
-              <label htmlFor="jobid" className="block text-sm font-medium text-[#6D6D6D]">
+              <label htmlFor="job_id" className="block text-sm font-medium text-[#6D6D6D]">
                 Должность
               </label>
               {renderJobSelect()}
@@ -305,7 +305,7 @@ export default function RegisterPage() {
 
             {/* Отдел */}
             <div className="space-y-2">
-              <label htmlFor="departmentid" className="block text-sm font-medium text-[#6D6D6D]">
+              <label htmlFor="department_id" className="block text-sm font-medium text-[#6D6D6D]">
                 Отдел
               </label>
               {renderDepartmentSelect()}

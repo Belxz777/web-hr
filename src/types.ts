@@ -1,108 +1,46 @@
 import {urlenv }from "./config";
-interface department {
-  id: number;
-  name: string;
-  head: number;
+export interface Department {
+  id: number
+  name: string
+  description?: string
+  jobs_list?: number[]
 }
 interface report {
-  func_id?: number;
-  deputy_id?: number | null;  
-  workingHours: number;
-  comment: string;
+  function_id:number, 
+  hours_worked: number;
+  comment?: string;
 }
-type basicColors = {
-  main:{
-    typical:"#32CD32",
-    nontypical:"#B22222"
-  },
-  extra:"#F0E68C"
-}
-interface TFData {
-  nonCompulsory: {
-    deputyId: number;
-    deputyName: string;
-  };
-  functions: {
-    funcName: string;
-  };
+// interface TFData {
+//   nonCompulsory: {
+//     deputyId: number;
+//     deputyName: string;
+//   };
+//   functions: {
+//     funcName: string;
+//   };
 
+// }
+export interface FunctionItem {
+  id:number,
+  name: string,
+  description:string,
+  is_main:boolean
 }
-interface Department {
-  departmentId: string;
-  departmentName: string;
+export interface ErrorResponse {
+  message: string;
+  errors?: Record<string, string[]>;
+  error?: string;
 }
 interface Job {
-  jobId: string;
-  jobName: string;
-  tfs: number[];
-}
-interface defaultTF {
-  tfName: string;
-  tfDescription: string;
-  time: number;
-  isMain: boolean;
-}
-interface createUser {
-  job_title_id: number;
-  age: number;
-  first_name: string;
-  last_name: string;
-  father_name: string;
-  login: string;
-  password: string;
-  department_id: number;
-}
-interface jobTitle {
   id: number;
   name: string;
+  pre_positioned:number;
 }
-type Employee = {
-  employeeId: number;
-  firstName: string;
-  lastName: string;
-  position: string;
-  currentLevel?: number;
-};
-interface task {
-  taskId: number;
-  taskName: string;
-  taskDescription: string;
-  status: string;
-  hourstodo: number;
-  closeDate: null;
-  isExpired: boolean;
-  //   {
-  //     "taskId": 4,
-  //     "taskName": "Описание необходимого комп решения",
-  //     "forEmployeeId": 1,
-  //     "status": "completed",
-  //     "hourstodo": "-2.00",
-  //     "been": true,
-  //     "taskDescription": "Задача на 1 раб день",
-  //     "fromDate": "2024-12-21T15:54:18.811568+04:00",
-  //     "closeDate": null,
-  //     "isExpired": false
-  // },
-}
-// type employee = {
-//   completedTasks: null;
-//   departmentid: number;
-//   employeeId: number;
-//   expiredTasksCount: null;
-//   firstName: string;
-//   jobid: number;
-//   lastName: string;
-//   patronymic: string;
-//   position:number;
-//   tasksCount: null;
-// };
-type Deputy = {
-  deputyId: number;
-  deputyName: string;
-  compulsory: boolean;
-};
+
+
+
+
 type employee = {
-  deputy: Deputy[];
   job: {
     deputy: number;
     jobName: string;
@@ -121,11 +59,21 @@ interface changePass {
   old_password: string;
   new_password: string;
 }
-// const host =".../api/v1/";
+
+export interface adminPassChange {
+  admin_password:string;
+  user_id:number,
+  new_password:string;
+
+}
 const host = urlenv
 interface statusType {
   code: string | number;
   text: string;
+}
+
+interface errorResponse {
+  message:string
 }
 
 // desh
@@ -402,7 +350,6 @@ declare global {
 }
 export type {
   BackendStatus,
-  department,
   EmployeeInfo,
   DepartmentStats,
   EmployeeStats,
@@ -411,23 +358,17 @@ export type {
   TimePeriod,
   EmployeeDistribution,
   EmployeeSummary,
-  createUser,
   DailyStats,
   Job,
   report,
-  Department,
-  defaultTF,
-  Employee,
-  jobTitle,
-  task,
   changePass,
   statusType,
   employee,
-  Deputy,
-  TFData,
+
   DepartmentStatsProps,
   CircularProgressProps,
   StatCardProps,
-  basicColors,
-  DepartmentDistribution
+
+  DepartmentDistribution,
+
 };

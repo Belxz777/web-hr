@@ -46,12 +46,6 @@ export default function LoginPage() {
         })
         return
       }
-
-      localStorage.setItem("lc-pos-x", resultData.isBoss)
-      if (resultData.isBoss) {
-        localStorage.setItem("lc-dep-x", resultData.departmentId)
-      }
-
       router.push("/profile")
     } catch (err: any) {
       console.log(err)

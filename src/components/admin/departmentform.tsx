@@ -6,7 +6,7 @@ import { useState } from "react"
 
 interface DepartmentFormProps {
   onBack: () => void
-  onSubmit: (data: { departmentName: string; departmentDescription: string }) => Promise<void>
+  onSubmit: (data: { name: string; description: string }) => Promise<void>
   loading?: boolean
 }
 
@@ -18,8 +18,8 @@ export default function DepartmentForm({ onBack, onSubmit, loading = false }: De
     e.preventDefault()
     if (departmentName.trim()) {
       await onSubmit({
-        departmentName: departmentName.trim(),
-        departmentDescription: departmentDescription.trim(),
+        name: departmentName.trim(),
+        description: departmentDescription.trim(),
       })
       setDepartmentName("")
       setDepartmentDescription("")

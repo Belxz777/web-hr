@@ -1,6 +1,7 @@
 "use client"
 
-import type { Department } from "./index"
+import { Department } from "@/types"
+
 
 interface DepartmentSelectorProps {
   departments: Department[]
@@ -20,11 +21,11 @@ export default function DepartmentSelector({ departments, onBack, onSelectDepart
       <div className="space-y-2">
         {departments.map((dept) => (
           <button
-            key={dept.departmentId}
-            onClick={() => onSelectDepartment(dept.departmentId)}
+            key={dept.id}
+            onClick={() => onSelectDepartment(dept.id)}
             className="w-full p-3 text-left border border-gray-300 hover:bg-gray-50"
           >
-            {dept.departmentName}
+            {dept.name}
           </button>
         ))}
       </div>

@@ -1,5 +1,5 @@
 "use server";
-import { host, report, task } from "@/types";
+import { host, report } from "@/types";
 import { cookies } from "next/headers";
 
 export default async function sendReport(reportData: report) {

@@ -1,6 +1,6 @@
 "use client"
+import { Employee } from "@/components/admin"
 import { Header } from "@/components/ui/header"
-import type { Employee } from "@/types"
 import { useState, useEffect, useCallback } from "react"
 
 export default function UserSearch() {
@@ -45,7 +45,8 @@ export default function UserSearch() {
       }
 
       const data = await response.json()
-      setUsers(data.users || data || [])
+      setUsers(data.data || data || [])
+      console.log(data.data)
     } catch (err) {
       console.error("Search error:", err)
       setError(err instanceof Error ? err.message : "Неизвестная ошибка")
@@ -201,7 +202,7 @@ export default function UserSearch() {
                 <div className="space-y-4">
                   {users.map((employee, index) => (
                     <div
-                      key={employee.employeeId || index}
+                      key={employee.id|| index}
                       className="group bg-background/80 backdrop-blur-sm border-2 border-border rounded-2xl p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                     >
                       <div className="flex items-center justify-between">
@@ -209,15 +210,15 @@ export default function UserSearch() {
                           <div className="relative">
                             <div className="w-14 h-14 bg-primary/10 border-2 border-primary/20 rounded-xl flex items-center justify-center shadow-lg">
                               <span className="text-primary font-bold text-lg">
-                                {employee.firstName?.[0]}
-                                {employee.lastName?.[0]}
+                                {employee.name?.[0]}
+                                {employee.surname?.[0]}
                               </span>
                             </div>
                             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary border-2 border-background rounded-full"></div>
                           </div>
                           <div className="space-y-1">
                             <h3 className="text-xl font-bold text-foreground">
-                              {employee.firstName} {employee.lastName}
+                              {employee.name} {employee.surname}
                             </h3>
                             <div className="flex items-center space-x-2">
                               <div className="w-2 h-2 bg-primary rounded-full"></div>
@@ -228,7 +229,7 @@ export default function UserSearch() {
                         </div>
                         <button
                           onClick={() => {
-                            window.location.href = `/analytics/mydepartment/employees/${employee.employeeId}`
+                            window.location.href = `/analytics/history/employee/${employee.id}`
                           }}
                           className="flex items-center space-x-3 px-6 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 hover:border-primary rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl group-hover:scale-105"
                         >

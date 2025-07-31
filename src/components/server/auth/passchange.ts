@@ -38,7 +38,7 @@ async function resetPasswordFn(passwordData: {
   }
   try {
     console.log("Sending request to reset password", passwordData);
-    const response = await fetch(`${host}reset/password`, {
+    const response = await fetch(`${host}users/reset_password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

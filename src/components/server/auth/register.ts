@@ -5,12 +5,11 @@ import { host } from "@/types";
 interface CreateUserDTO {
   login: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  surname: string;
   patronymic: string;
-  jobid: number;
-  // age: number;
-  departmentid: number;
+  job_id: number;
+  department_id: number;
 }
 
 async function registerUser(userData: CreateUserDTO): Promise<any> {

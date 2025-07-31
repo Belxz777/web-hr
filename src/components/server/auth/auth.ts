@@ -3,45 +3,58 @@
 import { cookies } from 'next/headers';
 import { host } from '@/types';
 
-interface AuthResponse {
-  user: {
-    employeeId: number;
-    firstName: string;
-    lastName: string;
-    position: number;
-  };
-  job: {
-    jobName: string;
-    deputy: number;
-  };
-  department: string;
-  deputy: {
-    deputyId: number;
-    deputyName: string;
-    compulsory: boolean;
-  }[];
+interface UserData {
+  employeeId: number;
+  firstName: string;
+  lastName: string;
+  position: number;
 }
 
-const AUTH_ERRORS = {
-  NO_TOKEN: 'Authentication token not found',
-  FETCH_FAILED: 'Failed to fetch user data',
-  AUTH_FAILED: 'Authentication failed',
-  TOKEN_EXPIRED: 'Token expired'
-};
+interface JobData {
+  jobName: string;
+}
+
+interface AuthResponse {
+  message: string;
+  data: {
+    user: UserData;
+    department: string;
+    job: JobData;
+    deputy?: {
+      deputyId: number;
+      deputyName: string;
+      compulsory: boolean;
+    }[];
+  };
+}
+
+enum AuthError {
+  NO_TOKEN = 'Authentication token not found',
+  FETCH_FAILED = 'Failed to fetch user data',
+  AUTH_FAILED = 'Authentication failed',
+  TOKEN_EXPIRED = 'Token expired',
+  NETWORK_ERROR = 'Network request failed',
+  TIMEOUT = 'Request timed out',
+  INVALID_DATA = 'Received invalid user data structure'
+}
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json'
 };
 
-export default async function authUser(): Promise<AuthResponse> {
+const REQUEST_TIMEOUT = 5000;
+
+export default async function authUser(): Promise<AuthResponse['data']> {
   const cookieStore = cookies();
   const jwt = cookieStore.get('cf-auth-id')?.value;
   
-  if (!jwt) throw new Error(AUTH_ERRORS.NO_TOKEN);
+  if (!jwt) {
+    throw new Error(AuthError.NO_TOKEN);
+  }
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
     const response = await fetch(`${host}users/get_user`, {
       credentials: 'include',
@@ -56,27 +69,37 @@ export default async function authUser(): Promise<AuthResponse> {
     clearTimeout(timeoutId);
 
     if (response.status === 401) {
-      // Удаляем куку если получили 401 Unauthorized
       cookieStore.delete('cf-auth-id');
-      throw new Error(AUTH_ERRORS.TOKEN_EXPIRED);
+      throw new Error(AuthError.TOKEN_EXPIRED);
     }
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => '');
-      throw new Error(errorText || AUTH_ERRORS.FETCH_FAILED);
+      const errorText = await response.text().catch(() => AuthError.FETCH_FAILED);
+      throw new Error(errorText);
     }
 
-    return await response.json();
+    const data: AuthResponse = await response.json();
+
+    // Validate response structure
+    if (!data?.data?.user || !data.data.department || !data.data.job) {
+      throw new Error(AuthError.INVALID_DATA);
+    }
+
+    return data.data;
 
   } catch (error) {
     console.error('Authentication error:', error);
     
-    // Дополнительная проверка для других случаев 401 ошибки
-    if (error instanceof Error && error.message.includes('401')) {
-      cookies().delete('cf-auth-id');
-      throw new Error(AUTH_ERRORS.TOKEN_EXPIRED);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new Error(AuthError.TIMEOUT);
+      }
+      if (error.message.includes('401')) {
+        cookieStore.delete('cf-auth-id');
+        throw new Error(AuthError.TOKEN_EXPIRED);
+      }
     }
-    
-    throw error instanceof Error ? error : new Error(AUTH_ERRORS.AUTH_FAILED);
+
+    throw new Error(AuthError.AUTH_FAILED);
   }
 }

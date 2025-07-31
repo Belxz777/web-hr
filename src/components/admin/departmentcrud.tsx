@@ -1,38 +1,36 @@
 "use client"
 
-import type { Department, Job, Deputy } from "./index"
+import { Department, FunctionItem, Job } from "@/types"
+
 
 interface DepartmentManagementProps {
   departments: Department[]
   jobs: Job[]
-  deputies: Deputy[]
+  functions: FunctionItem[]
   onBack: () => void
   onCreateJob: () => void
-  onEditDepartment: (departmentId: number) => void
-  onDeleteDepartment: (departmentId: number) => void
-  onEditJob: (jobId: number) => void
-  onDeleteJob: (jobId: number) => void
-  onManageDeputy: (deputyId: number) => void
-  onDeleteDeputy: (deputyId: number) => void
+  onEditDepartment: (id: number) => void
+  onDeleteDepartment: (id: number) => void
+  onEditJob: (id: number) => void
+  onDeleteJob: (id: number) => void
   loading?: boolean
 }
 
 export default function DepartmentManagement({
   departments,
   jobs,
-  deputies,
+  functions,
   onBack,
   onCreateJob,
   onEditDepartment,
   onDeleteDepartment,
   onEditJob,
   onDeleteJob,
-  onManageDeputy,
-  onDeleteDeputy,
+
   loading = false,
 }: DepartmentManagementProps) {
-  const getDeputyName = (deputyId: number) =>
-    deputies.find((d) => d.deputyId === deputyId)?.deputyName || "Не назначена"
+  // const getitemName = (itemId: number) =>
+  //   itemes.find((d) => d.itemId === itemId)?.itemName || "Не назначена"
 
   return (
     <div className="space-y-6">
@@ -49,26 +47,26 @@ export default function DepartmentManagement({
         <div className="space-y-2">
           {departments.map((dept) => (
             <div
-              key={dept.departmentId}
+              key={dept.id}
               className="flex items-center justify-between p-3 border border-gray-200 rounded"
             >
               <div>
-                <div className="font-medium">{dept.departmentName}</div>
-                {dept.departmentDescription && (
-                  <div className="text-sm text-gray-600">{dept.departmentDescription}</div>
+                <div className="font-medium">{dept.name}</div>
+                {dept.description && (
+                  <div className="text-sm text-gray-600">{dept.description}</div>
                 )}
-                <div className="text-sm text-gray-500">ID: {dept.departmentId}</div>
+                <div className="text-sm text-gray-500">ID: {dept.id}</div>
               </div>
               <div className="space-x-2">
                 <button
-                  onClick={() => onEditDepartment(dept.departmentId)}
+                  onClick={() => onEditDepartment(dept.id)}
                   className="px-3 py-1 text-sm bg-yellow-100 hover:bg-yellow-200 rounded"
                   disabled={loading}
                 >
                   Изменить
                 </button>
                 <button
-                  onClick={() => onDeleteDepartment(dept.departmentId)}
+                  onClick={() => onDeleteDepartment(dept.id)}
                   className="px-3 py-1 text-sm bg-red-100 hover:bg-red-200 rounded"
                   disabled={loading}
                 >
@@ -94,22 +92,21 @@ export default function DepartmentManagement({
         </div>
         <div className="space-y-2">
           {jobs.map((job) => (
-            <div key={job.jobId} className="flex items-center justify-between p-3 border border-gray-200 rounded">
+            <div key={job.id} className="flex items-center justify-between p-3 border border-gray-200 rounded">
               <div>
-                <div className="font-medium">{job.jobName}</div>
-                <div className="text-sm text-gray-600">Обязанность: {getDeputyName(job.deputy)}</div>
-                <div className="text-sm text-gray-500">ID: {job.jobId}</div>
+                <div className="font-medium">{job.name}</div>
+                <div className="text-sm text-gray-500">ID: {job.id}</div>
               </div>
               <div className="space-x-2">
                 <button
-                  onClick={() => onEditJob(job.jobId)}
+                  onClick={() => onEditJob(job.id)}
                   className="px-3 py-1 text-sm bg-yellow-100 hover:bg-yellow-200 rounded"
                   disabled={loading}
                 >
                   Изменить
                 </button>
                 <button
-                  onClick={() => onDeleteJob(job.jobId)}
+                  onClick={() => onDeleteJob(job.id)}
                   className="px-3 py-1 text-sm bg-red-100 hover:bg-red-200 rounded"
                   disabled={loading}
                 >
@@ -125,36 +122,23 @@ export default function DepartmentManagement({
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Обязанности</h3>
         <div className="space-y-2">
-          {deputies.map((deputy) => (
-            <div key={deputy.deputyId} className="flex items-center justify-between p-3 border border-gray-200 rounded">
+          {functions.map((item) => (
+            <div key={item.id} className="flex items-center justify-between p-3 border border-gray-200 rounded">
               <div>
-                <div className="font-medium">{deputy.deputyName}</div>
-                {deputy.deputyDescription && <div className="text-sm text-gray-600">{deputy.deputyDescription}</div>}
+                <div className="font-medium">{item.name}</div>
+                {item.description && <div className="text-sm text-gray-600">{item.description}</div>}
                 
                                 <div className="text-sm text-gray-600">
-                                  Обязательность: <span className={deputy.compulsory ? "text-green-600" : "text-red-600"}>
-                                    {deputy.compulsory ? "Обязательная" : "Не обязательная"}
+                                  Обязательность: <span className={item.is_main? "text-green-600" : "text-red-600"}>
+                                    {item.is_main? "Обязательная" : "Не обязательная"}
                                   </span>
                                 </div>
                 
-                <div className="text-sm text-gray-500">
-                  Функций: {deputy.deputy_functions.length} | ID: {deputy.deputyId}
-                </div>
+                
               </div>
               <div className="space-x-2">
-                {
-                  deputy.compulsory && (
-                    <button
-                      onClick={() => onManageDeputy(deputy.deputyId)}
-                      className="px-3 py-1 text-sm bg-blue-100 hover:bg-blue-200 rounded"
-                      disabled={loading}
-                    >
-                      Изменить
-                    </button>
-                  )
-                }
+          
                 <button
-                  onClick={() => onDeleteDeputy(deputy.deputyId)}
                   className="px-3 py-1 text-sm bg-red-100 hover:bg-red-200 rounded"
                   disabled={loading}
                 >

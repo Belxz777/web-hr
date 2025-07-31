@@ -102,29 +102,7 @@ const HeaderMenu: React.FC<{ position: number | null }> = ({ position }) => {
         <ul className="py-1 space-y-1">
           {position !== null && position >= 2 && (
             <>
-              <MenuItem
-                href="/analytics/mydepartment"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 3v18h18" />
-                    <rect x="7" y="10" width="3" height="8" />
-                    <rect x="12" y="6" width="3" height="12" />
-                    <rect x="17" y="14" width="3" height="4" />
-                  </svg>
-                }
-              >
-               Аналитика моего отдела
-              </MenuItem>
-
+         
               {position >= 4 && (
                 <>
                   {/* <MenuItem

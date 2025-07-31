@@ -1,16 +1,5 @@
-export interface Department {
-  departmentId: number
-  departmentName: string
-  departmentDescription?: string
-  jobsList?: number[]
-  tfs?: number[]
-}
 
-export interface Job {
-  jobId: number
-  jobName: string
-  deputy: number
-}
+
 
 export interface Deputy {
   deputyId: number
@@ -27,14 +16,13 @@ export interface Functions {
 }
 
 export interface Employee {
-  employeeId: number
-  firstName: string
-  lastName: string
+  id: number
+  name: string
+  surname: string
   patronymic: string
   login: string
-  jobid: string
-  departmentid: number
-  email?: string
+  job: string
+  department: number
   position: number
 }
 

@@ -1,257 +1,208 @@
-"use client"
+"use client";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import type React from "react"
-import { useEffect, useState, useCallback } from "react"
-import sendReport from "@/components/server/userdata/report"
-import UniversalFooter from "@/components/buildIn/UniversalFooter"
-import { Header } from "@/components/ui/header"
-import { getAllFunctionsForReport } from "@/components/server/userdata/functions"
-import { CustomSelect } from "@/components/ui/CustomSelect"
-import { formatReportDate } from "@/components/utils/format"
-import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime"
-import ToastComponent from "@/components/toast/toast"
+import type React from "react";
+import { useEffect, useState, useCallback } from "react";
+import sendReport from "@/components/server/userdata/report";
+import UniversalFooter from "@/components/buildIn/UniversalFooter";
+import { Header } from "@/components/ui/header";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+import { formatReportDate } from "@/components/utils/format";
+import { convertDataToNormalTime } from "@/components/utils/convertDataToNormalTime";
+import ToastComponent from "@/components/toast/toast";
+import useFunctionsForReport from "@/hooks/api/useFunctions";
+import { report } from "@/types";
+
 
 interface Responsibility {
-  deputyId: number
-  deputyName: string
+  deputyId: number;
+  deputyName: string;
 }
 
 interface FunctionItem {
-  funcId: number
-  funcName: string
+  id: number;
+  name: string;
 }
 
 interface ResponsibilitiesData {
-  nonCompulsory: Responsibility[]
-  functions: FunctionItem[]
+  message: string;
+  data: FunctionItem[];
 }
 
 interface FormData {
-  func_id: number
-  deputy_id: number
-  workingHours: string
-  comment: string
+  func_id: number;
+  deputy_id: number;
+  workingHours: string;
+  comment: string;
 }
 
-// Упрощенная работа с localStorage
+interface Report {
+  function_id: number;
+  hours_worked: number;
+  comment?: string;
+}
+
+// Simplified localStorage handling
 const setHoursToday = (hours: number) => {
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  tomorrow.setHours(0, 0, 0, 0)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
 
   const item = {
     value: hours,
     expiry: tomorrow.getTime(),
-  }
-  localStorage.setItem("hourstoday", JSON.stringify(item))
-}
+  };
+  localStorage.setItem("hourstoday", JSON.stringify(item));
+};
 
 const getHoursToday = (): number => {
   try {
-    const itemStr = localStorage.getItem("hourstoday")
-    if (!itemStr) return 0
+    const itemStr = localStorage.getItem("hourstoday");
+    if (!itemStr) return 0;
 
-    const item = JSON.parse(itemStr)
-    const now = new Date()
+    const item = JSON.parse(itemStr);
+    const now = new Date();
 
     if (now.getTime() > item.expiry) {
-      localStorage.removeItem("hourstoday")
-      return 0
+      localStorage.removeItem("hourstoday");
+      return 0;
     }
 
-    return Number(item.value) || 0
+    return Number(item.value) || 0;
   } catch {
-    return 0
+    return 0;
   }
-}
+};
 
 export default function ReportPage() {
-  const [loading, setLoading] = useState(false)
-  const [dataLoading, setDataLoading] = useState(true)
-  const [formData, setFormData] = useState<FormData>({
-    func_id: 0,
-    deputy_id: 0,
-    workingHours: "0.50",
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<report>({
+    function_id: 0,
+    hours_worked: 0.50,
     comment: "",
-  })
-  const [responsibilities, setResponsibilities] = useState<ResponsibilitiesData>({
-    nonCompulsory: [],
-    functions: [],
-  })
-  const [type, setType] = useState<string>("main")
-  const [hoursWorked, setHoursWorked] = useState<number>(0)
+  });
+  const [hoursWorked, setHoursWorked] = useState<number>(0);
 
-  // Загрузка данных
+  // Use the custom hook to fetch functions
+  const { functions, loading: functionsLoading, error: functionsError } = useFunctionsForReport();
+  // Load worked hours
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setDataLoading(true)
-        const data = await getAllFunctionsForReport()
-
-        if (data) {
-          setResponsibilities(data)
-
-          // Автовыбор первого элемента если он единственный
-          if (data.functions.length === 1) {
-            setFormData((prev) => ({
-              ...prev,
-              func_id: data.functions[0].funcId,
-              deputy_id: 0,
-            }))
-          }
-
-          if (data.nonCompulsory.length === 1) {
-            setFormData((prev) => ({
-              ...prev,
-              deputy_id: data.nonCompulsory[0].deputyId,
-              func_id: 0,
-            }))
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch responsibilities:", error)
-        window.toast?.error("Не удалось загрузить список обязанностей")
-      } finally {
-        setDataLoading(false)
-      }
-    }
-
-    // Загрузка отработанных часов
     if (typeof window !== "undefined") {
-      setHoursWorked(getHoursToday())
+      setHoursWorked(getHoursToday());
     }
+  }, []);
 
-    fetchData()
-  }, [])
-
-  // Обработка изменений формы
+  // Handle form changes
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = e.target
+      const { name, value } = e.target;
 
       if (name === "workingHours") {
-        const numValue = Number(value)
-        const formattedValue = (numValue / 60).toFixed(2)
+        const numValue = Number(value);
+        const formattedValue = (numValue / 60).toFixed(2);
         setFormData((prev) => ({
           ...prev,
           [name]: formattedValue,
-        }))
+        }));
       } else {
         setFormData((prev) => ({
           ...prev,
           [name]: value,
-        }))
+        }));
       }
     },
-    [],
-  )
+    []
+  );
 
-  // Валидация формы
+  // Validate form
   const validateForm = useCallback((): { isValid: boolean; message?: string } => {
-    if (type === "main" && !formData.func_id) {
-      return { isValid: false, message: "Выберите основную обязанность" }
+    if ( !formData.function_id) {
+      return { isValid: false, message: "Выберите основную обязанность" };
     }
 
-    if (type === "ext" && !formData.deputy_id) {
-      return { isValid: false, message: "Выберите дополнительную обязанность" }
+    if (formData.hours_worked <= 0) {
+      return { isValid: false, message: "Укажите корректное количество отработанного времени" };
     }
 
-    if (Number(formData.workingHours) <= 0) {
-      return { isValid: false, message: "Укажите корректное количество отработанного времени" }
-    }
+    return { isValid: true };
+  }, [ formData]);
 
-    return { isValid: true }
-  }, [type, formData])
+  // Handle type change
+  // const handleTypeChange = useCallback(
+  //   (newType: string) => {
+  //     setType(newType);
+  //     if (newType === "ext" && functions.length > 0) {
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         deputy_id: functions[0].deputyId,
+  //         func_id: 0,
+  //       }));
+  //     } else if (newType === "main" && functions.length > 0) {
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         func_id: functions[0].id,
+  //         deputy_id: 0,
+  //       }));
+  //     }
+  //   },
+  //   [functions]
+  // );
 
-  // Обработка смены типа
-  const handleTypeChange = useCallback(
-    (newType: string) => {
-      setType(newType)
-
-      if (newType === "ext" && responsibilities.nonCompulsory.length > 0) {
-        setFormData((prev) => ({
-          ...prev,
-          deputy_id: responsibilities.nonCompulsory[0].deputyId,
-          func_id: 0,
-        }))
-      } else if (newType === "main" && responsibilities.functions.length > 0) {
-        setFormData((prev) => ({
-          ...prev,
-          func_id: responsibilities.functions[0].funcId,
-          deputy_id: 0,
-        }))
-      }
-    },
-    [responsibilities],
-  )
-
-  // Отправка формы
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const validation = validateForm()
+    const validation = validateForm();
     if (!validation.isValid) {
-      window.toast?.error(validation.message || "Проверьте правильность данных")
-      return
+      window.toast?.error(validation.message || "Проверьте правильность данных");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      // Подготовка данных отчета
-      const reportData =
-        type === "main"
-          ? {
-              func_id: formData.func_id,
-              workingHours: Number(formData.workingHours),
-              comment: formData.comment,
-            }
-          : {
-              deputy_id: formData.deputy_id,
-              workingHours: Number(formData.workingHours),
-              comment: formData.comment,
-            }
+      // Prepare report data
+      const reportData: Report = {
+        function_id:  formData.function_id ,
+        hours_worked: formData.hours_worked,
+        comment: formData.comment,
+      };
 
-      await sendReport(reportData)
+      await sendReport(reportData);
 
-      // Обновление отработанных часов
+      // Update worked hours
       if (typeof window !== "undefined") {
-        const newHours = hoursWorked + Number(formData.workingHours)
-        setHoursToday(newHours)
-        setHoursWorked(newHours)
+        const newHours = hoursWorked + Number(formData.hours_worked);
+        setHoursToday(newHours);
+        setHoursWorked(newHours);
       }
 
-      // Очистка формы после успешной отправки
+      // Clear form after successful submission
       setFormData({
-        func_id: type === "main" && responsibilities.functions.length === 1 ? responsibilities.functions[0].funcId : 0,
-        deputy_id:
-          type === "ext" && responsibilities.nonCompulsory.length === 1
-            ? responsibilities.nonCompulsory[0].deputyId
-            : 0,
-        workingHours: "0.50",
+        function_id:  functions.length === 1 ? functions[0].id : 0,
+        hours_worked: 0.50,
         comment: "",
-      })
+      });
 
-      window.toast?.info("Отчет успешно отправлен!")
+      window.toast?.info("Отчет успешно отправлен!");
     } catch (error) {
-      console.error("Error submitting report:", error)
-      window.toast?.error(`Произошла ошибка при отправке отчета`)
+      console.error("Error submitting report:", error);
+      window.toast?.error(`Произошла ошибка при отправке отчета`);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  // Форматирование времени
+  // Format time
   const formatTime = (hoursDecimal: number) => {
-    const totalMinutes = Math.round(hoursDecimal * 60)
-    const hours = Math.floor(totalMinutes / 60)
-    const minutes = totalMinutes % 60
-    return `${hours} ч ${minutes} мин`
+    const totalMinutes = Math.round(hoursDecimal * 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours} ч ${minutes} мин`;
   }
 
-  if (dataLoading) {
+  if ( functionsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col">
         <ToastComponent />
@@ -274,7 +225,7 @@ export default function ReportPage() {
         </main>
         <UniversalFooter />
       </div>
-    )
+    );
   }
 
   return (
@@ -294,7 +245,7 @@ export default function ReportPage() {
           </div>
 
           <div className="space-y-4">
-            <div>
+            {/* <div>
               <label htmlFor="type" className="block text-foreground mb-2 font-medium">
                 Тип обязанности
               </label>
@@ -308,40 +259,55 @@ export default function ReportPage() {
                 <option value="main">Основная</option>
                 <option value="ext">Дополнительная</option>
               </select>
-            </div>
+            </div> */}
 
-            <div>
+            <div> 
               <label htmlFor="tf_id" className="block text-foreground mb-2 font-medium">
                 Выберите обязанность
               </label>
               <CustomSelect
-                type={type}
-                formData={formData}
+              formData={formData}
                 setFormData={setFormData}
-                responsibilities={responsibilities}
+                functions={ functions } // Pass functions to CustomSelect
               />
             </div>
 
-            <div>
-              <label className="block mb-2 text-foreground font-medium">Количество рабочих часов</label>
-              <div className="space-y-4">
-                <input
-                  type="range"
-                  id="workingHoursSlider"
-                  name="workingHours"
-                  min="5"
-                  max="480"
-                  step="5"
-                  value={Math.round(Number(formData.workingHours) * 60)}
-                  onChange={handleChange}
-                  className="w-full h-2 bg-secondary/30 rounded-lg appearance-none cursor-pointer"
-                />
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground">{formatTime(Number(formData.workingHours))}</div>
-                  
-                </div>
-              </div>
-            </div>
+<div>
+  <label className="block mb-2 text-foreground font-medium">Количество рабочих часов</label>
+  <div className="space-y-4">
+    <input
+      type="range"
+      id="hours_slider"
+      name="hours_worked"
+      min="0.5"
+      max="8"
+      step="0.0166667"
+      value={formData.hours_worked}
+      onChange={(e) => {
+        setFormData({
+          ...formData,
+          hours_worked: parseFloat(e.target.value) // Используем parseFloat для точных значений
+        });
+      }}
+      onInput={(e) => {
+        // Обновляем значение в реальном времени для плавного UX
+        const value = parseFloat(e.currentTarget.value);
+        setFormData(prev => ({
+          ...prev,
+          hours_worked: value
+        }));
+      }}
+      className="w-full h-2 bg-secondary/30 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+    />
+    <div className="flex justify-between items-center">
+      <span className="text-sm text-muted-foreground">0.5ч</span>
+      <div className="text-2xl font-bold text-foreground">
+        {formatTime(formData.hours_worked)}
+      </div>
+      <span className="text-sm text-muted-foreground">8ч</span>
+    </div>
+  </div>
+</div>
 
             <div>
               <label htmlFor="comment" className="block text-foreground mb-2 font-medium">
@@ -351,7 +317,9 @@ export default function ReportPage() {
                 id="comment"
                 name="comment"
                 value={formData.comment}
-                onChange={handleChange}
+                onChange={
+                  (e) => setFormData({...formData, comment: e.target.value})
+                }
                 rows={4}
                 className="w-full px-3 py-2 bg-background border border-input rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
                 placeholder="Опишите выполненную работу (необязательно)"
@@ -371,5 +339,5 @@ export default function ReportPage() {
 
       <UniversalFooter />
     </div>
-  )
+  );
 }

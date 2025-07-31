@@ -5,15 +5,14 @@ import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import UniversalFooter from "@/components/buildIn/UniversalFooter"
 import { resetPasswordFn } from "@/components/server/auth/passchange"
-import { quickSearchUsers } from "@/components/server/useless/userdata"
 import Image from "next/image"
 import logo from "../../../public/logo_1_.svg"
 import ToastComponent from "@/components/toast/toast"
 
 interface User {
-  employeeId: number
-  firstName: string
-  lastName: string
+  id: number
+  name: string
+  surname: string
   position: number
 }
 
@@ -46,8 +45,12 @@ export default function ForgotPasswordPage() {
 
     setSearchLoading(true)
     try {
-      const data = await quickSearchUsers(surnameInput)
-      setFilteredUsers(data)
+      const response = await fetch(`/api/users/quicksearch/?search=${surnameInput}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
+      }
+      const data = await response.json();
+      setFilteredUsers(data.data);
       setShowDropdown(true)
     } catch (err) {
       console.error("Ошибка поиска пользователей:", err)
@@ -87,7 +90,6 @@ export default function ForgotPasswordPage() {
     try {
       await resetPasswordFn({
         ...formData,
-        user_id: Number(formData.user_id),
       })
 
       window.toast?.info("Пароль успешно изменен!")
@@ -128,8 +130,8 @@ export default function ForgotPasswordPage() {
   }, [])
 
   const handleUserSelect = useCallback((user: User) => {
-    setFormData((prev) => ({ ...prev, user_id: user.employeeId }))
-    setSurnameInput(`${user.lastName} ${user.firstName}`)
+    setFormData((prev) => ({ ...prev, user_id: user.id }))
+    setSurnameInput(`${user.surname} ${user.name}`)
     setShowDropdown(false)
   }, [])
 
@@ -189,11 +191,11 @@ export default function ForgotPasswordPage() {
               <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-xl mt-1 max-h-60 overflow-auto shadow-lg transition-all duration-200">
                 {filteredUsers.map((user) => (
                   <li
-                    key={user.employeeId}
+                    key={user.id}
                     className="px-4 py-3 hover:bg-gray-100 cursor-pointer transition-colors duration-150 first:rounded-t-xl last:rounded-b-xl"
                     onClick={() => handleUserSelect(user)}
                   >
-                    {user.lastName} {user.firstName}
+                    {user.surname} {user.name}
                   </li>
                 ))}
               </ul>

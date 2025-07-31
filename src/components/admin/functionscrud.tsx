@@ -1,30 +1,31 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import type { Deputy } from "./index"
 
 interface FunctionFormProps {
-  deputies: Deputy[]
   onBack: () => void
-  onSubmit: (data: { funcName: string; consistent: number }) => Promise<void>
+  onSubmit: (data: { name: string; is_main: boolean; description?: string }) => Promise<void>
   loading?: boolean
+
 }
 
-export default function FunctionForm({ deputies, onBack, onSubmit, loading = false }: FunctionFormProps) {
+export default function FunctionForm({ onBack, onSubmit, loading = false}: FunctionFormProps) {
   const [funcName, setFuncName] = useState("")
-  const [consistent, setConsistent] = useState(0)
+  const [description, setDescription] = useState("")
+  const [isMain, setIsMain] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (funcName.trim() && consistent > 0) {
+    if (funcName.trim() ) {
       await onSubmit({
-        funcName: funcName.trim(),
-        consistent,
+        name: funcName.trim(),
+        description,
+        is_main: isMain,
       })
       setFuncName("")
-      setConsistent(0)
+      setDescription("")
+      setIsMain(false)
     }
   }
 
@@ -34,7 +35,7 @@ export default function FunctionForm({ deputies, onBack, onSubmit, loading = fal
         <button onClick={onBack} className="text-blue-600" disabled={loading}>
           ← Назад
         </button>
-        <h2 className="text-xl font-bold">Создание функции </h2>
+        <h2 className="text-xl font-bold">Создание функции</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,31 +53,39 @@ export default function FunctionForm({ deputies, onBack, onSubmit, loading = fal
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Состоит в обязанности:*</label>
-          <select
-            value={consistent}
-            onChange={(e) => setConsistent(Number(e.target.value))}
-            className="w-full p-2 border border-gray-300 rounded"
-            required
+          <label className="block text-sm font-medium text-gray-700 mb-1">Описание функции</label>
+          <textarea
+            placeholder="Введите описание функции"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded  bg-transparent"
+            rows={3}
             disabled={loading}
-          >
-            <option value={0}>Выберите обязанность</option>
-            {deputies.map((deputy) => (
-              <option key={deputy.deputyId} value={deputy.deputyId}>
-                {deputy.deputyName}
-              </option>
-            ))}
-          </select>
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Тип функции *</label>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              checked={isMain}
+              onChange={(e) => setIsMain(e.target.checked)}
+              className="mr-2"
+              disabled={loading}
+            />
+            <span>Основная?</span>
+          </div>
         </div>
 
         <button
           type="submit"
           className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded disabled:opacity-50"
-          disabled={loading || !funcName.trim() || consistent === 0}
+          disabled={loading || !funcName.trim() }
         >
           {loading ? "Создание..." : "Создать функцию"}
         </button>
-      </form>
+      </form> 
     </div>
   )
 }

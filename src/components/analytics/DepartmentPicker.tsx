@@ -22,8 +22,8 @@ export const DepartmentSelector = ({
         className="bg-background border border-input text-foreground p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary w-full transition-all duration-200"
       >
         {deps.map((dep) => (
-          <option key={dep.departmentId} value={dep.departmentId}>
-            {dep.departmentName}
+          <option key={dep.id} value={dep.id}>
+            {dep.name}
           </option>
         ))}
       </select>

@@ -34,7 +34,6 @@ export default function ProfilePage() {
       return (
         <div className="opacity-100 transition-opacity duration-500 ease-in-out">
           <div className="animate-pulse space-y-4">
-            {/* Имитируем структуру готового контента */}
             <div className="space-y-2">
               <div className="h-8 bg-gradient-to-r from-muted/40 via-muted/60 to-muted/40 rounded-lg w-3/4 animate-shimmer bg-[length:200%_100%]" />
               <div className="h-8 bg-gradient-to-r from-muted/40 via-muted/60 to-muted/40 rounded-lg w-2/3 animate-shimmer bg-[length:200%_100%]" />
@@ -63,7 +62,7 @@ export default function ProfilePage() {
       )
     }
 
-    if (employeeData?.user && employeeError.status === false) {
+    if (employeeData?.user) {
       return (
         <div className="opacity-100 transition-opacity duration-500 ease-in-out space-y-4">
           <div className="cursor-pointer group">
@@ -107,26 +106,15 @@ export default function ProfilePage() {
       <Header title="Личный кабинет" position={position || 1} showPanel />
       <main className="container mx-auto p-4">
         <section className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg transition-all duration-300 ease-in-out">
-          {/* Фиксированная высота контейнера для предотвращения прыжков */}
           <div className="min-h-[240px] w-full flex flex-col justify-start transition-all duration-500 ease-in-out">
             {renderProfileContent()}
           </div>
         </section>
 
-        {/* Плавное появление дополнительных секций */}
-        <div
-          className={`transition-all duration-700 ease-in-out ${employeeData ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-        >
-          <EmployeeResponsibilities
-            responsibilitiesFs={employeeData?.deputy || []}
-            position={employeeData?.user?.position}
-            isLoading={!employeeData || !employeeData.user?.position}
-          />
-        </div>
-
-        {employeeData?.user.position !== 1 && employeeData ? (
+  
+        {position && position !== 1 ? (
           <div className="transition-all duration-700 ease-in-out delay-100 opacity-100 translate-y-0">
-            <RoutesBoss position={employeeData.user.position} />
+            <RoutesBoss position={position} />
           </div>
         ) : null}
       </main>

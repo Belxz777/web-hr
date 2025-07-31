@@ -6,25 +6,24 @@ import { useState } from "react"
 import type { Deputy } from "./index"
 // works
 interface JobFormProps {
-  deputies: Deputy[]
   onBack: () => void
-  onSubmit: (data: { jobName: string; deputy: number }) => Promise<void>
+  onSubmit: (data: { name: string; pre_positioned: number }) => Promise<void>
   loading?: boolean
 }
 
-export default function JobForm({ deputies, onBack, onSubmit, loading = false }: JobFormProps) {
+export default function JobForm({ onBack, onSubmit, loading = false }: JobFormProps) {
   const [jobName, setJobName] = useState("")
-  const [selectedDeputy, setSelectedDeputy] = useState(0)
+  const [selectedLevel, setSelectedLevel] = useState(0)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (jobName.trim()) {
       await onSubmit({
-        jobName: jobName.trim(),
-        deputy: selectedDeputy,
+        name: jobName.trim(),
+        pre_positioned: selectedLevel,
       })
       setJobName("")
-      setSelectedDeputy(0)
+      setSelectedLevel(0)
     }
   }
 
@@ -63,20 +62,11 @@ export default function JobForm({ deputies, onBack, onSubmit, loading = false }:
               </span>
             </span>
           </div>
-          <select
-            value={selectedDeputy}
-            onChange={(e) => setSelectedDeputy(Number(e.target.value))}
-            className="w-full p-2 border border-gray-300 rounded"
-            disabled={loading}
-          >
-            <option value={0}>Выберите обязанность</option>
-            {deputies.filter(deputy => deputy.compulsory).map((deputy) => (
-              <option key={deputy.deputyId} value={deputy.deputyId}>
-                {deputy.deputyName}
-                {deputy.deputyDescription && ` - ${deputy.deputyDescription}`}
-              </option>
-            ))}
-          </select>
+    <input 
+    type="number"
+    value={selectedLevel}
+    onChange={(e) => setSelectedLevel(Number(e.target.value))}>
+    </input>
         </div>
 
         <button

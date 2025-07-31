@@ -35,17 +35,12 @@ export default function MainView({ onNavigate }: MainViewProps) {
             Создать должность
           </button>
           <button
-            onClick={() => onNavigate("create_deputy")}
-            className="w-full p-3 text-left border border-gray-300 hover:bg-gray-50"
-          >
-            Создать  обязанность (главная функция должности(единственная))
-          </button>
-          <button
             onClick={() => onNavigate("create_function")}
             className="w-full p-3 text-left border border-gray-300 hover:bg-gray-50"
           >
-            Создать функцию(подфункция обязанности)
+            Создать  обязанность 
           </button>
+         
         </div>
         <div className="space-y-2">
           <h2 className="text-lg font-semibold text-gray-700">Кадры</h2>

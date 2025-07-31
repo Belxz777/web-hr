@@ -1,10 +1,10 @@
 "use client"
 
-import type { Deputy } from "@/types"
+
 import { useState, useEffect } from "react"
 
 interface EmployeeResponsibilitiesProps {
-  responsibilitiesFs?: Deputy[]
+  responsibilitiesFs?: any[]
   position?: number
   hoursWorked?: number
   isLoading?: boolean

@@ -1,15 +1,16 @@
 "use server";
-import { host } from "@/types";
+import { FunctionItem, host } from "@/types";
 import { cookies } from "next/headers";
+import { ErrorResponse } from "../admin/job";
 
-async function getAllFunctionsForReport() {
+async function getAllFunctionsForReport(): Promise<{ message: string; data: FunctionItem[] } | ErrorResponse> {
   const cookieStore = cookies();
   const jwt = cookieStore.get("cf-auth-id")?.value;
   if (!jwt) {
     throw new Error("No token provided");
   }
   try {
-    const response = await fetch(`${host}report/functions/`, {
+    const response = await fetch(`${host}entities/functions/`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -20,21 +21,21 @@ async function getAllFunctionsForReport() {
     const data = await response.json();
 
     if (response.ok) {
-      return data;
+      console.log(data,"data")
+      return data
+
     } else {
-      if (data.error) {
-        throw new Error(data.error);
-      } else {
-        throw new Error("Unknown error occurred");
-      }
+      console.log(data,"data")
+      return { message: data.message || "Unknown error occurred" };
     }
   } catch (error) {
     console.error(error);
-    throw new Error("Error occurred in getting  employees");
+    throw new Error("Error occurred in getting functions");
   }
 }
 
-async function createFunctionFn(dataForm: { funcName: string; consistent: number }) {
+
+async function createFunctionFn(dataForm: {  name: string; is_main: boolean,description?:string  }) {
   const cookieStore = cookies();
   const jwt = cookieStore.get("cf-auth-id")?.value;
   if (!jwt) {
