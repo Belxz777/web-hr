@@ -5,7 +5,8 @@ import { convertDataToNormalTime, formatDatePretty, formatISODate } from "@/comp
 import useGetAlldeps from "@/hooks/useDeps"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import logo from '../../../../public/logo_1_.svg'
+import logo from "../../../../public/logo_1_.svg"
+
 // Define the type for a single report
 type Report = {
   report_id: number
@@ -23,59 +24,86 @@ type ReportsByDate = {
   [date: string]: Report[]
 }
 
+// Define grouped reports type
+type GroupedReports = {
+  [employeeId: number]: {
+    employee_name: string
+    employee_id: number
+    reports: Report[]
+    total_hours: number
+  }
+}
+
 export default function DepartmentActivityDashboard({
   onEmployeeClick,
 }: {
   onEmployeeClick?: (employeeId: number, employeeName: string) => void
 }) {
-const { deps, loading: depsLoading } = useGetAlldeps()
-const [data, setData] = useState<DepartmentPerformanceData | null>(null)
-const [loading, setLoading] = useState(false)
-const [error, setError] = useState<string | null>(null)
-const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(0) // Изначально 0
+  const { deps, loading: depsLoading } = useGetAlldeps()
+  const [data, setData] = useState<DepartmentPerformanceData | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(0)
 
-// Устанавливаем даты
-const [startDate, setStartDate] = useState<string>(
-  new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-)
-const [endDate, setEndDate] = useState<string>(new Date().toISOString().split("T")[0])
+  // Устанавливаем даты
+  const [startDate, setStartDate] = useState<string>(
+    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+  )
+  const [endDate, setEndDate] = useState<string>(new Date().toISOString().split("T")[0])
 
-// Эффект для установки ID первого отдела после загрузки
-useEffect(() => {
-  if (deps.length > 0 && selectedDepartmentId === 0) {
-    setSelectedDepartmentId(deps[0].id)
-  }
-}, [deps, selectedDepartmentId])
-
-// Функция для загрузки данных
-const loadDepartmentData = async () => {
-  if (!selectedDepartmentId) return // Не загружаем если ID не установлен
-  
-  setLoading(true)
-  setError(null)
-  try {
-    const result = await fetchDepartmentData(selectedDepartmentId, startDate, endDate)
-    if (result.data) {
-      setData(result.data)
-    } else {
-      setError(result.error || "Не удалось получить данные")
+  // Эффект для установки ID первого отдела после загрузки
+  useEffect(() => {
+    if (deps.length > 0 && selectedDepartmentId === 0) {
+      setSelectedDepartmentId(deps[0].id)
     }
-  } catch (err) {
-    setError(err instanceof Error ? err.message : "Неизвестная ошибка")
-  } finally {
-    setLoading(false)
-  }
-}
+  }, [deps, selectedDepartmentId])
 
-// Загрузка данных при изменении selectedDepartmentId или дат
-useEffect(() => {
-  if (selectedDepartmentId) {
-    loadDepartmentData()
+  // Функция для загрузки данных
+  const loadDepartmentData = async () => {
+    if (!selectedDepartmentId) return
+    setLoading(true)
+    setError(null)
+    try {
+      const result = await fetchDepartmentData(selectedDepartmentId, startDate, endDate)
+      if (result.data) {
+        setData(result.data)
+      } else {
+        setError(result.error || "Не удалось получить данные")
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Неизвестная ошибка")
+    } finally {
+      setLoading(false)
+    }
   }
-}, [selectedDepartmentId, startDate, endDate])
+
+  // Загрузка данных при изменении selectedDepartmentId или дат
+  useEffect(() => {
+    if (selectedDepartmentId) {
+      loadDepartmentData()
+    }
+  }, [selectedDepartmentId, startDate, endDate])
+
   // Обработчик изменения фильтров
   const handleFilterChange = () => {
     loadDepartmentData()
+  }
+
+  // Group reports by employee for each date
+  const groupReportsByEmployee = (reports: Report[]): GroupedReports => {
+    return reports.reduce((acc, report) => {
+      if (!acc[report.employee_id]) {
+        acc[report.employee_id] = {
+          employee_name: report.employee_name,
+          employee_id: report.employee_id,
+          reports: [],
+          total_hours: 0,
+        }
+      }
+      acc[report.employee_id].reports.push(report)
+      acc[report.employee_id].total_hours += report.hours_worked
+      return acc
+    }, {} as GroupedReports)
   }
 
   const filteredReports = data?.reports_by_date || {}
@@ -84,18 +112,24 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
         {/* Header */}
         <header className="mb-6 sm:mb-8">
-
-            <Image src={logo} alt="logo" width={100} height={100} 
-    onClick={()=>{window.location.href = "/profile"}} className='cursor-pointer hover:scale-110 transition-transform duration-300'
-    unoptimized
-	priority/>
+          <Image
+            src={logo || "/placeholder.svg"}
+            alt="logo"
+            width={100}
+            height={100}
+            onClick={() => {
+              window.location.href = "/profile"
+            }}
+            className="cursor-pointer hover:scale-110 transition-transform duration-300"
+            unoptimized
+            priority
+          />
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
             Панель активности сотрудников отдела
           </h1>
-
           <p className="text-sm sm:text-base lg:text-lg text-gray-600">
             Мониторинг производительности и отчетности по отделам
           </p>
@@ -240,13 +274,12 @@ useEffect(() => {
                       </p>
                       <p className="text-gray-700">
                         <span className="font-medium">Общее время:</span>{" "}
-                        <span className="font-bold text-secondary block sm:inline mt-1 sm:mt-0">
+                        <span className="font-bold text-secondary whitespace-nowrap">
                           {data.total_hours ? convertDataToNormalTime(data.total_hours) : "0ч 0м"}
                         </span>
                       </p>
                     </div>
                   </div>
-
                   <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                     <div className="bg-white/80 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-white/50 shadow-sm">
                       <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
@@ -267,7 +300,6 @@ useEffect(() => {
                       </div>
                       <div className="text-xs sm:text-sm text-gray-600 font-medium">Всего отчетов</div>
                     </div>
-
                     <div className="bg-white/80 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-white/50 shadow-sm">
                       <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                         <svg
@@ -392,146 +424,178 @@ useEffect(() => {
               </div>
             ) : (
               <div className="space-y-6 sm:space-y-8">
-                {Object.entries(filteredReports).map(([date, reports]) => (
-                  <article
-                    key={date}
-                    className="border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition-all duration-200"
-                  >
-                    <header className="mb-4 sm:mb-6">
-                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
-                        {formatDatePretty(date)}
-                      </h3>
-                      <p className="text-sm sm:text-base lg:text-lg text-gray-600">
-                        {reports.length} отчет(ов) за день
-                      </p>
-                    </header>
+                {Object.entries(filteredReports).map(([date, reports]) => {
+                  const groupedReports = groupReportsByEmployee(reports)
 
-                    {/* Mobile Card View */}
-                    <div className="block lg:hidden space-y-3 sm:space-y-4">
-                      {reports.map((report) => (
-                        <div
-                          key={report.report_id}
-                          className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
-                        >
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex items-center gap-3">
-                         
-                              <div className="min-w-0">
-                                <div className="font-medium text-gray-900 text-sm sm:text-base truncate">
-                                  {report.employee_name || "Неизвестный"}
-                                </div>
-                                <div className="text-xs sm:text-sm text-gray-500">ID: {report.employee_id}</div>
-                              </div>
-                            </div>
-                            {onEmployeeClick && (
-                              <button
-                                onClick={() =>
-                                  onEmployeeClick(report.employee_id, report.employee_name || "Неизвестный")
-                                }
-                                className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors font-medium touch-manipulation flex-shrink-0"
-                              >
-                                Подробнее
-                              </button>
-                            )}
-                          </div>
+                  return (
+                    <article
+                      key={date}
+                      className="border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition-all duration-200"
+                    >
+                      <header className="mb-4 sm:mb-6">
+                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
+                          {formatDatePretty(date)}
+                        </h3>
+                        <p className="text-sm sm:text-base lg:text-lg text-gray-600">
+                          {reports.length} отчет(ов) от {Object.keys(groupedReports).length} сотрудник(ов)
+                        </p>
+                      </header>
 
-                          <div className="space-y-2 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Функция:</span>
-                              <span className="font-medium text-gray-900 text-right">
-                                {report.function_name || "-"}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Время:</span>
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-secondary/10 text-secondary">
-                                {report.hours_worked
-                                  ? convertDataToNormalTime(Number(report.hours_worked.toFixed(2)))
-                                  : "0ч 0м"}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Отправлено:</span>
-                              <span className="text-gray-900">{formatISODate(report.date) || "-"}</span>
-                            </div>
-                            {report.comment && (
-                              <div className="pt-2 border-t border-gray-200">
-                                <span className="text-gray-600 text-xs">Комментарий:</span>
-                                <p className="text-gray-700 text-sm mt-1">{report.comment}</p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Desktop Table View */}
-                    <div className="hidden lg:block overflow-x-auto">
-                      <table className="min-w-full">
-                        <thead>
-                          <tr className="border-b border-gray-200 bg-gray-50">
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Сотрудник</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Функция</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Время работы</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Комментарий</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Время отправки</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                          {reports.map((report) => (
-                            <tr key={report.report_id} className="hover:bg-gray-50 transition-colors">
-                              <td className="px-6 py-4">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-3">
-                                  
-                                    <div>
-                                      <div className="font-medium text-gray-900">
-                                        {report.employee_name || "Неизвестный"}
-                                      </div>
-                                      <div className="text-sm text-gray-500">ID: {report.employee_id}</div>
-                                    </div>
+                      {/* Mobile Card View */}
+                      <div className="block lg:hidden space-y-4">
+                        {Object.values(groupedReports).map((employeeGroup) => (
+                          <div key={employeeGroup.employee_id} className="bg-gray-50 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className="min-w-0">
+                                  <div className="font-semibold text-gray-900 text-base">
+                                    {employeeGroup.employee_name || "Неизвестный"}
                                   </div>
-                                  {onEmployeeClick && (
-                                    <button
-                                      onClick={() =>
-                                        onEmployeeClick(report.employee_id, report.employee_name || "Неизвестный")
-                                      }
-                                      className="px-3 py-1 text-sm bg-secondary text-white rounded-xl hover:bg-secondary/90 transition-colors font-medium"
-                                    >
-                                      Подробнее
-                                    </button>
-                                  )}
+                                  <div className="text-sm text-gray-500">ID: {employeeGroup.employee_id}</div>
+                                  <div className="text-sm font-medium text-secondary whitespace-nowrap">
+                                    Всего: {convertDataToNormalTime(Number(employeeGroup.total_hours.toFixed(2)))}
+                                  </div>
                                 </div>
-                              </td>
-                              <td className="px-6 py-4">
-                                <div className="font-medium text-gray-900">{report.function_name || "-"}</div>
-                              </td>
-                              <td className="px-6 py-4">
-                                <span className="inline-flex items-center px-3 py-1 rounded-full text-lg font-semibold  text-secondary">
-                                  {report.hours_worked
-                                    ? convertDataToNormalTime(Number(report.hours_worked.toFixed(2)))
-                                    : "0ч 0м"}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4">
-                                <div className="max-w-xs">
-                                  {report.comment ? (
-                                    <p className="text-gray-700 text-sm">{report.comment}</p>
-                                  ) : (
-                                    <span className="text-gray-400 italic text-sm">Без комментария</span>
-                                  )}
+                              </div>
+                              {onEmployeeClick && (
+                                <button
+                                  onClick={() =>
+                                    onEmployeeClick(
+                                      employeeGroup.employee_id,
+                                      employeeGroup.employee_name || "Неизвестный",
+                                    )
+                                  }
+                                  className="px-3 py-1 text-sm bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors font-medium touch-manipulation flex-shrink-0"
+                                >
+                                  Подробнее
+                                </button>
+                              )}
+                            </div>
+
+                            <div className="space-y-3 border-t border-gray-200 pt-3">
+                              {employeeGroup.reports.map((report) => (
+                                <div key={report.report_id} className="bg-white rounded-lg p-3 border border-gray-100">
+                                  <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Функция:</span>
+                                      <span className="font-medium text-gray-900 text-right">
+                                        {report.function_name || "-"}
+                                      </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Время:</span>
+                                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-secondary/10 text-secondary whitespace-nowrap">
+                                        {report.hours_worked
+                                          ? convertDataToNormalTime(Number(report.hours_worked.toFixed(2)))
+                                          : "0ч 0м"}
+                                      </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-gray-600">Отправлено:</span>
+                                      <span className="text-gray-900 whitespace-nowrap">
+                                        {formatISODate(report.date) || "-"}
+                                      </span>
+                                    </div>
+                                    {report.comment && (
+                                      <div className="pt-2 border-t border-gray-100">
+                                        <span className="text-gray-600 text-xs">Комментарий:</span>
+                                        <p className="text-gray-700 text-sm mt-1">{report.comment}</p>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              </td>
-                              <td className="px-6 py-4">
-                                <div className="text-sm text-gray-600">{formatISODate(report.date) || "-"}</div>
-                              </td>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Desktop Table View */}
+                      <div className="hidden lg:block overflow-x-auto">
+                        <table className="min-w-full">
+                          <thead>
+                            <tr className="border-b border-gray-200 bg-gray-50">
+                              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Сотрудник</th>
+                              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Функция</th>
+                              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Время работы</th>
+                              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Комментарий</th>
+                              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                                Время отправки
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </article>
-                ))}
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {Object.values(groupedReports).map((employeeGroup) =>
+                              employeeGroup.reports.map((report, index) => (
+                                <tr key={report.report_id} className="hover:bg-gray-50 transition-colors">
+                                  <td className="px-6 py-4">
+                                    {index === 0 ? (
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                          <div>
+                                            <div className="font-semibold text-gray-900">
+                                              {employeeGroup.employee_name || "Неизвестный"}
+                                            </div>
+                                            <div className="text-sm text-gray-500">ID: {employeeGroup.employee_id}</div>
+                                            <div className="text-sm font-medium text-secondary whitespace-nowrap">
+                                              Всего:{" "}
+                                              {convertDataToNormalTime(Number(employeeGroup.total_hours.toFixed(2)))}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        {onEmployeeClick && (
+                                          <button
+                                            onClick={() =>
+                                              onEmployeeClick(
+                                                employeeGroup.employee_id,
+                                                employeeGroup.employee_name || "Неизвестный",
+                                              )
+                                            }
+                                            className="px-3 py-1 text-sm bg-secondary text-white rounded-xl hover:bg-secondary/90 transition-colors font-medium"
+                                          >
+                                            Подробнее
+                                          </button>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <div className="pl-4 border-l-2 border-gray-200">
+                                        <div className="text-sm text-gray-400">↳ продолжение</div>
+                                      </div>
+                                    )}
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <div className="font-medium text-gray-900">{report.function_name || "-"}</div>
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold text-secondary whitespace-nowrap">
+                                      {report.hours_worked
+                                        ? convertDataToNormalTime(Number(report.hours_worked.toFixed(2)))
+                                        : "0ч 0м"}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <div className="max-w-xs">
+                                      {report.comment ? (
+                                        <p className="text-gray-700 text-sm">{report.comment}</p>
+                                      ) : (
+                                        <span className="text-gray-400 italic text-sm">Без комментария</span>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4">
+                                    <div className="text-sm text-gray-600 whitespace-nowrap">
+                                      {formatISODate(report.date) || "-"}
+                                    </div>
+                                  </td>
+                                </tr>
+                              )),
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </article>
+                  )
+                })}
               </div>
             )}
           </div>
