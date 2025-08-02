@@ -13,11 +13,6 @@ export default function HomePage() {
   router.push(`/analytics/history/employee/${employeeId}`)
   }
 
-  const handleBackToDepartment = () => {
-    setCurrentView("department")
-    setSelectedEmployee(null)
-  }
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-100">
         <DepartmentActivityDashboard onEmployeeClick={handleEmployeeClick} />

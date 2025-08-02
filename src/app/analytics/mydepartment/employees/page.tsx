@@ -97,7 +97,7 @@ export default function UserSearch() {
                   placeholder="Введите фамилию сотрудника..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-14 pr-6 py-5 bg-background border-2 border-input text-foreground rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 text-lg placeholder-muted-foreground shadow-inner"
+                  className="w-full pl-14 pr-6 py-5 bg-background border-2 border-input text-foreground rounded-2xl focus:outline-none focus:ring-4 focus:ring-secondary/20 focus:border-secondary transition-all duration-300 text-lg placeholder-muted-foreground shadow-inner"
                 />
                 {searchTerm && (
                   <button
@@ -114,8 +114,8 @@ export default function UserSearch() {
               {/* Department Filter */}
               <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-primary/10 rounded-lg border border-primary/20">
-                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="p-2 bg-secondary/10 rounded-lg border border-secondary/20">
+                    <svg className="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -143,7 +143,7 @@ export default function UserSearch() {
               <div className="flex flex-col items-center justify-center py-16">
                 <div className="relative mb-6">
                   <div className="animate-spin rounded-full h-16 w-16 border-4 border-muted/30"></div>
-                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-primary absolute top-0 left-0"></div>
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-secondary absolute top-0 left-0"></div>
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Поиск сотрудников...</h3>
                 <p className="text-muted-foreground">Пожалуйста, подождите</p>
@@ -188,11 +188,11 @@ export default function UserSearch() {
                 {users.length > 0 && (
                   <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-2 h-8 bg-primary rounded-full"></div>
+                      <div className="w-2 h-8 bg-secondary rounded-full"></div>
                       <div>
                         <h2 className="text-xl font-bold text-foreground">Результаты поиска</h2>
                         <p className="text-muted-foreground">
-                          Найдено сотрудников: <span className="font-semibold text-primary">{users.length}</span>
+                          Найдено сотрудников: <span className="font-semibold text-secondary">{users.length}</span>
                         </p>
                       </div>
                     </div>
@@ -203,25 +203,25 @@ export default function UserSearch() {
                   {users.map((employee, index) => (
                     <div
                       key={employee.id|| index}
-                      className="group bg-background/80 backdrop-blur-sm border-2 border-border rounded-2xl p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                      className="group bg-background/80 backdrop-blur-sm border-2 border-border rounded-2xl p-6 hover:border-secondary/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <div className="relative">
-                            <div className="w-14 h-14 bg-primary/10 border-2 border-primary/20 rounded-xl flex items-center justify-center shadow-lg">
-                              <span className="text-primary font-bold text-lg">
+                            <div className="w-14 h-14 bg-secondary/10 border-2 border-secondary/20 rounded-xl flex items-center justify-center shadow-lg">
+                              <span className="text-secondary font-bold text-lg">
                                 {employee.name?.[0]}
                                 {employee.surname?.[0]}
                               </span>
                             </div>
-                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary border-2 border-background rounded-full"></div>
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary border-2 border-background rounded-full"></div>
                           </div>
                           <div className="space-y-1">
                             <h3 className="text-xl font-bold text-foreground">
                               {employee.name} {employee.surname}
                             </h3>
                             <div className="flex items-center space-x-2">
-                              <div className="w-2 h-2 bg-primary rounded-full"></div>
+                              <div className="w-2 h-2 bg-secondary rounded-full"></div>
                               <p className="text-muted-foreground font-medium">Уровень: {employee.position}</p>
 
                             </div>
@@ -231,7 +231,7 @@ export default function UserSearch() {
                           onClick={() => {
                             window.location.href = `/analytics/history/employee/${employee.id}`
                           }}
-                          className="flex items-center space-x-3 px-6 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 hover:border-primary rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl group-hover:scale-105"
+                          className="flex items-center space-x-3 px-6 py-3 bg-secondary/10 hover:bg-secondary text-secondary hover:text-secondary-foreground border border-secondary/20 hover:border-secondary rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl group-hover:scale-105"
                         >
                           <span>Посмотреть статистику</span>
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -263,7 +263,7 @@ export default function UserSearch() {
                     </div>
                     <h3 className="text-2xl font-bold text-foreground mb-3">Сотрудники не найдены</h3>
                     <p className="text-muted-foreground text-lg mb-4">
-                      По запросу <span className="font-semibold text-primary">"{searchTerm}"</span> не найдено ни одного
+                      По запросу <span className="font-semibold text-secondary">"{searchTerm}"</span> не найдено ни одного
                       сотрудника
                     </p>
                     <div className="space-y-2 text-sm text-muted-foreground">
@@ -277,8 +277,8 @@ export default function UserSearch() {
                 {/* Initial State */}
                 {users.length === 0 && !searchTerm && (
                   <div className="text-center py-16 select-none">
-                    <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
-                      <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-24 h-24 mx-auto mb-6 bg-secondary/10 rounded-full flex items-center justify-center border border-secondary/20">
+                      <svg className="w-12 h-12 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"

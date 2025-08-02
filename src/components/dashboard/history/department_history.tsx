@@ -33,7 +33,7 @@ export default function DepartmentActivityDashboard({
   const [data, setData] = useState<DepartmentPerformanceData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(1)
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(deps[0]?.id || 0)
 // Устанавливаем даты: начальная - неделю назад, конечная - сегодня
 const [startDate, setStartDate] = useState<string>(
   new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -159,7 +159,7 @@ const [endDate, setEndDate] = useState<string>(
     )
   }
 
-  const filteredReports = data.reports_by_date
+  const filteredReports = data?.reports_by_date || {}
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto my-8">
@@ -228,7 +228,7 @@ const [endDate, setEndDate] = useState<string>(
           Период: {new Date(data.start_date).toLocaleDateString()} - {new Date(data.end_date).toLocaleDateString()}
         </p>
         <p className="text-gray-600">
-          Общее количество часов: <span className="font-bold text-gray-800">{data.total_hours.toFixed(2)}</span>
+          Общее количество отработанного временени: <span className="font-bold text-gray-800">{data.total_hours ? convertDataToNormalTime(data.total_hours) : 0  } </span>
         </p>
       </div>
 
@@ -276,15 +276,15 @@ const [endDate, setEndDate] = useState<string>(
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                     <tbody className="bg-white divide-y divide-gray-200">
                     {reports.map((report) => (
                       <tr key={report.report_id}>
                         <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
                           <div className="flex items-center justify-between">
-                            <span>{report.employee_name}</span>
+                            <span>{report.employee_name || "-"}</span>
                             {onEmployeeClick && (
                               <button
-                                onClick={() => onEmployeeClick(report.employee_id, report.employee_name)}
+                                onClick={() => onEmployeeClick(report.employee_id, report.employee_name || "Неизвестный")}
                                 className="ml-2 px-2 py-1 text-xs bg-secondary text-white rounded hover:bg-secondary/80 transition-colors"
                               >
                                 Подробнее
@@ -292,9 +292,9 @@ const [endDate, setEndDate] = useState<string>(
                             )}
                           </div>
                         </td>
-                        <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">{report.function_name}</td>
+                        <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">{report.function_name || "-"}</td>
                         <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">
-                          {convertDataToNormalTime(Number(report.hours_worked.toFixed(2)))}
+                          {report.hours_worked ? convertDataToNormalTime(Number(report.hours_worked.toFixed(2))) : "0.00"}
                         </td>
                         <td className="px-4 py-2 text-sm text-gray-600">{report.comment || "-"}</td>
                         <td className="px-4 py-2 text-sm text-gray-600">{date || "-"}</td>
