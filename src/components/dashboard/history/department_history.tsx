@@ -4,7 +4,8 @@ import { type DepartmentPerformanceData, fetchDepartmentData } from "@/component
 import { convertDataToNormalTime, formatDatePretty, formatISODate } from "@/components/utils/convertDataToNormalTime"
 import useGetAlldeps from "@/hooks/useDeps"
 import { useState, useEffect } from "react"
-import { Symbol } from "@/components/ui/symbol"
+import Image from "next/image"
+import logo from '../../../../public/logo_1_.svg'
 // Define the type for a single report
 type Report = {
   report_id: number
@@ -72,29 +73,38 @@ export default function DepartmentActivityDashboard({
   const workingDays = Object.keys(filteredReports).length
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
         {/* Header */}
-        {/* <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Панель активности сотрудников отдела</h1>
-          <p className="text-lg text-gray-600">Мониторинг производительности и отчетности по отделам</p>
-        </header> */}
-        <Symbol text="Панель активности сотрудников отдела"/>
+        <header className="mb-6 sm:mb-8">
+
+            <Image src={logo} alt="logo" width={100} height={100} 
+    onClick={()=>{window.location.href = "/profile"}} className='cursor-pointer hover:scale-110 transition-transform duration-300'
+    unoptimized
+	priority/>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+            Панель активности сотрудников отдела
+          </h1>
+
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600">
+            Мониторинг производительности и отчетности по отделам
+          </p>
+        </header>
 
         {/* Filters Section */}
-        <section className="bg-white rounded-xl shadow-lg mb-8 border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-900">Фильтры и настройки</h2>
+        <section className="bg-white rounded-lg sm:rounded-xl shadow-lg mb-6 sm:mb-8 border border-gray-200">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Фильтры и настройки</h2>
           </div>
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="space-y-2">
-                <label htmlFor="department-select" className="block text-base font-medium text-gray-700">
+          <div className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+                <label htmlFor="department-select" className="block text-sm sm:text-base font-medium text-gray-700">
                   Отдел
                 </label>
                 <select
                   id="department-select"
-                  className="block w-full h-12 px-4 text-base border border-gray-300 rounded-xl shadow-sm focus:border-secondary focus:ring-1 focus:ring-secondary bg-white"
+                  className="block w-full h-10 sm:h-12 px-3 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl shadow-sm focus:border-secondary focus:ring-1 focus:ring-secondary bg-white"
                   value={selectedDepartmentId}
                   onChange={(e) => setSelectedDepartmentId(Number(e.target.value))}
                   disabled={depsLoading}
@@ -112,36 +122,36 @@ export default function DepartmentActivityDashboard({
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="start-date" className="block text-base font-medium text-gray-700">
+                <label htmlFor="start-date" className="block text-sm sm:text-base font-medium text-gray-700">
                   Начало периода
                 </label>
                 <input
                   type="date"
                   id="start-date"
-                  className="block w-full h-12 px-4 text-base border border-gray-300 rounded-xl shadow-sm focus:border-secondary focus:ring-1 focus:ring-secondary"
+                  className="block w-full h-10 sm:h-12 px-3 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl shadow-sm focus:border-secondary focus:ring-1 focus:ring-secondary"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="end-date" className="block text-base font-medium text-gray-700">
+                <label htmlFor="end-date" className="block text-sm sm:text-base font-medium text-gray-700">
                   Конец периода
                 </label>
                 <input
                   type="date"
                   id="end-date"
-                  className="block w-full h-12 px-4 text-base border border-gray-300 rounded-xl shadow-sm focus:border-secondary focus:ring-1 focus:ring-secondary"
+                  className="block w-full h-10 sm:h-12 px-3 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl shadow-sm focus:border-secondary focus:ring-1 focus:ring-secondary"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />
               </div>
 
-              <div className="flex items-end">
+              <div className="flex items-end sm:col-span-2 lg:col-span-1">
                 <button
                   onClick={handleFilterChange}
                   disabled={loading || depsLoading}
-                  className="w-full h-12 text-base px-6 bg-secondary text-white rounded-xl hover:bg-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  className="w-full h-10 sm:h-12 text-sm sm:text-base px-4 sm:px-6 bg-secondary text-white rounded-lg sm:rounded-xl hover:bg-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium touch-manipulation"
                 >
                   {loading ? (
                     <>
@@ -158,10 +168,14 @@ export default function DepartmentActivityDashboard({
                           d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                         />
                       </svg>
-                      Загрузка...
+                      <span className="hidden sm:inline">Загрузка...</span>
+                      <span className="sm:hidden">...</span>
                     </>
                   ) : (
-                    "Применить фильтры"
+                    <>
+                      <span className="hidden sm:inline">Применить фильтры</span>
+                      <span className="sm:hidden">Применить</span>
+                    </>
                   )}
                 </button>
               </div>
@@ -170,18 +184,18 @@ export default function DepartmentActivityDashboard({
         </section>
 
         {/* Department Summary */}
-        <section className="bg-white rounded-xl shadow-lg mb-8 border border-gray-200">
-          <div className="p-8">
+        <section className="bg-white rounded-lg sm:rounded-xl shadow-lg mb-6 sm:mb-8 border border-gray-200">
+          <div className="p-4 sm:p-6 lg:p-8">
             {loading ? (
               <div className="animate-pulse">
-                <div className="h-8 w-64 bg-gray-200 rounded mb-4"></div>
-                <div className="h-4 w-48 bg-gray-200 rounded mb-2"></div>
-                <div className="h-4 w-56 bg-gray-200 rounded"></div>
+                <div className="h-6 sm:h-8 w-48 sm:w-64 bg-gray-200 rounded mb-3 sm:mb-4"></div>
+                <div className="h-4 w-32 sm:w-48 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 w-40 sm:w-56 bg-gray-200 rounded"></div>
               </div>
             ) : error ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 text-gray-400 mx-auto mb-4 flex items-center justify-center">
-                  <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-6 sm:py-8">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                  <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -190,39 +204,48 @@ export default function DepartmentActivityDashboard({
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Ошибка загрузки данных</h3>
-                <p className="text-gray-600 mb-6">{error}</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Ошибка загрузки данных</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-4">{error}</p>
                 <button
                   onClick={loadDepartmentData}
-                  className="px-6 py-3 bg-secondary text-white rounded-xl hover:bg-secondary/90 transition-colors font-medium"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-secondary text-white rounded-lg sm:rounded-xl hover:bg-secondary/90 transition-colors font-medium text-sm sm:text-base touch-manipulation"
                 >
                   Попробовать снова
                 </button>
               </div>
             ) : data ? (
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-2xl border border-gray-200">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl border border-gray-200">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                   <div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">{data.department_name}</h2>
-                    <div className="space-y-3 text-lg">
+                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
+                      {data.department_name}
+                    </h2>
+                    <div className="space-y-2 sm:space-y-3 text-sm sm:text-base lg:text-lg">
                       <p className="text-gray-700">
                         <span className="font-medium">Период:</span>{" "}
-                        {new Date(data.start_date).toLocaleDateString("ru-RU")} -{" "}
-                        {new Date(data.end_date).toLocaleDateString("ru-RU")}
+                        <span className="block sm:inline mt-1 sm:mt-0">
+                          {new Date(data.start_date).toLocaleDateString("ru-RU")} -{" "}
+                          {new Date(data.end_date).toLocaleDateString("ru-RU")}
+                        </span>
                       </p>
                       <p className="text-gray-700">
                         <span className="font-medium">Общее время:</span>{" "}
-                        <span className="font-bold text-secondary">
+                        <span className="font-bold text-secondary block sm:inline mt-1 sm:mt-0">
                           {data.total_hours ? convertDataToNormalTime(data.total_hours) : "0ч 0м"}
                         </span>
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-white/50 shadow-sm">
-                      <div className="flex items-center gap-3 mb-2">
-                        <svg className="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+                    <div className="bg-white/80 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-white/50 shadow-sm">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                        <svg
+                          className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-secondary flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -230,14 +253,19 @@ export default function DepartmentActivityDashboard({
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
-                        <div className="text-3xl font-bold text-secondary">{totalReports}</div>
+                        <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary">{totalReports}</div>
                       </div>
-                      <div className="text-sm text-gray-600 font-medium">Всего отчетов</div>
+                      <div className="text-xs sm:text-sm text-gray-600 font-medium">Всего отчетов</div>
                     </div>
 
-                    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-white/50 shadow-sm">
-                      <div className="flex items-center gap-3 mb-2">
-                        <svg className="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="bg-white/80 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-white/50 shadow-sm">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                        <svg
+                          className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-secondary flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -245,17 +273,22 @@ export default function DepartmentActivityDashboard({
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                           />
                         </svg>
-                        <div className="text-3xl font-bold text-secondary">{workingDays}</div>
+                        <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary">{workingDays}</div>
                       </div>
-                      <div className="text-sm text-gray-600 font-medium">Рабочих дней</div>
+                      <div className="text-xs sm:text-sm text-gray-600 font-medium">Рабочих дней</div>
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="text-center py-12">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-                  <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-8 sm:py-12">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -264,32 +297,38 @@ export default function DepartmentActivityDashboard({
                     />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Нет данных для отображения</h3>
-                <p className="text-gray-600 text-lg">Выберите отдел и период для просмотра отчетов</p>
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 mb-2">
+                  Нет данных для отображения
+                </h3>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-600 px-4">
+                  Выберите отдел и период для просмотра отчетов
+                </p>
               </div>
             )}
           </div>
         </section>
 
         {/* Reports Section */}
-        <section className="bg-white rounded-xl shadow-lg border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-900">Отчеты по дням</h2>
+        <section className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Отчеты по дням</h2>
           </div>
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {loading ? (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-6">
-                    <div className="h-6 w-48 mb-4 bg-gray-200 rounded animate-pulse"></div>
-                    <div className="space-y-3">
+                  <div key={i} className="border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6">
+                    <div className="h-5 sm:h-6 w-32 sm:w-48 mb-3 sm:mb-4 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="space-y-2 sm:space-y-3">
                       {[1, 2, 3].map((j) => (
-                        <div key={j} className="grid grid-cols-5 gap-4 p-4 bg-gray-50 rounded-lg">
-                          <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                          <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                          <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                          <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                          <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                        <div key={j} className="p-3 sm:p-4 bg-gray-50 rounded-lg">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
+                            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse hidden lg:block"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse hidden lg:block"></div>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -297,9 +336,14 @@ export default function DepartmentActivityDashboard({
                 ))}
               </div>
             ) : error ? (
-              <div className="border border-gray-300 bg-gray-50 rounded-xl p-6">
+              <div className="border border-gray-300 bg-gray-50 rounded-lg sm:rounded-xl p-4 sm:p-6">
                 <div className="flex items-center">
-                  <svg className="h-5 w-5 text-gray-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 mr-2 sm:mr-3 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -307,15 +351,20 @@ export default function DepartmentActivityDashboard({
                       d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
                     />
                   </svg>
-                  <div className="text-gray-800">
+                  <div className="text-sm sm:text-base text-gray-800">
                     <strong>Ошибка:</strong> {error}
                   </div>
                 </div>
               </div>
             ) : Object.keys(filteredReports).length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-32 h-32 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-                  <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-12 sm:py-16">
+                <div className="w-20 h-20 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-10 h-10 sm:w-16 sm:h-16 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -324,22 +373,90 @@ export default function DepartmentActivityDashboard({
                     />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Нет отчетов за выбранный период</h3>
-                <p className="text-gray-600 text-lg">Попробуйте изменить период или выбрать другой отдел</p>
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 mb-2">
+                  Нет отчетов за выбранный период
+                </h3>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-600 px-4">
+                  Попробуйте изменить период или выбрать другой отдел
+                </p>
               </div>
             ) : (
-              <div className="space-y-8">
+              <div className="space-y-6 sm:space-y-8">
                 {Object.entries(filteredReports).map(([date, reports]) => (
                   <article
                     key={date}
-                    className="border border-gray-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200"
+                    className="border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-md transition-all duration-200"
                   >
-                    <header className="mb-6">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{formatDatePretty(date)}</h3>
-                      <p className="text-gray-600 text-lg">{reports.length} отчет(ов) за день</p>
+                    <header className="mb-4 sm:mb-6">
+                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
+                        {formatDatePretty(date)}
+                      </h3>
+                      <p className="text-sm sm:text-base lg:text-lg text-gray-600">
+                        {reports.length} отчет(ов) за день
+                      </p>
                     </header>
 
-                    <div className="overflow-x-auto">
+                    {/* Mobile Card View */}
+                    <div className="block lg:hidden space-y-3 sm:space-y-4">
+                      {reports.map((report) => (
+                        <div
+                          key={report.report_id}
+                          className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                         
+                              <div className="min-w-0">
+                                <div className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                                  {report.employee_name || "Неизвестный"}
+                                </div>
+                                <div className="text-xs sm:text-sm text-gray-500">ID: {report.employee_id}</div>
+                              </div>
+                            </div>
+                            {onEmployeeClick && (
+                              <button
+                                onClick={() =>
+                                  onEmployeeClick(report.employee_id, report.employee_name || "Неизвестный")
+                                }
+                                className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors font-medium touch-manipulation flex-shrink-0"
+                              >
+                                Подробнее
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Функция:</span>
+                              <span className="font-medium text-gray-900 text-right">
+                                {report.function_name || "-"}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Время:</span>
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-secondary/10 text-secondary">
+                                {report.hours_worked
+                                  ? convertDataToNormalTime(Number(report.hours_worked.toFixed(2)))
+                                  : "0ч 0м"}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Отправлено:</span>
+                              <span className="text-gray-900">{formatISODate(report.date) || "-"}</span>
+                            </div>
+                            {report.comment && (
+                              <div className="pt-2 border-t border-gray-200">
+                                <span className="text-gray-600 text-xs">Комментарий:</span>
+                                <p className="text-gray-700 text-sm mt-1">{report.comment}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Desktop Table View */}
+                    <div className="hidden lg:block overflow-x-auto">
                       <table className="min-w-full">
                         <thead>
                           <tr className="border-b border-gray-200 bg-gray-50">
@@ -356,15 +473,7 @@ export default function DepartmentActivityDashboard({
                               <td className="px-6 py-4">
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-3">
-                                    {/* <div className="w-10 h-8 bg-secondary rounded-full flex items-center justify-center text-white text-sm font-bold">
-                                      {report.employee_name
-                                        ? report.employee_name
-                                            .split(" ")
-                                            .map((n) => n[0])
-                                            .join("")
-                                            .toUpperCase()
-                                        : "?"}
-                                    </div> */}
+                                  
                                     <div>
                                       <div className="font-medium text-gray-900">
                                         {report.employee_name || "Неизвестный"}
@@ -377,7 +486,7 @@ export default function DepartmentActivityDashboard({
                                       onClick={() =>
                                         onEmployeeClick(report.employee_id, report.employee_name || "Неизвестный")
                                       }
-                                      className="px-3 py-1 ml-2 text-sm bg-secondary text-white  hover:bg-secondary/90 transition-colors font-medium rounded-xl"
+                                      className="px-3 py-1 text-sm bg-secondary text-white rounded-xl hover:bg-secondary/90 transition-colors font-medium"
                                     >
                                       Подробнее
                                     </button>
@@ -388,7 +497,7 @@ export default function DepartmentActivityDashboard({
                                 <div className="font-medium text-gray-900">{report.function_name || "-"}</div>
                               </td>
                               <td className="px-6 py-4">
-                                <span className="inline-flex items-center px-3 py-3 rounded-full text-sm font-semibold  text-secondary">
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-lg font-semibold  text-secondary">
                                   {report.hours_worked
                                     ? convertDataToNormalTime(Number(report.hours_worked.toFixed(2)))
                                     : "0ч 0м"}

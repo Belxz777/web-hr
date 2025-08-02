@@ -150,13 +150,6 @@ const [endDate, setEndDate] = useState<string>(
                   {/* Employee Basic Info */}
                   <div className="lg:col-span-1">
                     <div className="flex items-center gap-6 mb-6">
-                      <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                        {data.employee_name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()}
-                      </div>
                       <div>
                         <h2 className="text-3xl font-bold text-gray-900 mb-1">{data.employee_name}</h2>
                         <p className="text-gray-600 text-lg">ID: {data.employee_id}</p>
