@@ -48,7 +48,7 @@ export default function PromotionsView({ onBack, departments, loading = false }:
 
     try {
       const apiUrl = new URL("/api/users/quicksearch", window.location.origin)
-      apiUrl.searchParams.append("search", encodeURIComponent(query.trim()))
+      apiUrl.searchParams.append("search", query.trim())
       apiUrl.searchParams.append("only_mydepartment", String(onlyMyDepartment))
 
       if (selectedDepartment > 0) {

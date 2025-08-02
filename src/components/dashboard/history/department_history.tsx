@@ -28,41 +28,51 @@ export default function DepartmentActivityDashboard({
 }: {
   onEmployeeClick?: (employeeId: number, employeeName: string) => void
 }) {
-  const { deps, loading: depsLoading } = useGetAlldeps()
-  const [data, setData] = useState<DepartmentPerformanceData | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(deps[0]?.id || 0)
+const { deps, loading: depsLoading } = useGetAlldeps()
+const [data, setData] = useState<DepartmentPerformanceData | null>(null)
+const [loading, setLoading] = useState(false)
+const [error, setError] = useState<string | null>(null)
+const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(0) // Изначально 0
 
-  // Устанавливаем даты: начальная - неделю назад, конечная - сегодня
-  const [startDate, setStartDate] = useState<string>(
-    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-  )
-  const [endDate, setEndDate] = useState<string>(new Date().toISOString().split("T")[0])
+// Устанавливаем даты
+const [startDate, setStartDate] = useState<string>(
+  new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+)
+const [endDate, setEndDate] = useState<string>(new Date().toISOString().split("T")[0])
 
-  // Функция для загрузки данных
-  const loadDepartmentData = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const result = await fetchDepartmentData(selectedDepartmentId, startDate, endDate)
-      if (result.data) {
-        setData(result.data)
-      } else {
-        setError(result.error || "Не удалось получить данные")
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Неизвестная ошибка")
-    } finally {
-      setLoading(false)
-    }
+// Эффект для установки ID первого отдела после загрузки
+useEffect(() => {
+  if (deps.length > 0 && selectedDepartmentId === 0) {
+    setSelectedDepartmentId(deps[0].id)
   }
+}, [deps, selectedDepartmentId])
 
-  // Загрузка данных при монтировании компонента
-  useEffect(() => {
-    // loadDepartmentData()
-  }, [])
+// Функция для загрузки данных
+const loadDepartmentData = async () => {
+  if (!selectedDepartmentId) return // Не загружаем если ID не установлен
+  
+  setLoading(true)
+  setError(null)
+  try {
+    const result = await fetchDepartmentData(selectedDepartmentId, startDate, endDate)
+    if (result.data) {
+      setData(result.data)
+    } else {
+      setError(result.error || "Не удалось получить данные")
+    }
+  } catch (err) {
+    setError(err instanceof Error ? err.message : "Неизвестная ошибка")
+  } finally {
+    setLoading(false)
+  }
+}
 
+// Загрузка данных при изменении selectedDepartmentId или дат
+useEffect(() => {
+  if (selectedDepartmentId) {
+    loadDepartmentData()
+  }
+}, [selectedDepartmentId, startDate, endDate])
   // Обработчик изменения фильтров
   const handleFilterChange = () => {
     loadDepartmentData()
