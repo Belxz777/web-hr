@@ -20,4 +20,20 @@ export const convertDataToNormalTime = (dateHours: number) => {
   const minutes = Math.round((dateHours - hours) * 60);
 
   return minutes === 0 ? `${hours} ч` : `${hours} ч ${minutes} мин`;
-};
+
+  
+}
+ export  const formatISODate = (isoString:string) => new Date(isoString).toLocaleTimeString('ru-RU', {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  timeZoneName: 'short'
+}).replace(/\s/g, ' ');
+
+
+export const formatDatePretty = (dateStr:string) => 
+  new Date(dateStr).toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });

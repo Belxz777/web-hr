@@ -165,12 +165,12 @@ export default function ReportPage() {
       // Prepare report data
       const reportData: Report = {
         function_id:  formData.function_id ,
-        hours_worked: formData.hours_worked,
+        hours_worked: Number(formData.hours_worked.toFixed(2)),
         comment: formData.comment,
       };
-
+ console.log(reportData)
       await sendReport(reportData);
-
+     
       // Update worked hours
       if (typeof window !== "undefined") {
         const newHours = hoursWorked + Number(formData.hours_worked);
