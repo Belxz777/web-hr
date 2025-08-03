@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect, useRef, useMemo } from "react"
 import Link from "next/link"
 import registerUser from "@/components/server/auth/register"
 import { useRouter } from "next/navigation"
@@ -13,7 +13,7 @@ import ToastComponent from "@/components/toast/toast"
 
 export default function RegisterPage() {
   const router = useRouter()
-  const { jobs, loading: jobsLoading } = useGetAllJobs() 
+  const { jobs, loading: jobsLoading } = useGetAllJobs()
   const { deps, loading: depsLoading } = useGetAlldeps()
 
   const [formData, setFormData] = useState({
@@ -29,6 +29,11 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
+  // Состояние для кастомного селекта должностей
+  const [jobSelectOpen, setJobSelectOpen] = useState(false)
+  const [jobSearchTerm, setJobSearchTerm] = useState("")
+  const jobDropdownRef = useRef<HTMLDivElement>(null)
+
   // Функция для капитализации имен
   const capitalizeName = (name: string): string => {
     return name
@@ -37,9 +42,31 @@ export default function RegisterPage() {
       .join(" ")
   }
 
+  // Фильтрация и сортировка должностей
+  const filteredAndSortedJobs = useMemo(() => {
+    return jobs
+      .filter((job) => job.name.toLowerCase().includes(jobSearchTerm.toLowerCase()))
+      .sort((a, b) => a.name.localeCompare(b.name, "ru", { sensitivity: "base" }))
+  }, [jobs, jobSearchTerm])
+
+  // Сортировка отделов
+  const sortedDepartments = useMemo(() => {
+    return [...deps].sort((a, b) => a.name.localeCompare(b.name, "ru", { sensitivity: "base" }))
+  }, [deps])
+
+  // Обработчик клика вне компонента для должностей
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (jobDropdownRef.current && !jobDropdownRef.current.contains(event.target as Node)) {
+        setJobSelectOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-
     let processedValue = value
 
     // Автоматическая капитализация для имен
@@ -53,41 +80,45 @@ export default function RegisterPage() {
     }))
   }, [])
 
+  // Обработчик выбора должности
+  const handleJobSelect = useCallback((jobId: number) => {
+    setFormData((prev) => ({ ...prev, job_id: jobId }))
+    setJobSelectOpen(false)
+    setJobSearchTerm("")
+  }, [])
+
+  const getSelectedJobLabel = useCallback(() => {
+    const selected = jobs.find((job) => job.id === formData.job_id)
+    return selected?.name || "Выберите должность"
+  }, [formData.job_id, jobs])
+
   const validateForm = useCallback((): { isValid: boolean; message?: string } => {
     if (!formData.login.trim()) {
       return { isValid: false, message: "Введите логин" }
     }
-
     if (formData.login.length < 3) {
       return { isValid: false, message: "Логин должен содержать минимум 3 символа" }
     }
-
     if (formData.password.length < 12) {
       return { isValid: false, message: "Пароль должен содержать минимум 12 символов" }
     }
-
     if (!formData.name.trim()) {
       return { isValid: false, message: "Введите имя" }
     }
-
     if (!formData.surname.trim()) {
       return { isValid: false, message: "Введите фамилию" }
     }
-
     if (formData.job_id === 0) {
       return { isValid: false, message: "Выберите должность" }
     }
-
     if (formData.department_id === 0) {
       return { isValid: false, message: "Выберите отдел" }
     }
-
     return { isValid: true }
   }, [formData])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     const validation = validateForm()
     if (!validation.isValid) {
       window.toast?.error(validation.message || "Проверьте правильность данных")
@@ -95,7 +126,6 @@ export default function RegisterPage() {
     }
 
     setIsLoading(true)
-
     try {
       await registerUser(formData)
       window.toast?.info("Регистрация успешна! Перенаправление...")
@@ -119,22 +149,69 @@ export default function RegisterPage() {
       )
     }
 
+    const selectedLabel = getSelectedJobLabel()
+
     return (
-      <select
-        id="job_id"
-        name="job_id"
-        required
-        value={formData.job_id === 0 ? "" : formData.job_id}
-        onChange={handleChange}
-        className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none transition-all duration-200 hover:border-[#249BA2]"
-      >
-        <option value="">Выберите должность</option>
-        {jobs.map((job, index) => (
-          <option key={index} value={job.id}>
-            {job.name}
-          </option>
-        ))}
-      </select>
+      <div className="relative w-full" ref={jobDropdownRef}>
+        <button
+          type="button"
+          className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none transition-all duration-200 hover:border-[#249BA2] text-left flex justify-between items-center"
+          onClick={() => setJobSelectOpen(!jobSelectOpen)}
+          aria-expanded={jobSelectOpen}
+          aria-haspopup="listbox"
+        >
+          <span className={formData.job_id === 0 ? "text-gray-500" : "text-gray-900"}>{selectedLabel}</span>
+          <svg
+            className={`w-5 h-5 transition-transform duration-200 text-gray-400 ${jobSelectOpen ? "rotate-180" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {jobSelectOpen && (
+          <div
+            className="absolute z-10 w-full mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto rounded-xl"
+            role="listbox"
+          >
+            <div className="p-2 border-b border-gray-200">
+              <input
+                type="text"
+                placeholder="Поиск вашей должности"
+                value={jobSearchTerm}
+                onChange={(e) => setJobSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent rounded-xl"
+                aria-label="Search jobs"
+              />
+            </div>
+
+            <div className="py-1">
+              {filteredAndSortedJobs.length === 0 ? (
+                <div className="px-4 py-3 text-gray-500 text-sm">
+                  {jobSearchTerm ? "Должность не найдена" : "Должности не найдены"}
+                </div>
+              ) : (
+                filteredAndSortedJobs.map((job) => (
+                  <button
+                    key={job.id}
+                    type="button"
+                    className={`w-full px-4 py-3 text-left text-sm transition-colors duration-150 hover:bg-gray-50 focus:bg-gray-50 ${
+                      formData.job_id === job.id ? "bg-[#249BA2]/10 text-[#249BA2] font-medium" : "text-gray-900"
+                    }`}
+                    onClick={() => handleJobSelect(job.id)}
+                    role="option"
+                    aria-selected={formData.job_id === job.id}
+                  >
+                    {job.name}
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     )
   }
 
@@ -157,7 +234,7 @@ export default function RegisterPage() {
         className="w-full px-4 py-3 cursor-pointer bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent appearance-none transition-all duration-200 hover:border-[#249BA2]"
       >
         <option value="">Выберите отдел</option>
-        {deps.map((dept, index) => (
+        {sortedDepartments.map((dept, index) => (
           <option key={index} value={dept.id}>
             {dept.name}
           </option>
@@ -169,7 +246,6 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#249BA2] to-[#FF0000] flex flex-col items-center justify-center p-4">
       <ToastComponent />
-
       <main className="bg-white rounded-3xl shadow-xl p-8 max-w-2xl w-full transform transition-all duration-300 ease-in-out hover:shadow-2xl">
         <div className="flex flex-col items-start mb-6">
           <div className="flex items-center gap-4">
@@ -291,7 +367,7 @@ export default function RegisterPage() {
                 value={formData.patronymic}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
-                placeholder="Введите отчество "
+                placeholder="Введите отчество"
               />
             </div>
 

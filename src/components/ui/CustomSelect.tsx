@@ -1,75 +1,90 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+"use client"
+
+import type React from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 
 interface Responsibility {
-  deputyId: number;
-  deputyName: string;
+  deputyId: number
+  deputyName: string
 }
 
 interface FunctionItem {
-  id: number;
-  name: string;
-  description:string;
-  is_main: boolean; 
+  id: number
+  name: string
+  description: string
+  is_main: boolean
 }
 
 interface ResponsibilitiesData {
-  nonCompulsory: Responsibility[];
-  functions: FunctionItem[];
+  nonCompulsory: Responsibility[]
+  functions: FunctionItem[]
 }
 
 interface CustomSelectProps {
   formData: {
     function_id: number
-  };
-  setFormData: (data: React.SetStateAction<{
-  function_id:number,
-  hours_worked:number,
-  comment?: string
-  }>) => void;
+  }
+  setFormData: (
+    data: React.SetStateAction<{
+      function_id: number
+      hours_worked: number
+      comment?: string
+    }>,
+  ) => void
   functions: Array<FunctionItem>
 }
 
-export const CustomSelect: React.FC<CustomSelectProps> = ({
-  formData,
-  setFormData,
-  functions,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [current,setcurrentItem] = useState(0)
+export const CustomSelect: React.FC<CustomSelectProps> = ({ formData, setFormData, functions }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [current, setCurrentItem] = useState(0)
+
+  // Фильтрация и сортировка функций
+  const filteredAndSortedFunctions = useMemo(() => {
+    return functions
+      .filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+      .sort((a, b) => a.name.localeCompare(b.name, "ru", { sensitivity: "base" }))
+  }, [functions, searchTerm])
+
   // Обработчик клика вне компонента
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        setIsOpen(false)
       }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const getSelectedLabel = useCallback(() => {
-   
-      const selected = functions.find(item => item.id === formData.function_id)
-      return selected?.name || "Выберите обязанность";
+    const selected = functions.find((item) => item.id === formData.function_id)
+    return selected?.name || "Выберите обязанность"
+  }, [formData, functions])
 
-  }, [formData, functions]);
   // Обработчик выбора элемента
-  const handleSelect = useCallback((id: number) => {
-    setFormData(prev => ({ ...prev, function_id: id }));
-    setIsOpen(false);
-    setcurrentItem(id)
-    setSearchTerm("");
-  }, [ setFormData]);
+  const handleSelect = useCallback(
+    (id: number) => {
+      setFormData((prev) => ({ ...prev, function_id: id }))
+      setIsOpen(false)
+      setCurrentItem(id)
+      setSearchTerm("")
+    },
+    [setFormData],
+  )
 
-  const selectedLabel = getSelectedLabel();
+  const selectedLabel = getSelectedLabel()
+
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <button
         type="button"
-        className="w-full px-4 py-2.5 border border-gray-700 text-left 
+        className="w-full px-4 py-2.5 border border-gray-700 text-left
           focus:outline-none focus:ring-2 focus:ring-secondary bg-white transition-colors duration-200
           flex justify-between items-center rounded-xl"
         onClick={() => setIsOpen(!isOpen)}
@@ -89,7 +104,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
 
       {isOpen && (
         <div
-          className="absolute z-10 w-full mt-1 bg-secondary border-gray-600 shadow-lg 
+          className="absolute z-10 w-full mt-1 bg-secondary border-gray-600 shadow-lg
             max-h-80 overflow-y-auto rounded-xl"
           role="listbox"
         >
@@ -104,26 +119,27 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
               aria-label="Search options"
             />
           </div>
-          <div className={`p-2  rounded-b-xl`}>
-            
-            {functions.length===0 ? (
-              <div className="px-3 py-2 text-gray-400 rounded-xl">Обязанностей не найдено</div>
+
+          <div className="p-2 rounded-b-xl">
+            {filteredAndSortedFunctions.length === 0 ? (
+              <div className="px-3 py-2 text-gray-400 rounded-xl">
+                {searchTerm ? "Ничего не найдено" : "Обязанностей не найдено"}
+              </div>
             ) : (
-              functions.map((item) => (
+              filteredAndSortedFunctions.map((item) => (
                 <button
                   key={item.id}
                   type="button"
-                  className={`w-full px-3 py-2 text-left text-gray-100 transition-colors duration-150 rounded-xl`}
-                  //   ${type === "main" 
-                  //     ? "hover:bg-red-200/20 focus:bg-secondary-50" 
-                  //     : "hover:bg-green-500/20 focus:bg-green-500/30"}`}
-                  onClick={() => handleSelect(
-             item.id
-                  )}
+                  className={`w-full px-3 py-2 text-left text-gray-100 transition-colors duration-150 rounded-xl
+                    hover:bg-gray-600/50 focus:bg-gray-600/70 ${
+                      formData.function_id === item.id ? "bg-gray-600/30" : ""
+                    }`}
+                  onClick={() => handleSelect(item.id)}
                   role="option"
-          
+                  aria-selected={formData.function_id === item.id}
                 >
-                 {item.name}
+                  <div className="font-medium">{item.name}</div>
+              
                 </button>
               ))
             )}
@@ -131,5 +147,5 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}

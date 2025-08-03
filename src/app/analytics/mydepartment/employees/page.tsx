@@ -1,14 +1,18 @@
 "use client"
-import { Employee } from "@/components/admin"
+
+import type { Employee } from "@/components/admin"
 import { Header } from "@/components/ui/header"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 
 export default function UserSearch() {
   const [searchTerm, setSearchTerm] = useState("")
   const [onlyMyDepartment, setOnlyMyDepartment] = useState(true)
   const [users, setUsers] = useState<Employee[]>([])
+  const [previousUsers, setPreviousUsers] = useState<Employee[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isSearching, setIsSearching] = useState(false)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const debounce = useCallback((fn: Function, delay: number) => {
     let timeoutId: NodeJS.Timeout
@@ -19,13 +23,30 @@ export default function UserSearch() {
   }, [])
 
   const fetchUsers = async (query: string) => {
+    // Отменяем предыдущий запрос
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+
     if (!query.trim()) {
       setUsers([])
+      setPreviousUsers([])
+      setLoading(false)
+      setIsSearching(false)
+      setError(null)
       return
     }
 
-    setLoading(true)
+    // Создаем новый AbortController
+    abortControllerRef.current = new AbortController()
+
+    setIsSearching(true)
     setError(null)
+
+    // Показываем loading только если нет предыдущих результатов
+    if (users.length === 0) {
+      setLoading(true)
+    }
 
     try {
       const apiUrl = new URL("/api/users/quicksearch", window.location.origin)
@@ -37,6 +58,7 @@ export default function UserSearch() {
         headers: {
           "Content-Type": "application/json",
         },
+        signal: abortControllerRef.current.signal,
       })
 
       if (!response.ok) {
@@ -45,19 +67,26 @@ export default function UserSearch() {
       }
 
       const data = await response.json()
-      setUsers(data.data || data || [])
-      console.log(data.data)
+      const newUsers = data.data || data || []
+
+      // Сохраняем предыдущие результаты для плавного перехода
+      setPreviousUsers(users)
+      setUsers(newUsers)
     } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        return // Запрос был отменен, не обновляем состояние
+      }
+
       console.error("Search error:", err)
       setError(err instanceof Error ? err.message : "Неизвестная ошибка")
-      setUsers([])
     } finally {
       setLoading(false)
+      setIsSearching(false)
     }
   }
 
   const debouncedFetch = useCallback(
-    debounce((query: string) => fetchUsers(query), 1500),
+    debounce((query: string) => fetchUsers(query), 300),
     [onlyMyDepartment],
   )
 
@@ -65,15 +94,38 @@ export default function UserSearch() {
     debouncedFetch(searchTerm)
   }, [searchTerm, onlyMyDepartment, debouncedFetch])
 
+  // Очистка при размонтировании
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [])
+
+  const handleClearSearch = () => {
+    setSearchTerm("")
+    setUsers([])
+    setPreviousUsers([])
+    setError(null)
+  }
+
+  const handleRetry = () => {
+    setError(null)
+    fetchUsers(searchTerm)
+  }
+
+  const navigateToEmployee = (employeeId: number) => {
+    window.location.href = `/analytics/history/employee/${employeeId}`
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header showPanel={false} />
-
       <main className="container mx-auto px-6 py-8">
         <div className="max-w-5xl mx-auto space-y-8">
           {/* Hero Section */}
           <div className="text-center space-y-4">
-            
             <h1 className="text-4xl font-bold text-foreground">Поиск сотрудников вашего отдела</h1>
           </div>
 
@@ -83,7 +135,14 @@ export default function UserSearch() {
               {/* Search Input */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                  <svg className="h-6 w-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className={`h-6 w-6 transition-colors duration-200 ${
+                      isSearching ? "text-secondary animate-pulse" : "text-muted-foreground"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -97,22 +156,29 @@ export default function UserSearch() {
                   placeholder="Введите фамилию сотрудника..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-14 pr-6 py-5 bg-background border-2 border-input text-foreground rounded-2xl focus:outline-none focus:ring-4 focus:ring-secondary/20 focus:border-secondary transition-all duration-300 text-lg placeholder-muted-foreground shadow-inner"
+                  className="w-full pl-14 pr-14 py-5 bg-background border-2 border-input text-foreground rounded-2xl focus:outline-none focus:ring-4 focus:ring-secondary/20 focus:border-secondary transition-all duration-300 text-lg placeholder-muted-foreground shadow-inner"
                 />
                 {searchTerm && (
                   <button
-                    onClick={() => setSearchTerm("")}
-                    className="absolute inset-y-0 right-0 pr-6 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={handleClearSearch}
+                    className="absolute inset-y-0 right-0 pr-6 flex items-center text-muted-foreground hover:text-foreground transition-colors duration-200"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 )}
+
+                {/* Subtle loading indicator */}
+                {isSearching && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-secondary/20 rounded-full overflow-hidden">
+                    <div className="h-full bg-secondary rounded-full animate-pulse"></div>
+                  </div>
+                )}
               </div>
 
               {/* Department Filter */}
-              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border">
+              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border transition-all duration-300">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-secondary/10 rounded-lg border border-secondary/20">
                     <svg className="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,115 +192,124 @@ export default function UserSearch() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">Детали поиска</h3>
-                    <p className="text-sm text-muted-foreground">Если ваш уровень доступа выше 3 вы можете найти любого сотрудника</p>
+                    <p className="text-sm text-muted-foreground">
+                      Если ваш уровень доступа выше 3 вы можете найти любого сотрудника
+                    </p>
                   </div>
                 </div>
               </div>
-
-              {/* Help Tooltip */}
-        
             </div>
           </div>
 
-          {/* Results Section */}
-          <div className="bg-card/95 backdrop-blur-sm rounded-3xl shadow-xl border border-border overflow-hidden">
-            {/* Loading State */}
-            {loading && (
-              <div className="flex flex-col items-center justify-center py-16">
-                <div className="relative mb-6">
-                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-muted/30"></div>
-                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-secondary absolute top-0 left-0"></div>
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">Поиск сотрудников...</h3>
-                <p className="text-muted-foreground">Пожалуйста, подождите</p>
-              </div>
-            )}
-
-            {/* Error State */}
-            {error && (
-              <div className="p-8">
-                <div className="bg-destructive/10 border-2 border-destructive/20 rounded-2xl p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center">
-                        <svg className="w-6 h-6 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
+          {/* Results Section - Fixed height container to prevent jumps */}
+          <div className="bg-card/95 backdrop-blur-sm rounded-3xl shadow-xl border border-border overflow-hidden min-h-[400px]">
+            <div className="p-8 relative">
+              {/* Error State */}
+              {error && (
+                <div className="absolute inset-0 p-8 bg-card/95 backdrop-blur-sm z-10 animate-in fade-in duration-300">
+                  <div className="bg-destructive/10 border-2 border-destructive/20 rounded-2xl p-6">
+                    <div className="flex items-start space-x-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-6 h-6 text-destructive"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-destructive mb-1">Ошибка загрузки</h3>
-                      <p className="text-destructive/80">{error}</p>
-                      <button
-                        onClick={() => fetchUsers(searchTerm)}
-                        className="mt-3 px-4 py-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-lg transition-colors font-medium"
-                      >
-                        Попробовать снова
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Results */}
-            {!loading && !error && (
-              <div className="p-8">
-                {users.length > 0 && (
-                  <div className="mb-6 flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-8 bg-secondary rounded-full"></div>
-                      <div>
-                        <h2 className="text-xl font-bold text-foreground">Результаты поиска</h2>
-                        <p className="text-muted-foreground">
-                          Найдено сотрудников: <span className="font-semibold text-secondary">{users.length}</span>
-                        </p>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-destructive mb-1">Ошибка загрузки</h3>
+                        <p className="text-destructive/80">{error}</p>
+                        <button
+                          onClick={handleRetry}
+                          className="mt-3 px-4 py-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-lg transition-colors font-medium"
+                        >
+                          Попробовать снова
+                        </button>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
+              {/* Loading State - Only show for initial load */}
+              {loading && users.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-16 animate-in fade-in duration-300">
+                  <div className="relative mb-6">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-muted/30"></div>
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-secondary absolute top-0 left-0"></div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground mb-2">Поиск сотрудников...</h3>
+                  <p className="text-muted-foreground">Пожалуйста, подождите</p>
+                </div>
+              )}
+
+              {/* Results Header */}
+              {users.length > 0 && (
+                <div className="mb-6 flex items-center justify-between animate-in slide-in-from-top duration-300">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-8 bg-secondary rounded-full"></div>
+                    <div>
+                      <h2 className="text-xl font-bold text-foreground">Результаты поиска</h2>
+                      <p className="text-muted-foreground">
+                        Найдено сотрудников: <span className="font-semibold text-secondary">{users.length}</span>
+                        {isSearching && <span className="ml-2 text-secondary animate-pulse">обновляется...</span>}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Results List */}
+              {users.length > 0 && (
                 <div className="space-y-4">
                   {users.map((employee, index) => (
                     <div
-                      key={employee.id|| index}
-                      className="group bg-background/80 backdrop-blur-sm border-2 border-border rounded-2xl p-6 hover:border-secondary/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                      key={employee.id || index}
+                      className="group bg-background/80 backdrop-blur-sm border-2 border-border rounded-2xl p-6 hover:border-secondary/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-in slide-in-from-bottom "
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <div className="relative">
-                            <div className="w-14 h-14 bg-secondary/10 border-2 border-secondary/20 rounded-xl flex items-center justify-center shadow-lg">
+                            <div className="w-14 h-14 bg-secondary/10 border-2 border-secondary/20 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105">
                               <span className="text-secondary font-bold text-lg">
                                 {employee.name?.[0]}
                                 {employee.surname?.[0]}
                               </span>
                             </div>
-                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary border-2 border-background rounded-full"></div>
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary border-2 border-background rounded-full transition-all duration-300 group-hover:scale-110"></div>
                           </div>
                           <div className="space-y-1">
-                            <h3 className="text-xl font-bold text-foreground">
+                            <h3 className="text-xl font-bold text-foreground transition-colors duration-300 group-hover:text-secondary">
                               {employee.name} {employee.surname}
                             </h3>
                             <div className="flex items-center space-x-2">
-                              <div className="w-2 h-2 bg-secondary rounded-full"></div>
+                              <div className="w-2 h-2 bg-secondary rounded-full transition-all duration-300 group-hover:scale-125"></div>
                               <p className="text-muted-foreground font-medium">Уровень: {employee.position}</p>
-
                             </div>
                           </div>
                         </div>
                         <button
-                          onClick={() => {
-                            window.location.href = `/analytics/history/employee/${employee.id}`
-                          }}
-                          className="flex items-center space-x-3 px-6 py-3 bg-secondary/10 hover:bg-secondary text-secondary hover:text-secondary-foreground border border-secondary/20 hover:border-secondary rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl group-hover:scale-105"
+                          onClick={() => navigateToEmployee(employee.id)}
+                          className="flex items-center space-x-3 px-6 py-3 bg-secondary/10 hover:bg-secondary text-secondary hover:text-secondary-foreground border border-secondary/20 hover:border-secondary rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl group-hover:scale-105 transform"
                         >
                           <span>Посмотреть статистику</span>
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg
+                            className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </button>
@@ -242,57 +317,57 @@ export default function UserSearch() {
                     </div>
                   ))}
                 </div>
+              )}
 
-                {/* Empty State */}
-                {users.length === 0 && searchTerm && (
-                  <div className="text-center py-16">
-                    <div className="w-24 h-24 mx-auto mb-6 bg-muted/30 rounded-full flex items-center justify-center border border-border">
-                      <svg
-                        className="w-12 h-12 text-muted-foreground"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                      </svg>
-                    </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-3">Сотрудники не найдены</h3>
-                    <p className="text-muted-foreground text-lg mb-4">
-                      По запросу <span className="font-semibold text-secondary">"{searchTerm}"</span> не найдено ни одного
-                      сотрудника
-                    </p>
-                    <div className="space-y-2 text-sm text-muted-foreground">
-                      <p>• Проверьте правильность написания</p>
-                      <p>• Попробуйте ввести только часть фамилии</p>
-                      <p>• Убедитесь, что сотрудник работает в вашем отделе</p>
-                    </div>
+              {/* Empty State */}
+              {users.length === 0 && searchTerm && !loading && !error && (
+                <div className="text-center py-16 animate-in fade-in duration-500">
+                  <div className="w-24 h-24 mx-auto mb-6 bg-muted/30 rounded-full flex items-center justify-center border border-border transition-all duration-300 hover:scale-105">
+                    <svg
+                      className="w-12 h-12 text-muted-foreground"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
                   </div>
-                )}
+                  <h3 className="text-2xl font-bold text-foreground mb-3">Сотрудники не найдены</h3>
+                  <p className="text-muted-foreground text-lg mb-4">
+                    По запросу <span className="font-semibold text-secondary">"{searchTerm}"</span> не найдено ни одного
+                    сотрудника
+                  </p>
+                  <div className="space-y-2 text-sm text-muted-foreground">
+                    <p>• Проверьте правильность написания</p>
+                    <p>• Попробуйте ввести только часть фамилии</p>
+                    <p>• Убедитесь, что сотрудник работает в вашем отделе</p>
+                  </div>
+                </div>
+              )}
 
-                {/* Initial State */}
-                {users.length === 0 && !searchTerm && (
-                  <div className="text-center py-16 select-none">
-                    <div className="w-24 h-24 mx-auto mb-6 bg-secondary/10 rounded-full flex items-center justify-center border border-secondary/20">
-                      <svg className="w-12 h-12 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                      </svg>
-                    </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-3">Начните поиск</h3>
-                    <p className="text-muted-foreground text-lg">Введите фамилию сотрудника в поле поиска выше</p>
+              {/* Initial State */}
+              {users.length === 0 && !searchTerm && !loading && (
+                <div className="text-center py-16 select-none animate-in fade-in duration-500">
+                  <div className="w-24 h-24 mx-auto mb-6 bg-secondary/10 rounded-full flex items-center justify-center border border-secondary/20 transition-all duration-300 hover:scale-105">
+                    <svg className="w-12 h-12 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
                   </div>
-                )}
-              </div>
-            )}
+                  <h3 className="text-2xl font-bold text-foreground mb-3">Начните поиск</h3>
+                  <p className="text-muted-foreground text-lg">Введите фамилию сотрудника в поле поиска выше</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>
