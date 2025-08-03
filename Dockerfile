@@ -12,6 +12,9 @@ COPY package.json pnpm-lock.yaml ./
 # Устанавливаем зависимости
 RUN pnpm install --frozen-lockfile
 
+
+
+
 # Копируем остальные файлы
 COPY . .
 

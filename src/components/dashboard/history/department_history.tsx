@@ -12,16 +12,13 @@ type Report = {
   report_id: number
   employee_id: number
   employee_name: string
-  function_id: number
-  function_name: string
+  function: {
+    id: number
+    name: string
+  }
   hours_worked: number
   comment: string
-  date: string
-}
-
-// Define the type for the reports by date object
-type ReportsByDate = {
-  [date: string]: Report[]
+  full_date: string
 }
 
 // Define grouped reports type
@@ -45,6 +42,10 @@ export default function DepartmentActivityDashboard({
   const [error, setError] = useState<string | null>(null)
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(0)
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(10)
+
   // Устанавливаем даты
   const [startDate, setStartDate] = useState<string>(
     new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
@@ -59,14 +60,18 @@ export default function DepartmentActivityDashboard({
   }, [deps, selectedDepartmentId])
 
   // Функция для загрузки данных
-  const loadDepartmentData = async () => {
+  const loadDepartmentData = async (page: number = currentPage) => {
     if (!selectedDepartmentId) return
+
     setLoading(true)
     setError(null)
+
     try {
-      const result = await fetchDepartmentData(selectedDepartmentId, startDate, endDate)
+      const result = await fetchDepartmentData(selectedDepartmentId, startDate, endDate, page, pageSize)
+
       if (result.data) {
         setData(result.data)
+        setCurrentPage(page)
       } else {
         setError(result.error || "Не удалось получить данные")
       }
@@ -80,13 +85,25 @@ export default function DepartmentActivityDashboard({
   // Загрузка данных при изменении selectedDepartmentId или дат
   useEffect(() => {
     if (selectedDepartmentId) {
-      loadDepartmentData()
+      setCurrentPage(1) // Reset to first page when filters change
+      loadDepartmentData(1)
     }
-  }, [selectedDepartmentId, startDate, endDate])
+  }, [selectedDepartmentId, startDate, endDate, pageSize])
 
   // Обработчик изменения фильтров
   const handleFilterChange = () => {
-    loadDepartmentData()
+    setCurrentPage(1)
+    loadDepartmentData(1)
+  }
+
+  // Pagination handlers
+  const handlePageChange = (page: number) => {
+    loadDepartmentData(page)
+  }
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize)
+    setCurrentPage(1)
   }
 
   // Group reports by employee for each date
@@ -109,6 +126,48 @@ export default function DepartmentActivityDashboard({
   const filteredReports = data?.reports_by_date || {}
   const totalReports = Object.values(filteredReports).flat().length
   const workingDays = Object.keys(filteredReports).length
+
+  // Keyboard navigation support
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (!data || loading) return
+
+    // Only handle if no input is focused
+    if (document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "SELECT") {
+      return
+    }
+
+    switch (event.key) {
+      case "ArrowLeft":
+        if (data.pagination.has_previous) {
+          event.preventDefault()
+          handlePageChange(data.pagination.current_page - 1)
+        }
+        break
+      case "ArrowRight":
+        if (data.pagination.has_next) {
+          event.preventDefault()
+          handlePageChange(data.pagination.current_page + 1)
+        }
+        break
+      case "Home":
+        if (data.pagination.current_page !== 1) {
+          event.preventDefault()
+          handlePageChange(1)
+        }
+        break
+      case "End":
+        if (data.pagination.current_page !== data.pagination.total_pages) {
+          event.preventDefault()
+          handlePageChange(data.pagination.total_pages)
+        }
+        break
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [data, loading])
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
@@ -141,7 +200,7 @@ export default function DepartmentActivityDashboard({
             <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Фильтры и настройки</h2>
           </div>
           <div className="p-4 sm:p-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
               <div className="space-y-2 sm:col-span-2 lg:col-span-1">
                 <label htmlFor="department-select" className="block text-sm sm:text-base font-medium text-gray-700">
                   Отдел
@@ -191,7 +250,24 @@ export default function DepartmentActivityDashboard({
                 />
               </div>
 
-              <div className="flex items-end sm:col-span-2 lg:col-span-1">
+              <div className="space-y-2">
+                <label htmlFor="page-size" className="block text-sm sm:text-base font-medium text-gray-700">
+                  Записей на странице
+                </label>
+                <select
+                  id="page-size"
+                  className="block w-full h-10 sm:h-12 px-3 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl shadow-sm focus:border-secondary focus:ring-1 focus:ring-secondary bg-white"
+                  value={pageSize}
+                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+
+              <div className="flex items-end">
                 <button
                   onClick={handleFilterChange}
                   disabled={loading || depsLoading}
@@ -251,7 +327,7 @@ export default function DepartmentActivityDashboard({
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Ошибка загрузки данных</h3>
                 <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-4">{error}</p>
                 <button
-                  onClick={loadDepartmentData}
+                  onClick={() => loadDepartmentData()}
                   className="px-4 sm:px-6 py-2 sm:py-3 bg-secondary text-white rounded-lg sm:rounded-xl hover:bg-secondary/90 transition-colors font-medium text-sm sm:text-base touch-manipulation"
                 >
                   Попробовать снова
@@ -298,7 +374,7 @@ export default function DepartmentActivityDashboard({
                         </svg>
                         <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary">{totalReports}</div>
                       </div>
-                      <div className="text-xs sm:text-sm text-gray-600 font-medium">Всего отчетов</div>
+                      <div className="text-xs sm:text-sm text-gray-600 font-medium">Отчетов на странице</div>
                     </div>
                     <div className="bg-white/80 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-white/50 shadow-sm">
                       <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
@@ -312,12 +388,14 @@ export default function DepartmentActivityDashboard({
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
-                        <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary">{workingDays}</div>
+                        <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary">
+                          {data.pagination.total_reports}
+                        </div>
                       </div>
-                      <div className="text-xs sm:text-sm text-gray-600 font-medium">Рабочих дней</div>
+                      <div className="text-xs sm:text-sm text-gray-600 font-medium">Всего отчетов</div>
                     </div>
                   </div>
                 </div>
@@ -349,6 +427,151 @@ export default function DepartmentActivityDashboard({
             )}
           </div>
         </section>
+
+        {/* Enhanced Pagination Controls */}
+        {data && data.pagination.total_pages > 1 && (
+          <section className="bg-white rounded-lg sm:rounded-xl shadow-lg mb-6 sm:mb-8 border border-gray-200">
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+                {/* Page Info */}
+                <div className="text-sm text-gray-600 order-2 lg:order-1">
+                  Страница {data.pagination.current_page} из {data.pagination.total_pages} (
+                  {data.pagination.total_reports} отчетов всего)
+                </div>
+
+                {/* Navigation Controls */}
+                <div className="flex flex-col sm:flex-row items-center gap-4 order-1 lg:order-2">
+                  {/* First/Previous buttons */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handlePageChange(1)}
+                      disabled={data.pagination.current_page === 1 || loading}
+                      className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                      title="Первая страница"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                        />
+                      </svg>
+                      <span className="hidden sm:inline">Первая</span>
+                    </button>
+
+                    <button
+                      onClick={() => handlePageChange(data.pagination.current_page - 1)}
+                      disabled={!data.pagination.has_previous || loading}
+                      className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                      title="Предыдущая страница"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      <span className="hidden sm:inline">Предыдущая</span>
+                    </button>
+                  </div>
+
+                  {/* Page Numbers */}
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, data.pagination.total_pages) }, (_, i) => {
+                      let pageNum
+                      if (data.pagination.total_pages <= 5) {
+                        pageNum = i + 1
+                      } else if (data.pagination.current_page <= 3) {
+                        pageNum = i + 1
+                      } else if (data.pagination.current_page >= data.pagination.total_pages - 2) {
+                        pageNum = data.pagination.total_pages - 4 + i
+                      } else {
+                        pageNum = data.pagination.current_page - 2 + i
+                      }
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => handlePageChange(pageNum)}
+                          disabled={loading}
+                          className={`px-3 py-2 text-sm rounded-lg transition-colors min-w-[40px] ${
+                            pageNum === data.pagination.current_page
+                              ? "bg-secondary text-white shadow-md"
+                              : "border border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+                          }`}
+                          title={`Страница ${pageNum}`}
+                        >
+                          {pageNum}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {/* Next/Last buttons */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handlePageChange(data.pagination.current_page + 1)}
+                      disabled={!data.pagination.has_next || loading}
+                      className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                      title="Следующая страница"
+                    >
+                      <span className="hidden sm:inline">Следующая</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    <button
+                      onClick={() => handlePageChange(data.pagination.total_pages)}
+                      disabled={data.pagination.current_page === data.pagination.total_pages || loading}
+                      className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                      title="Последняя страница"
+                    >
+                      <span className="hidden sm:inline">Последняя</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Mobile-friendly pagination summary */}
+                <div className="mt-4 lg:hidden">
+                  <div className="flex justify-between items-center text-xs text-gray-500">
+                    <span>
+                      {data.pagination.current_page > 1 && (
+                        <button
+                          onClick={() => handlePageChange(data.pagination.current_page - 1)}
+                          className="text-secondary hover:text-secondary/80"
+                          disabled={loading}
+                        >
+                          ← Назад
+                        </button>
+                      )}
+                    </span>
+                    <span className="font-medium">
+                      {data.pagination.current_page} / {data.pagination.total_pages}
+                    </span>
+                    <span>
+                      {data.pagination.current_page < data.pagination.total_pages && (
+                        <button
+                          onClick={() => handlePageChange(data.pagination.current_page + 1)}
+                          className="text-secondary hover:text-secondary/80"
+                          disabled={loading}
+                        >
+                          Вперед →
+                        </button>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Reports Section */}
         <section className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200">
@@ -426,7 +649,6 @@ export default function DepartmentActivityDashboard({
               <div className="space-y-6 sm:space-y-8">
                 {Object.entries(filteredReports).map(([date, reports]) => {
                   const groupedReports = groupReportsByEmployee(reports)
-
                   return (
                     <article
                       key={date}
@@ -471,7 +693,6 @@ export default function DepartmentActivityDashboard({
                                 </button>
                               )}
                             </div>
-
                             <div className="space-y-3 border-t border-gray-200 pt-3">
                               {employeeGroup.reports.map((report) => (
                                 <div key={report.report_id} className="bg-white rounded-lg p-3 border border-gray-100">
@@ -479,7 +700,7 @@ export default function DepartmentActivityDashboard({
                                     <div className="flex justify-between">
                                       <span className="text-gray-600">Функция:</span>
                                       <span className="font-medium text-gray-900 text-right">
-                                        {report.function_name || "-"}
+                                        {report.function.name || "-"}
                                       </span>
                                     </div>
                                     <div className="flex justify-between">
@@ -493,7 +714,7 @@ export default function DepartmentActivityDashboard({
                                     <div className="flex justify-between">
                                       <span className="text-gray-600">Отправлено:</span>
                                       <span className="text-gray-900 whitespace-nowrap">
-                                        {formatISODate(report.date) || "-"}
+                                        {formatISODate(report.full_date) || "-"}
                                       </span>
                                     </div>
                                     {report.comment && (
@@ -564,7 +785,7 @@ export default function DepartmentActivityDashboard({
                                     )}
                                   </td>
                                   <td className="px-6 py-4">
-                                    <div className="font-medium text-gray-900">{report.function_name || "-"}</div>
+                                    <div className="font-medium text-gray-900">{report.function.name || "-"}</div>
                                   </td>
                                   <td className="px-6 py-4">
                                     <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold text-secondary whitespace-nowrap">
@@ -584,7 +805,7 @@ export default function DepartmentActivityDashboard({
                                   </td>
                                   <td className="px-6 py-4">
                                     <div className="text-sm text-gray-600 whitespace-nowrap">
-                                      {formatISODate(report.date) || "-"}
+                                      {formatISODate(report.full_date) || "-"}
                                     </div>
                                   </td>
                                 </tr>
