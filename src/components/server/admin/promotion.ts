@@ -19,7 +19,7 @@ async function promotion(empl: dd): Promise<any> {
         throw new Error('Токен не предоставлен');
     }
     try {
-        const response = await fetch(`${host}users/deposition/`, {
+        const response = await fetch(`${host}users/deposition`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
