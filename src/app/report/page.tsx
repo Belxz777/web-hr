@@ -322,8 +322,9 @@ export default function ReportPage() {
                 }
                 rows={4}
                 className="w-full px-3 py-2 bg-background border border-input rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
-                placeholder="Опишите выполненную работу (необязательно)"
-              />
+                placeholder="Опишите выполненную работу (обязательно)"
+   required          
+ />
             </div>
           </div>
 
