@@ -16,7 +16,7 @@ interface PromotionData {
     position: number;
 }
 
-export async function promotion(data: PromotionData): Promise<{ 
+async function promotion(data: PromotionData): Promise<{ 
     message: string; 
     error?: string 
 }> {
