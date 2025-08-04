@@ -90,26 +90,31 @@ export default function PromotionsView({ onBack, departments, loading = false }:
   const canPromote = (employee: Employee) => employee.position < 5
   const canDemote = (employee: Employee) => employee.position > 1
   const canMakeHead = (employee: Employee) => employee.position >= 2 && employee.position < 5
-
-  const handlePromoteEmployee = async (employee: Employee, newLevel: number) => {
+const handlePromoteEmployee = async (employee: Employee, newLevel: number) => {
     try {
-      setSearchLoading(true)
-      const promote = await promotion({
-        empid: employee.id, 
-        position: newLevel
-      })
-      alert(`${promote.message}`)
-      setSelectedEmployee(null)
-      setPromotionAction(null)
-      fetchEmployees(searchTerm)
-    } catch (error) {
-      console.error("Ошибка повышения:", error)
-      alert("Ошибка при повышении сотрудника")
-    } finally {
-      setSearchLoading(false)
-    }
-  }
+        setSearchLoading(true);
+        
+        const result = await promotion({
+            id: employee.id,
+            position: newLevel
+        });
 
+        if (result.error) {
+            throw new Error(result.error);
+        }
+
+        alert(result.message || 'Должность успешно изменена');
+        setSelectedEmployee(null);
+        setPromotionAction(null);
+        fetchEmployees(searchTerm);
+    } catch (error) {
+        console.error("Ошибка повышения:", error);
+        alert(error instanceof Error ? error.message : "Ошибка при изменении должности");
+    } finally {
+        setSearchLoading(false);
+    }
+};
+  
   const handleSetDepartmentHead = async (employee: Employee) => {
     if (!selectedDepartment) {
       alert("Выберите отдел")
