@@ -102,9 +102,9 @@ export default function RegisterPage() {
     if (formData.password.length < 12) {
       return { isValid: false, message: "Пароль должен содержать минимум 12 символов" }
     }
-    if (!formData.name.trim()) {
-      return { isValid: false, message: "Введите имя" }
-    }
+    // if (!formData.name.trim()) {
+    //   return { isValid: false, message: "Введите имя" }
+    // }
     if (!formData.surname.trim()) {
       return { isValid: false, message: "Введите фамилию" }
     }
@@ -322,7 +322,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Имя */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label htmlFor="name" className="block text-sm font-medium text-[#6D6D6D]">
                 Имя
               </label>
@@ -336,12 +336,12 @@ export default function RegisterPage() {
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
                 placeholder="Введите имя"
               />
-            </div>
+            </div> */}
 
             {/* Фамилия */}
             <div className="space-y-2">
               <label htmlFor="surname" className="block text-sm font-medium text-[#6D6D6D]">
-                Фамилия
+               Ваш код
               </label>
               <input
                 id="surname"
@@ -351,12 +351,12 @@ export default function RegisterPage() {
                 value={formData.surname}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
-                placeholder="Введите фамилию"
+                placeholder="Введите ваш код"
               />
             </div>
 
             {/* Отчество */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label htmlFor="patronymic" className="block text-sm font-medium text-[#6D6D6D]">
                 Отчество
               </label>
@@ -369,7 +369,7 @@ export default function RegisterPage() {
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
                 placeholder="Введите отчество"
               />
-            </div>
+            </div> */}
 
             {/* Должность */}
             <div className="space-y-2">

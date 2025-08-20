@@ -38,6 +38,7 @@ export default function ProfilePage() {
               <div className="h-8 bg-gradient-to-r from-muted/40 via-muted/60 to-muted/40 rounded-lg w-3/4 animate-shimmer bg-[length:200%_100%]" />
               <div className="h-8 bg-gradient-to-r from-muted/40 via-muted/60 to-muted/40 rounded-lg w-2/3 animate-shimmer bg-[length:200%_100%]" />
             </div>
+            {/* 
             <div className="space-y-2 mt-4">
               <div className="h-6 bg-gradient-to-r from-muted/30 via-muted/50 to-muted/30 rounded-md w-1/2 animate-shimmer bg-[length:200%_100%]" />
               <div className="h-6 bg-gradient-to-r from-muted/30 via-muted/50 to-muted/30 rounded-md w-2/3 animate-shimmer bg-[length:200%_100%]" />
@@ -45,7 +46,7 @@ export default function ProfilePage() {
             <div className="flex flex-col sm:flex-row gap-3 mt-6">
               <div className="h-12 bg-gradient-to-r from-secondary/30 via-secondary/50 to-secondary/30 rounded-xl w-36 animate-shimmer bg-[length:200%_100%]" />
               <div className="h-12 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30 rounded-xl w-36 animate-shimmer bg-[length:200%_100%]" />
-            </div>
+            </div>*/}
           </div>
         </div>
       )
@@ -67,8 +68,8 @@ export default function ProfilePage() {
         <div className="opacity-100 transition-opacity duration-500 ease-in-out space-y-4">
           <div className="cursor-pointer group">
             <h2 className="text-2xl text-foreground font-bold mb-2 select-none transition-colors duration-200">
-              {employeeData.user.firstName} <br />
-              {employeeData.user.lastName}
+              {/* {employeeData.user.firstName} <br /> */}
+            Ваш код: <span className=" font-extrabold">{employeeData.user.lastName}</span>  
             </h2>
             <div className="space-y-1 mt-4">
               <p className="text-muted-foreground select-none">
@@ -106,7 +107,7 @@ export default function ProfilePage() {
       <Header title="Личный кабинет" position={position || 1} showPanel />
       <main className="container mx-auto p-4">
         <section className="bg-card/95 backdrop-blur-sm rounded-xl p-6 border border-border shadow-lg transition-all duration-300 ease-in-out">
-          <div className="min-h-[240px] w-full flex flex-col justify-start transition-all duration-500 ease-in-out">
+          <div className="min-h-[140px] w-full flex flex-col justify-start transition-all duration-500 ease-in-out">
             {renderProfileContent()}
           </div>
         </section>
