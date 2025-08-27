@@ -36,8 +36,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.env ./
 
 ENV NODE_ENV=production
+ENV PORT=3500
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV API_URL http://127.0.0.1:8000/api/v1/
 
-EXPOSE 3000
+EXPOSE 3500
 CMD ["pnpm", "start"]

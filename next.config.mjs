@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output:'standalone',
   experimental: {
   serverActions: {
   allowedForwardedHosts: [""],
-  allowedOrigins: [""]
+  allowedOrigins: [""],
   },
   },
   reactStrictMode: false,
