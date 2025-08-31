@@ -41,4 +41,4 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV API_URL http://127.0.0.1:8000/api/v1/
 
 EXPOSE 3500
-CMD ["pnpm", "start"]
+CMD ["pnpm", "start","-p","3500"]

@@ -2,6 +2,7 @@
 
 import type { Employee } from "@/components/admin"
 import { Header } from "@/components/ui/header"
+import { employeeprofile } from "@/types"
 import { useState, useEffect, useCallback, useRef } from "react"
 
 export default function UserSearch() {
@@ -283,18 +284,19 @@ export default function UserSearch() {
                           <div className="relative">
                             <div className="w-14 h-14 bg-secondary/10 border-2 border-secondary/20 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105">
                               <span className="text-secondary font-bold text-lg">
-                                {employee.name?.[0]}
-                                {employee.surname?.[0]}
+                                {employee.code}
+        
                               </span>
                             </div>
                             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary border-2 border-background rounded-full transition-all duration-300 group-hover:scale-110"></div>
                           </div>
                           <div className="space-y-1">
                             <h3 className="text-xl font-bold text-foreground transition-colors duration-300 group-hover:text-secondary">
-                              {employee.name} {employee.surname}
+                               {employee.code}
                             </h3>
                             <div className="flex items-center space-x-2">
                               <div className="w-2 h-2 bg-secondary rounded-full transition-all duration-300 group-hover:scale-125"></div>
+                              <p className="text-muted-foreground font-medium">Код: {employee.code}</p>
                               <p className="text-muted-foreground font-medium">Уровень: {employee.position}</p>
                             </div>
                           </div>

@@ -4,9 +4,10 @@ import { host } from '@/types';
 import { cookies} from 'next/headers';
 
  interface LoginData {
-    login: string
+    code: number, // can be login
     password: string,
 }
+
    async function sendUserLoginData(data: LoginData){
     try{
     const res = await fetch(`${host}users/login`, {
@@ -20,7 +21,7 @@ import { cookies} from 'next/headers';
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
         throw new Error(`Ошибка при входе попробуйте еще раз , статус ${res.statusText} |
-            попытка входа под логином ${data.login} `); 
+            попытка входа под логином ${data} `); 
     }
     const receiveddata = await res.json();
     const cookiesApi = cookies()

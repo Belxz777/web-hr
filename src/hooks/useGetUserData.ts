@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import authUser from '@/components/server/auth/auth';
 import { checkAndClearStorage } from '@/components/utils/checktime';
+import { employeeprofile } from '@/types';
 
 interface Deputy {
   deputyId: number;
@@ -12,18 +13,11 @@ interface Deputy {
 
 interface Job {
   jobName: string;
-  deputy?: number; // Made optional to match your response
-}
-
-interface User {
-  employeeId: number;
-  firstName: string;
-  lastName: string;
-  position: number;
+  deputy?: number;
 }
 
 interface AuthResponseData {
-  user: User;
+  user: employeeprofile;
   department: string;
   job: Job;
   deputy?: Deputy[];
@@ -37,6 +31,7 @@ interface AuthResponse {
 interface ErrorState {
   status: boolean;
   text: string;
+  code?: string;
 }
 
 const useEmployeeData = () => {
@@ -48,46 +43,86 @@ const useEmployeeData = () => {
   });
   
   const mountedRef = useRef(true);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const clearTimeouts = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
+
+  const fetchEmployeeData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError({ status: false, text: "" });
+
+      if (typeof window !== 'undefined') {
+        checkAndClearStorage();
+      }
+
+      // Устанавливаем таймаут на запрос (10 секунд)
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutRef.current = setTimeout(() => {
+          reject(new Error('Request timeout: Сервер не отвечает'));
+        }, 10000);
+      });
+
+      const response = await Promise.race([authUser(), timeoutPromise]);
+      
+      if (mountedRef.current) {
+        clearTimeouts();
+        setData(response);
+        setLoading(false);
+      }
+    } catch (err) {
+      if (mountedRef.current) {
+        clearTimeouts();
+        
+        let errorMessage = 'An unexpected error occurred';
+        let errorCode: string | undefined;
+
+        if (err instanceof Error) {
+          errorMessage = err.message;
+          
+          // Извлекаем код ошибки из сообщения (если есть)
+          if (errorMessage.includes('token_expired')) {
+            errorCode = 'token_expired';
+          } else if (errorMessage.includes('invalid_token')) {
+            errorCode = 'invalid_token';
+          } else if (errorMessage.includes('auth_error')) {
+            errorCode = 'auth_error';
+          }
+        }
+
+        setError({
+          status: true,
+          text: errorMessage,
+          code: errorCode
+        });
+        setLoading(false);
+      }
+    }
+  }, [clearTimeouts]);
 
   useEffect(() => {
-    const fetchEmployeeData = async () => {
-      try {
-        setLoading(true);
-        setError({ status: false, text: "" });
-
-        if (typeof window !== 'undefined') {
-          checkAndClearStorage();
-        }
-
-        const response = await authUser();
-        
-        if (mountedRef.current) {
-          setData(response);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (mountedRef.current) {
-          const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
-          setError({
-            status: true,
-            text: errorMessage,
-          });
-          setLoading(false);
-        }
-      }
-    };
-
     fetchEmployeeData();
 
     return () => {
       mountedRef.current = false;
+      clearTimeouts();
     };
-  }, []);
+  }, [fetchEmployeeData, clearTimeouts]);
+
+  const refetch = useCallback(() => {
+    fetchEmployeeData();
+  }, [fetchEmployeeData]);
 
   return { 
     employeeData, 
     loadingEmp, 
-    error 
+    error,
+    refetch
   };
 };
 

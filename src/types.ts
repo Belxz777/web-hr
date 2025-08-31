@@ -281,6 +281,7 @@ type EmployeeInfo = {
   employeeId: number
   firstName: string
   lastName: string
+  code:number
   patronymic: string
   login: string
   password: string
@@ -288,7 +289,13 @@ type EmployeeInfo = {
   departmentid: number
   position: number
 }
-
+type employeeprofile = {
+  employeeId: number;
+  firstName: string;
+  code: number;
+  lastName: string;
+  position: number;
+}
 
 type TimePeriod = {
   type: string;
@@ -364,6 +371,7 @@ export type {
   changePass,
   statusType,
   employee,
+  employeeprofile,
 
   DepartmentStatsProps,
   CircularProgressProps,

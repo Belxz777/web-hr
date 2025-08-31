@@ -1,14 +1,8 @@
 "use server"
 
 import { cookies } from 'next/headers';
-import { host } from '@/types';
+import { employeeprofile, host } from '@/types';
 
-interface UserData {
-  employeeId: number;
-  firstName: string;
-  lastName: string;
-  position: number;
-}
 
 interface JobData {
   jobName: string;
@@ -17,7 +11,7 @@ interface JobData {
 interface AuthResponse {
   message: string;
   data: {
-    user: UserData;
+    user: employeeprofile;
     department: string;
     job: JobData;
     deputy?: {

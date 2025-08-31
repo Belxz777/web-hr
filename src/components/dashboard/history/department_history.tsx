@@ -12,6 +12,7 @@ type Report = {
   report_id: number
   employee_id: number
   employee_name: string
+  code:number
   function: {
     id: number
     name: string
@@ -26,6 +27,7 @@ type GroupedReports = {
   [employeeId: number]: {
     employee_name: string
     employee_id: number
+    code:number
     reports: Report[]
     total_hours: number
   }
@@ -113,6 +115,7 @@ export default function DepartmentActivityDashboard({
         acc[report.employee_id] = {
           employee_name: report.employee_name,
           employee_id: report.employee_id,
+          code:report.code,
           reports: [],
           total_hours: 0,
         }
@@ -671,7 +674,7 @@ export default function DepartmentActivityDashboard({
                               <div className="flex items-center gap-3">
                                 <div className="min-w-0">
                                   <div className="font-semibold text-gray-900 text-base">
-                                    {employeeGroup.employee_name || "Неизвестный"}
+                                    {employeeGroup.code || "Неизвестный"}
                                   </div>
                                   <div className="text-sm text-gray-500">ID: {employeeGroup.employee_id}</div>
                                   <div className="text-sm font-medium text-secondary whitespace-nowrap">

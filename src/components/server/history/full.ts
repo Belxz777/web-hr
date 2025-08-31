@@ -24,6 +24,7 @@ export type DepartmentPerformanceData = {
       report_id: number
       employee_id: number
       employee_name: string
+      code:number
       function: {
         id: number
         name: string
