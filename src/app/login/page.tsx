@@ -239,7 +239,7 @@ import sendUserLoginData from "@/components/server/auth/login"
 export default function LoginPage() {
   const router = useRouter()
 
-  const [login, setLogin] = useState<number>(0)
+  const [login, setLogin] = useState<number>()
   const [password, setPassword] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(false)
   const [showPopup, setShowPopup] = useState(false)
@@ -306,6 +306,7 @@ export default function LoginPage() {
               name="login"
               type="number"
               autoComplete="code"
+              defaultValue={""}
               required
               value={login}
               onChange={(e) => setLogin(Number(e.target.value))}

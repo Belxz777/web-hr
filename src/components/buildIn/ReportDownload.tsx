@@ -51,7 +51,44 @@ export function RoutesBoss({ position }: { position: number }) {
           >
             <div className="absolute top-0 left-0 w-2 h-full bg-[#249BA2] group-hover:w-full opacity-10 group-hover:opacity-20 transition-all duration-500"></div>
             <div className="flex items-center justify-center w-14 h-14 bg-[#249BA2]/10 rounded-full mb-3 group-hover:bg-[#249BA2]/20 transition-colors">
-              <svg
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  strokeWidth="2"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+  className="w-7 h-7 text-[#249BA2]"
+>
+  <path d="M3 3v18h18" />
+  <path d="M7 12l3-3 2 2 5-5" />
+  <circle cx="7" cy="12" r="1" />
+  <circle cx="10" cy="9" r="1" />
+  <circle cx="12" cy="11" r="1" />
+  <circle cx="17" cy="6" r="1" />
+</svg>
+            </div>
+            <h3 className="text-lg font-medium text-[#000000] group-hover:text-[#249BA2] transition-colors">
+             Показатели отделов
+            </h3>
+            <p className="text-sm text-gray-500 mt-2 text-center">
+              Просмотр  показателей по доступным отделам
+            </p>
+            <div className="mt-4 px-4 py-2 bg-[#249BA2] text-white rounded-xl opacity-0 group-hover:opacity-100 font-bold transition-opacity">
+              Открыть
+            </div>
+          </button>
+
+          <button
+            onClick={() => router.push("/analytics/download")}
+            className="w-full h-full p-4 text-left flex flex-col items-center group relative overflow-hidden rounded-xl border border-gray-200 hover:border-[#249BA2] transition-all duration-300 shadow-sm hover:shadow-md"
+          >
+            <div className="absolute top-0 left-0 w-2 h-full bg-[#249BA2] group-hover:w-full opacity-10 group-hover:opacity-20 transition-all duration-500"></div>
+            <div className="flex items-center justify-center w-14 h-14 bg-[#249BA2]/10 rounded-full mb-3 group-hover:bg-[#249BA2]/20 transition-colors">
+   <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -71,16 +108,15 @@ export function RoutesBoss({ position }: { position: number }) {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-[#000000] group-hover:text-[#249BA2] transition-colors">
-             Показатели отделов
+            Скачивание отчета
             </h3>
             <p className="text-sm text-gray-500 mt-2 text-center">
-              Просмотр  показателей по доступным отделам
+             Скачивание отчета за период в формате  excel
             </p>
             <div className="mt-4 px-4 py-2 bg-[#249BA2] text-white rounded-xl opacity-0 group-hover:opacity-100 font-bold transition-opacity">
               Открыть
             </div>
           </button>
-
         </div>
       </div>
     </section>
