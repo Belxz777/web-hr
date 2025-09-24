@@ -1,29 +1,36 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import React from "react";
-import logo from '../../public/logo_1_.svg'
-import { ThemeProvider } from 'next-themes';
+import type React from "react"
+import type { Metadata } from "next"
+
+
+import "./globals.css"
+import ToastComponent from "@/components/toast/toast"
+
+import { Suspense } from "react"
+import BackendStatusChecker from "@/components/analytics/status-checker"
+
+
+
 export const metadata: Metadata = {
-  title: "HR-эффективность",
-  description: "Приложение для мониторинга и анализа рабочего времени",
-  icons: {
-    icon: logo.src,
-  }
-};
+  title: "v0 App",
+  description: "Created with v0",
+  generator: "v0.app",
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="en">
+      <body >
+        <Suspense fallback={null}>
+          {children}
+          <ToastComponent />
+          <BackendStatusChecker />
+        </Suspense>
 
-      <body   >
-      <ThemeProvider>
-      {children}
-      </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

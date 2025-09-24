@@ -38,7 +38,7 @@ export default function MainView({ onNavigate }: MainViewProps) {
             onClick={() => onNavigate("create_function")}
             className="w-full p-3 text-left border border-gray-300 hover:bg-gray-50"
           >
-            Создать  обязанность 
+            Создать  функцию
           </button>
          
         </div>

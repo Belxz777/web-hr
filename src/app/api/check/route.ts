@@ -25,7 +25,7 @@ export async function GET() {
 
   try {
     // Отправляем запрос к вашему бэкенду
-    const backendResponse = await fetch(`${host}/auth/check`, {
+    const backendResponse = await fetch(`${host}auth/check`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

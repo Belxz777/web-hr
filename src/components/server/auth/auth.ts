@@ -56,8 +56,9 @@ export default async function authUser(): Promise<AuthResponse['data']> {
         ...DEFAULT_HEADERS,
         Cookie: `jwt=${jwt}`
       },
-      signal: controller.signal,
-      next: { revalidate: 0 }
+      signal: AbortSignal.timeout(5000),
+      next: { revalidate: 0 },
+  
     });
 
     clearTimeout(timeoutId);

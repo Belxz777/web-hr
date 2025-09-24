@@ -5,8 +5,13 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import logo from "../../public/logo_1_.svg";
 import Image from "next/image";
+
+
+
 export default function HomePage() {
   const router = useRouter()
+
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary to-primary flex flex-col items-center justify-center p-4 select-none">
       <main className="bg-card rounded-3xl shadow-xl p-8 max-w-md w-full flex flex-col items-center">

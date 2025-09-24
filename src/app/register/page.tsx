@@ -19,9 +19,10 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     login: "",
     password: "",
-    name: "",
-    surname: "",
-    patronymic: "",
+    // name: "",
+    // surname: "",
+    // patronymic: "",
+    code:0,
     job_id: 0,
     department_id: 0,
   })
@@ -105,9 +106,9 @@ export default function RegisterPage() {
     // if (!formData.name.trim()) {
     //   return { isValid: false, message: "Введите имя" }
     // }
-    if (!formData.surname.trim()) {
-      return { isValid: false, message: "Введите фамилию" }
-    }
+    // if (!formData.surname.trim()) {
+    //   return { isValid: false, message: "Введите фамилию" }
+    // }
     if (formData.job_id === 0) {
       return { isValid: false, message: "Выберите должность" }
     }
@@ -340,15 +341,15 @@ export default function RegisterPage() {
 
             {/* Фамилия */}
             <div className="space-y-2">
-              <label htmlFor="surname" className="block text-sm font-medium text-[#6D6D6D]">
+              <label htmlFor="code" className="block text-sm font-medium text-[#6D6D6D]">
                Ваш код
               </label>
               <input
-                id="surname"
-                name="surname"
+                id="code"
+                name="code"
                 type="text"
                 required
-                value={formData.surname}
+                value={Number(formData.code)}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent transition-all duration-200 hover:border-[#249BA2]"
                 placeholder="Введите ваш код"

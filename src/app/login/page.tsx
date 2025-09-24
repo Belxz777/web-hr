@@ -239,7 +239,7 @@ import sendUserLoginData from "@/components/server/auth/login"
 export default function LoginPage() {
   const router = useRouter()
 
-  const [login, setLogin] = useState<number>()
+  const [login, setLogin] = useState<number>(0)
   const [password, setPassword] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(false)
   const [showPopup, setShowPopup] = useState(false)
@@ -298,17 +298,17 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="w-full space-y-4">
           <div>
-            <label htmlFor="login" className="block text-sm font-medium text-[#6D6D6D] mb-1">
+            <label htmlFor="code" className="block text-sm font-medium text-[#6D6D6D] mb-1">
               Код
             </label>
             <input
-              id="login"
-              name="login"
-              type="number"
+              id="code"
+              name="code"
+              type="text"
               autoComplete="code"
               defaultValue={""}
               required
-              value={login}
+              value={Number(login)}
               onChange={(e) => setLogin(Number(e.target.value))}
               className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#249BA2] focus:border-transparent"
               placeholder="Введите код"

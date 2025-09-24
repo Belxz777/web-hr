@@ -5,9 +5,10 @@ import { host } from "@/types";
 interface CreateUserDTO {
   login: string;
   password: string;
-  name: string;
-  surname: string;
-  patronymic: string;
+  // name: string;
+  // surname: string;
+  // patronymic: string;
+  code:number;
   job_id: number;
   department_id: number;
 }
