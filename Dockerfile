@@ -37,7 +37,7 @@ COPY --from=builder /app/.env ./
 ENV NODE_ENV=production
 ENV PORT=3500
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV API_URL https://bell-x.ru/backend/api/v1/
+ENV API_URL=https://imz-hr.bell-x.ru/api/v1/
 
 EXPOSE 3500
 CMD ["pnpm", "start","-p","3500"]

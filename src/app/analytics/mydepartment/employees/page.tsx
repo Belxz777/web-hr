@@ -154,7 +154,7 @@ export default function UserSearch() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Введите фамилию сотрудника..."
+                  placeholder="Введите  код  сотрудника..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-14 pr-14 py-5 bg-background border-2 border-input text-foreground rounded-2xl focus:outline-none focus:ring-4 focus:ring-secondary/20 focus:border-secondary transition-all duration-300 text-lg placeholder-muted-foreground shadow-inner"

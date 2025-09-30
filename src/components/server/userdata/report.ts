@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 
 export default async function sendReport(reportData: report) {
   const cookieStore = cookies();
+  const currentTime = new Date();
   const jwt = cookieStore.get("cf-auth-id")?.value;
   if (!jwt) {
     throw new Error("No token provided");
@@ -24,7 +25,7 @@ export default async function sendReport(reportData: report) {
     }
   );
   if (!res.ok) {
-    console.log(res);
+    console.log("", res.status, res.statusText,currentTime);
     return false;
   }
   return true;

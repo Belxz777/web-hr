@@ -257,7 +257,7 @@ const handlePromoteEmployee = async (employee: Employee, newLevel: number) => {
           </svg>
         </div>
         <h3 className="text-xl font-semibold text-gray-800 mb-2">Начните поиск</h3>
-        <p className="text-gray-600">Введите фамилию сотрудника в поле поиска выше</p>
+        <p className="text-gray-600">Введите код сотрудника в поле поиска выше</p>
       </div>
     )
   }
@@ -301,7 +301,7 @@ const handlePromoteEmployee = async (employee: Employee, newLevel: number) => {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Введите фамилию сотрудника..."
+                placeholder="Введите код сотрудника..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

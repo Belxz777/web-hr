@@ -168,7 +168,6 @@ export default function ReportPage() {
         hours_worked: Number(formData.hours_worked.toFixed(2)),
         comment: formData.comment,
       };
- console.log(reportData)
       await sendReport(reportData);
      
       // Update worked hours
@@ -187,7 +186,7 @@ export default function ReportPage() {
 
       window.toast?.info("Отчет успешно отправлен!");
     } catch (error) {
-      console.error("Error submitting report:", error);
+      console.error("Error submitting report:", error,"time",new Date());
       window.toast?.error(`Произошла ошибка при отправке отчета`);
     } finally {
       setLoading(false);
@@ -279,7 +278,7 @@ export default function ReportPage() {
       type="range"
       id="hours_slider"
       name="hours_worked"
-      min="0.5"
+      min="0"
       max="8"
       step="0.0166667"
       value={formData.hours_worked}
@@ -300,7 +299,7 @@ export default function ReportPage() {
       className="w-full h-2 bg-secondary/30 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
     />
     <div className="flex justify-between items-center">
-      <span className="text-sm text-muted-foreground">0.5ч</span>
+      <span className="text-sm text-muted-foreground">0ч</span>
       <div className="text-2xl font-bold text-foreground">
         {formatTime(formData.hours_worked)}
       </div>
