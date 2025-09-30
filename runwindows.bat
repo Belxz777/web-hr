@@ -1,2 +1,2 @@
-docker build -t web-pulse . 
-docker run --rm -p 3000:3000 --name web-pulse  web-pulse
+docker build -t web-hr . 
+docker run -d -p 3500:3500 --name web-hr web-hr
